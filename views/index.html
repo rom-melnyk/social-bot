@@ -16,16 +16,24 @@
     </script>
     <script src="../javascripts/facebookAPI.js"></script>
     <script src="../src/angular/angular.js"></script>
+    <script src="../javascripts/ui-bootstrap.js"></script>
+    <script src="../javascripts/ui-bootstrap-tpls.js"></script>
     <script src="../javascripts/app.js"></script>
     <script src="../javascripts/controllers/main.js"></script>
+    <script src="../javascripts/controllers/keyWordsController.js"></script>
     <link rel="stylesheet" href="../stylesheets/bootstrap.css">
     <link rel="stylesheet" href="../stylesheets/main.css">
+
 </head>
 <body ng-app="SocialApp" ng-controller="socialController">
-<div class="col-md-6 section">
-    <h1 class="text-center">Facebook section</h1>
+<div class="login-container">
+    <div id="status"></div>
     <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
     </fb:login-button>
+</div>
+<button ng-click="editKeyWords()"></button>
+<div class="col-md-6 section">
+    <h1 class="text-center">Facebook section</h1>
     <br/>
     <div>Filter: <input id="keyWordFilter" type="text" ng-model="keyWordFilter"/></div>
     <div class="groups-section" ng-repeat="group in userGroups">
@@ -38,8 +46,7 @@
     <div class="feed-section">
         <h2 class="text-center" ng-show="emptyMessage">There are no feeds to display</h2>
         <div class="feed" ng-repeat="feed in facebookFeeds | keyWordFilter" ng-click="openFbPage(feed.id)">
-            <div class="fb-post" data-href="{{feed.link}}" data-width="500"></div>
-            <!--{{feed.from.name}}: {{feed.message}}
+            {{feed.from.name}}: {{feed.message}}
             <img src="{{feed.type === 'photo' ? feed.picture : ''}}" width="100%" ng-show="!!feed.picture">
             <div class="comments-section" ng-show="!!feed.comments">
                 <h3>Comments</h3>
@@ -49,7 +56,7 @@
                         <hr>
                     </li>
                 </ul>
-            </div>-->
+            </div>
             <hr>
         </div>
     </div>
@@ -58,6 +65,5 @@
     <h1 class="text-center">VK section</h1>
     {{name}}
 </div>
-<div id="status"></div>
 </body>
 </html>
