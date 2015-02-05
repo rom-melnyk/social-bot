@@ -30,5 +30,8 @@
   "bugs": {
     "url": "https://github.com/rom-melnyk/social-bot/issues"
   },
-  "homepage": "https://github.com/rom-melnyk/social-bot"
+  "homepage": "https://github.com/rom-melnyk/social-bot",
+  "dependencies": {
+    "express": "^4.11.2"
+  }
 }
