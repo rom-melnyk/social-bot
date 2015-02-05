@@ -26,6 +26,7 @@
     <h1 class="text-center">Facebook section</h1>
     <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
     </fb:login-button>
+    <br/>
     <div>Filter: <input id="keyWordFilter" type="text" ng-model="keyWordFilter"/></div>
     <div class="groups-section" ng-repeat="group in userGroups">
         <ul>
