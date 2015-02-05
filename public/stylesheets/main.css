@@ -1,0 +1,10 @@
+.section {
+    border-right: 1px solid #bbb;
+}
+.comments-section {
+    border: 1px solid #BBB;
+    padding: 10px;
+}
+.feed {
+    margin: 10px 0;
+}
