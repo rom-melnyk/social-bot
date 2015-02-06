@@ -1,6 +1,8 @@
 var express = require('express'),
-	app = express();
+	app = express(),
+	favicon = require('express-favicon');
 
+app.use(favicon(__dirname + '/public/gfx/favicon.ico'));
 app.use(express.static(__dirname + '/public'));
 
 // ------------ routes ------------
