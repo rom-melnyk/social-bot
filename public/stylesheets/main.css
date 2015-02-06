@@ -1,13 +1,35 @@
+body {
+    padding: 10px;
+}
+h1, .h1, h2, .h2, h3, .h3 {
+    margin-top: 0;
+}
+a {
+    cursor: pointer;
+}
+.header-section *{
+    margin-top: 10px;
+}
 .section {
     border-right: 1px solid #bbb;
 }
-.comments-section {
-    border: 1px solid #BBB;
+.feed {
     padding: 10px;
+    border: 1px solid #BBB;
+    cursor: pointer;
+}
+.comments-section {
+    margin-top: 10px;
+}
+.section:last-child {
+    border: 0;
 }
 .feed {
     margin: 10px 0;
 }
 .modal.fade {
     background: rgba(0,0,0,0.6);
+}
+.highlightedText {
+    background: yellow;
 }

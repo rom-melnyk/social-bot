@@ -2,8 +2,13 @@
  * Created by obryl on 2/4/2015.
  */
 angular.module('SocialApp.controllers', []).
-    controller('socialController', function($scope, $http, $modal) {
+    controller('socialController', function($scope, $http, $modal, $sce) {
         var accessToken, uid;
+        $scope.groups = [{
+            id: "303201976514746",
+            name: "Тепле ІТ середовище",
+            keyword: "Перш"
+        }];
         FB.getLoginStatus(function(response) {
             if (response.status === 'connected') {
                 // the user is logged in and has authenticated your
@@ -28,37 +33,52 @@ angular.module('SocialApp.controllers', []).
              });
              });
              });*/
-            //$scope.showGroupPosts = function (groupIndex) {
-            $http.get('https://graph.facebook.com/303201976514746/feed?since=2015-01-01&filter=test&access_token=' + accessToken).success(function (resp) {
-                $scope.facebookFeeds = resp.data;
-                $scope.emptyMessage =  !$scope.facebookFeeds.length;
-            });
-            //};
+            $scope.showGroupPosts = function (groupIndex) {
+                $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?since=2015-01-01&filter=test&access_token=' + accessToken).success(function (resp) {
+                    $scope.facebookFeeds = resp.data;
+                    $scope.keyword = $scope.groups[groupIndex].keyword;
+                    $scope.emptyMessage =  !$scope.facebookFeeds.length;
+                });
+            };
             $scope.openFbPage = function (itemId) {
-                location.href = 'https://www.facebook.com/' + itemId;
+                window.open('https://www.facebook.com/' + itemId, '_newtab');
             };
             };
             $scope.editKeyWords = function () {
-                $modal.open({
+                var modalInstance = $modal.open({
                     templateUrl: "../../views/editKeyWordsModal.html",
                     controller: "keyWordsController",
-                    backdrop: true
+                    backdrop: true,
+                    resolve: {
+                        groups: function () {
+                            return $scope.groups;
+                        }
+                    }
+                });
+                modalInstance.result.then(function (groups) {
+                    $scope.groups = groups;
+                    $scope.facebookFeeds = [];
                 });
             };
+            $scope.highlight = function(text, search) {
+                if (!search) {
+                    return $sce.trustAsHtml(text);
+                }
+                return $sce.trustAsHtml(text.replace(new RegExp(search, 'i'), '<span class="highlightedText">$&</span>'));
+            };
 
-    }).filter('keyWordFilter', function () {
-        return function (items) {
+    }).filter('keyWordFilter', function ($sce) {
+        return function (items, keyword) {
             var filtered = [];
-            if (items && items.length) {
+            if (items && items.length && keyword) {
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i],
-                        filterVal = document.getElementById('keyWordFilter').value.toLowerCase(),
                         containsWord = false;
-                    if (item.message && item.message.toLowerCase().indexOf(filterVal) !== -1) {
+                    if (item.message && item.message.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
                         filtered.push(item);
                     } else if (item.comments) {
                         item.comments.data.forEach(function (value) {
-                            if (value.message.toLowerCase().indexOf(filterVal) !== -1) {
+                            if (value.message.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
                                 containsWord = true;
                             }
                         });
@@ -66,6 +86,8 @@ angular.module('SocialApp.controllers', []).
                         containsWord = false;
                     }
                 }
+            } else {
+                return items;
             }
             return filtered;
         };

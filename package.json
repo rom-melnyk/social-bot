@@ -1,0 +1,34 @@
+{
+  "name": "social-bot",
+  "version": "0.1.0",
+  "description": "The Facebook and Vkontakte bot",
+  "main": "bot.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rom-melnyk/social-bot.git"
+  },
+  "keywords": [
+    "bot",
+    "social",
+    "facebook",
+    "fb",
+    "vkontakte",
+    "vk",
+    "parse",
+    "parsing",
+    "comment",
+    "post"
+  ],
+  "author": "SoftServe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rom-melnyk/social-bot/issues"
+  },
+  "homepage": "https://github.com/rom-melnyk/social-bot"
+}
