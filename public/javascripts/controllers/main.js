@@ -8,6 +8,10 @@ angular.module('SocialApp.controllers', []).
             id: "303201976514746",
             name: "Тепле ІТ середовище",
             keyword: "Перш"
+        }, {
+            id: "413176182109914",
+            name: "LocalDev knowledge sharing",
+            keyword: "прогр"
         }];
         FB.getLoginStatus(function(response) {
             if (response.status === 'connected') {
@@ -25,6 +29,9 @@ angular.module('SocialApp.controllers', []).
         });
         var processFB = function(response) {
             accessToken = response.authResponse.accessToken;
+            setTimeout(function() {
+                $scope.isLoggedIn = true;
+            }, 1000);
             /*$http.get('https://graph.facebook.com/339711716217437/groups?access_token=' + accessToken).success(function (resp) {
              $scope.userGroups = resp.data;
              $http.get('https://graph.facebook.com/339711716217437/likes?access_token=' + accessToken).success(function (resp) {
@@ -34,38 +41,45 @@ angular.module('SocialApp.controllers', []).
              });
              });*/
             $scope.showGroupPosts = function (groupIndex) {
-                $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?since=2015-01-01&filter=test&access_token=' + accessToken).success(function (resp) {
+                $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken).success(function (resp) {
                     $scope.facebookFeeds = resp.data;
                     $scope.keyword = $scope.groups[groupIndex].keyword;
                     $scope.emptyMessage =  !$scope.facebookFeeds.length;
+                    $scope.activeGroupIndex = groupIndex;
                 });
+            };
+            $scope.isActive = function (groupIndex) {
+                return groupIndex === $scope.activeGroupIndex;
             };
             $scope.openFbPage = function (itemId) {
-                window.open('https://www.facebook.com/' + itemId, '_newtab');
+                    window.open('https://www.facebook.com/' + itemId, '_newtab');
             };
-            };
-            $scope.editKeyWords = function () {
-                var modalInstance = $modal.open({
-                    templateUrl: "../../views/editKeyWordsModal.html",
-                    controller: "keyWordsController",
-                    backdrop: true,
-                    resolve: {
-                        groups: function () {
-                            return $scope.groups;
-                        }
+        };
+        $scope.editKeyWords = function () {
+            var modalInstance = $modal.open({
+                templateUrl: "../../views/editKeyWordsModal.html",
+                controller: "keyWordsController",
+                backdrop: true,
+                resolve: {
+                    groups: function () {
+                        return $scope.groups;
                     }
-                });
-                modalInstance.result.then(function (groups) {
-                    $scope.groups = groups;
-                    $scope.facebookFeeds = [];
-                });
-            };
-            $scope.highlight = function(text, search) {
-                if (!search) {
-                    return $sce.trustAsHtml(text);
                 }
-                return $sce.trustAsHtml(text.replace(new RegExp(search, 'i'), '<span class="highlightedText">$&</span>'));
-            };
+            });
+            modalInstance.result.then(function (groups) {
+                $scope.groups = groups;
+                $scope.facebookFeeds = [];
+            });
+        };
+        $scope.highlight = function(text, search) {
+            if (!search) {
+                return $sce.trustAsHtml(text);
+            }
+            return $sce.trustAsHtml(text.replace(new RegExp(search, 'i'), '<span class="highlightedText">$&</span>'));
+        };
+        $scope.formatDate = function (dateString) {
+            return $sce.trustAsHtml(new Date(dateString).toUTCString());
+        };
 
     }).filter('keyWordFilter', function ($sce) {
         return function (items, keyword) {
