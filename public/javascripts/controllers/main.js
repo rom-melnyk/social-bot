@@ -81,7 +81,7 @@ angular.module('SocialApp.controllers', []).
             return $sce.trustAsHtml(new Date(dateString).toUTCString());
         };
 
-    }).filter('keyWordFilter', function ($sce) {
+    }).filter('keyWordFilter', function () {
         return function (items, keyword) {
             var filtered = [];
             if (items && items.length && keyword) {
