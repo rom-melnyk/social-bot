@@ -5,7 +5,7 @@ var express = require('express'),
 	bodyParser = require('body-parser');
 
 // ------------ statics ------------
-app.use(favicon(__dirname + '/public/gfx/favicon.ico'));
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
