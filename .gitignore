@@ -2,3 +2,4 @@
 *.iws
 *.iml
 node_modules/
+credentials.txt
