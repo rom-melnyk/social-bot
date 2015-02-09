@@ -1,0 +1,168 @@
+body {
+	padding-top: 50px; 
+	font-family: 'Ubuntu', sans-serif !important; 
+}
+a {
+	text-decoration: none;
+}
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Raleway'), url(http://fonts.gstatic.com/s/raleway/v9/0dTEPzkLWceF7z0koJaX1A.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+h1, h2, h3, h4 {
+	font-family: 'Ubuntu', sans-serif !important; 
+}
+body a:hover {
+	color: #FFF;
+	text-decoration: none;
+}
+button.btn-primary {
+	background-color: #001937;
+	background-image: none;
+}
+.slogan {
+	margin: 20px;
+	width: 500px;
+	color: #DDD;
+	font-size: 16px;
+	background: rgba(0, 0, 0, 0.2);
+	padding: 10px;
+}
+.slogan-container {
+	background: url('../images/bg.png');
+	height: 350px;
+}
+.slogan-navigation-container {
+	height: 350px;
+	background-color: #001937;
+}
+.slogan-nav {
+	padding: 27px 0px;
+	height: 116.7px;
+	border-bottom: 1px dotted;
+	color: #FFF;
+}
+.slogan-nav a {
+	display: block;
+	padding: 10px 10px;
+	height: 60px;
+	font-size: 25px;
+	cursor: pointer;
+	color: #DDD;
+} 
+.slogan-nav a.active:after {
+	content: '';
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	background: #f58220;
+	transform: rotate(45deg);
+	right: 9px;
+}
+.slogan-nav a.active {
+	color: #FFF;
+	background-color: #f58220;
+}
+.slogan-nav:last-child {
+	border-bottom: 0;
+}
+nav.navbar {
+	margin: 0;
+} 
+nav.navbar-inverse {
+	background-image: none;
+	background-color: #f58220;
+	color: #EEE;
+	border-color: #CCC;
+}
+nav.navbar-inverse .navbar-nav > li > a {
+	color: #EEE;
+}
+nav.navbar-inverse .navbar-nav {
+	margin-right: 30px;
+	font-size: 16px;
+}
+.news {
+	margin: 20px 0;
+}
+.news p {
+	color: #777;
+}
+div.news :first-child {
+	border: 0;
+}
+div.news > div {
+	border-left: 1px dotted;
+}
+#slides_control, div.carousel {
+	height: 350px;
+	padding: 0;
+}
+#slides_control > div{
+  height: 350px;
+}
+#slides_control .carousel-inner {
+	height: 350px !important;
+}
+img{
+  margin: auto;
+  width: 100%;
+}
+.carousel-inner > .item > img, .carousel-inner > .item > a > img {
+	height: 350px !important;
+}
+div.carousel-caption {
+	padding: 0;
+	top: 2%;
+}
+.carousel-control, .carousel-indicators {
+	display: none;
+}
+div.carousel-caption {
+	right: 0%;
+	left: 50%;
+	text-align: left;
+}
+
+/*contacts page*/
+#map-canvas {
+	height: 400px;
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+.section-title {
+	text-align: center;
+}
+.contact-us-form {
+	text-align: center;
+}
+.form-inline div.form-group {
+	display: block;
+	margin-bottom: 0;
+}
+div.contact-us {
+	float: none;
+	box-shadow: 0px 5px 15px #f58220;
+	padding: 5px;
+	padding-bottom: 10px;
+}
+@media (min-width: 768px) {
+	.form-inline div.form-group > input, .form-inline div.form-group > textarea {
+		margin: 5px;
+		width: 40%;
+	}
+	.contacts-info {
+		width: 30%;
+		margin-top: 20px;
+	}
+}
+
+/*products page*/
+#dLabel, .product-page .dropdown ul {
+	text-align: center;
+	width: 100%;
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Social Monitoring</title>
+    <script src="../src/angular/angular.js"></script>
+    <script src="../javascripts/app.js"></script>
+    <script src="../javascripts/controllers/main.js"></script>
+    <link rel="stylesheet" href="../stylesheets/bootstrap.css">
+    <link rel="stylesheet" href="../stylesheets/main.css">
+</head>
+<body ng-app="SocialApp" ng-controller="socialController">
+    <div class="col-md-6 section">
+        <h1 class="text-center">Facebook section</h1>
+        Filter: <input id="keyWordFilter" type="text" ng-model="keyWordFilter"/>
+        <div class="groups-section" ng-repeat="group in userGroups">
+            <ul>
+                <li>
+                    <a ng-click="showGroupPosts($index)">{{group.name}}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="feed-section">
+            <h2 class="text-center" ng-show="emptyMessage">There are no feeds to display</h2>
+            <div class="feed" ng-repeat="feed in facebookFeeds | keyWordFilter" ng-click="openFbPage(feed.id)">
+                {{feed.from.name}}: {{feed.message}}
+                <img src="{{feed.type === 'photo' ? feed.picture : ''}}" width="100%" ng-show="!!feed.picture">
+                <div class="comments-section" ng-show="!!feed.comments">
+                    <h3>Comments</h3>
+                    <ul>
+                        <li class="comment" ng-repeat="comment in feed.comments.data">
+                            {{comment.from.name}} : {{comment.message}}
+                            <hr>
+                        </li>
+                    </ul>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 section">
+        <h1 class="text-center">VK section</h1>
+        {{name}}
+    </div>
+</body>
+</html>

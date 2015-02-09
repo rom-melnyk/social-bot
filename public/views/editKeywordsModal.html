@@ -1,0 +1,25 @@
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title">Edit communities keywords.</h3>
+    </div>
+    <div class="modal-body">
+        <form role="form" name="groupKeywords" data-ng-submit="submit(groupKeywords)" novalidate="novalidate" class="form-horizontal">
+            <div class="error-box"></div>
+            <!--div data-ng-class="{'has-error': !createResource.categoryName.$valid && !createResource.categoryName.$pristine}" class="form-group">-->
+                <div class="row" ng-repeat="group in groups">
+                    <div class="controls col-md-5 col-md-offset-1">
+                        <input name="groupName" type="text" placeholder="Group name" data-ng-model="group.name" required="true" class="form-control"/>
+                    </div>
+                    <div class="controls col-md-5">
+                        <input name="keyWord" type="text" placeholder="Keyword" data-ng-model="group.keyword" required="true" class="form-control"/>
+                    </div>
+                </div>
+            <!--</div>-->
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="addNewGroup()">Add new group</button>
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</div>
