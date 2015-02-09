@@ -11,7 +11,22 @@ app.use(bodyParser.json());
 
 // ------------ routes ------------
 handlers.me = require('./api/test-me');
+handlers.token = require('./api/token');
+handlers.test = function (req, res) {
+	res.status(200).send({
+		requestBody: req.body,
+		requestParams: req.params,
+		requestQuery: req.query
+	});
+};
 app.get('/api/me', handlers.me);
+app.get('/api/token', handlers.token.check);
+app.put('/api/token', handlers.token.save);
+// for test purposes
+app.get('/api/test', handlers.test);
+app.post('/api/test', handlers.test);
+app.put('/api/test', handlers.test);
+app.delete('/api/test', handlers.test);
 
 // catch errors (404, 500) and forward to error handler
 app.use(function(req, res, next) {

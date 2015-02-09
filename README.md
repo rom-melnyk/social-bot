@@ -1,7 +1,15 @@
 # Social bot
-this is the bot for analyzing comments in Vkontakte and in Facebook.
+This is the bot for analyzing comments in VKontakte and in Facebook.
+
+## The roadmap
+TBD
+
+## Facebook
+The work is in progress
+
+## VKontakte
+TBD
 
 Contributors
-* Roman Melnykm
-ftserveinc.com
-
+* Roman Melnyk <rmel@softserveinc.com>
+* Oleh Brylkovskyi <obryl@softserveinc.com>
