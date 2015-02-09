@@ -10,17 +10,11 @@ a {
 .header-section *{
     margin-top: 10px;
 }
-.section {
-    border-right: 1px solid #bbb;
-}
 .feed {
     padding: 10px;
 }
 .comments-section {
     margin-top: 10px;
-}
-.section:last-child {
-    border: 0;
 }
 .feed {
     margin: 10px 0;
