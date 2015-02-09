@@ -1,6 +1,13 @@
 /**
  * Created by obryl on 2/5/2015.
  */
+FB.init({
+    appId      : '1545533905707947',
+    cookie     : true,  // enable cookies to allow the server to access
+    // the session
+    xfbml      : true,  // parse social plugins on this page
+    version    : 'v2.1' // use version 2.1
+});
     // This is called with the results from from FB.getLoginStatus().
 function statusChangeCallback(response) {
     console.log('statusChangeCallback');
@@ -29,7 +36,7 @@ function checkLoginState() {
 
 window.fbAsyncInit = function() {
     FB.init({
-        appId      : '808363195905708',
+        appId      : '1545533905707947',
         cookie     : true,  // enable cookies to allow the server to access
                             // the session
         xfbml      : true,  // parse social plugins on this page

@@ -5,15 +5,6 @@
 	<title>Social Monitoring</title>
 	<script src="//connect.facebook.net/en_US/sdk.js">
 	</script>
-	<script>
-		FB.init({
-			appId      : '808363195905708',
-			cookie     : true,  // enable cookies to allow the server to access
-			// the session
-			xfbml      : true,  // parse social plugins on this page
-			version    : 'v2.1' // use version 2.1
-		});
-	</script>
 	<script src="/javascripts/src/facebookAPI.js"></script>
 	<script src="/javascripts/src/angular/angular.js"></script>
 	<script src="/javascripts/src/ui-bootstrap.js"></script>
@@ -43,7 +34,7 @@
 			<div class="feed list-group-item" ng-repeat="feed in filtered = (facebookFeeds | keyWordFilter:keyword)">
 				{{feed.from.name}}:
 				<span ng-bind-html="highlight(feed.message, keyword)"></span>
-				<img src="{{feed.type === 'photo' ? feed.picture : ''}}" ng-show="!!feed.picture">
+				<img ng-src="{{feed.type === 'photo' ? feed.picture : ''}}" ng-show="!!feed.picture">
 				<div class="comments-section" ng-show="!!feed.comments">
 					<!-- <h3>Comments</h3>
 					 <ul>
