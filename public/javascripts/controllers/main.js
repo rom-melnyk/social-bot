@@ -29,9 +29,6 @@ angular.module('SocialApp.controllers', []).
         });
         var processFB = function(response) {
             accessToken = response.authResponse.accessToken;
-            setTimeout(function() {
-                $scope.isLoggedIn = true;
-            }, 1000);
             /*$http.get('https://graph.facebook.com/339711716217437/groups?access_token=' + accessToken).success(function (resp) {
              $scope.userGroups = resp.data;
              $http.get('https://graph.facebook.com/339711716217437/likes?access_token=' + accessToken).success(function (resp) {
