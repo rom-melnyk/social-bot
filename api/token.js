@@ -1,42 +1,67 @@
 var request = require('request'),
 	CFG = require('./config'),
-	mongoose = require('mongoose');
+	mongoose = require('mongoose'),
+	State = require('./db/state-model');
 
 var dbUrl = 'mongodb://' + CFG.db.host + '/' + CFG.db.name;
 mongoose.connect(dbUrl);
 
-var Token = mongoose.model('Token', {
-	/**
-	 * @cfg {String} key				the token itself
-	 */
-	token: String,
-	/**
-	 * @cfg {String} social				one of "fb" or "vk"
-	 */
-	social: String,
-	/**
-	 * @cfg {Date} date					creation date
-	 */
-	date: Date
-});
+var errHandler = function (msg, status, callback) {
+	var err = new Error(msg);
+	err.status = status || 500;
+	callback(err);
+};
+
+var __createNewToken = function (ntw, req, res, next) {
+	var state = new State({
+		state: 'auth-fail',
+		token: '',
+		tokenDate: Date.now(),
+		network: ntw
+	});
+	state.save(function (err, state) {
+		if (err) {
+			errHandler('Database error, failed to create the new token for the network "fb"', 591, next);
+		} else {
+			res.status(200).send({
+				state: state.state,
+				token: state.token,
+				date: state.tokenDate,
+				network: state.network
+			});
+		}
+	})
+};
 
 module.exports = {
 	/**
 	 * @method GET
-	 * @path /api/token
+	 * @path /api/token?network=...
 	 * Must be the function that accepts two params for the `request` and the `response`.
 	 */
 	check: function (req, res, next) {
-		Token.find(function (err, tokens) {
+		var ntw = req.query.network;
+
+		if (!(ntw === 'fb' || ntw === 'vk')) {
+			errHandler('Request error, wrong "network" parameter', 592, next);
+			return;
+		}
+
+		State.findOne({network: ntw}, function (err, state) {
 			if (err) {
-				var error = new Error('Database error, failed to find the token');
-				next(error);
+				errHandler('Database error, failed to find the token for the network "fb"', 590, next);
 			} else {
-				res.status(200).send({
-					social: tokens[0] && tokens[0].social || '',
-					token: tokens[0] && tokens[0].key || '',
-					date: tokens[0] && tokens[0].date || ''
-				});
+				if (!state) {
+					__createNewToken(ntw, req, res, next);
+				} else {
+					res.status(200).send({
+						state: state.state,
+						token: state.token,
+						date: state.tokenDate,
+						network: state.network
+					});
+				}
+
 			}
 		});
 	},
@@ -47,35 +72,38 @@ module.exports = {
 	 * Saves the token
 	 */
 	save: function (req, res, next) {
-		var _t = req.body.token || '',
-			token = new Token({
-				key: _t,
-				social: 'fb',
-				date: Date.now()
-			});
-		token.save(function (err) {
+		var tkn = req.body.token || '',
+			ntw = req.body.network;
+
+		if (!(ntw === 'fb' || ntw === 'vk')) {
+			errHandler('Request error, wrong "network" parameter', 592, next);
+			return;
+		}
+
+		State.findOne({network: ntw}, function (err, state) {
 			if (err) {
-				var error = new Error('Database error, failed to save the token');
-				next(error);
+				errHandler('Database error, failed to retrieve the token', 593, next);
 			} else {
-				res.status(200).send({
-					token: _t
-				});
+				if (!state) {
+					__createNewToken(ntw, req, res, next);
+				} else {
+					state.state = 'token-updated';
+					state.token = tkn;
+					state.tokenDate = Date.now();
+					state.save(function (err, state) {
+						if (err) {
+							errHandler('Database error, failed to update the token', 594, next);
+						} else {
+							res.status(200).send({
+								state: state.state,
+								token: state.token,
+								date: state.tokenDate,
+								network: state.network
+							});
+						}
+					});
+				}
 			}
-		})
+		});
 	}
 };
-/*
-
-	function (req, res) {
-	var url = CFG.fb.apiHost + '/me';
-	request(url, function (error, response, body) {
-		var obj = {
-			error: error,
-			response: response,
-			body: body
-		};
-		res.send(obj);
-	});
-};
-*/

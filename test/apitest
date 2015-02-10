@@ -1,1 +1,1 @@
-curl --include --request PUT --header "Content-Type: application/json" --data "{\"token\": 123456}" localhost:3000/api/token
+curl --include --request PUT --header "Content-Type: application/json" --data "{\"network\": \"fb\", \"token\": 123456}" localhost:3000/api/token
