@@ -1,9 +1,9 @@
 var request = require('request'),
-	CFG = require('./config'),
+	cfg = require('./config'),
 	mongoose = require('mongoose'),
 	State = require('./db/state-model');
 
-var dbUrl = 'mongodb://' + CFG.db.host + '/' + CFG.db.name;
+var dbUrl = 'mongodb://' + cfg.db.host + '/' + cfg.db.name;
 mongoose.connect(dbUrl);
 
 var errHandler = function (msg, status, callback) {
