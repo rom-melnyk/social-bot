@@ -7,9 +7,15 @@ module.exports = {
 		name: 'social-bot'
 	},
 	fb: {
-		apiHost: 'http://graph.facebook.com',
+		apiHost: 'https://graph.facebook.com',
 		apiCommon: '/v2.2',
-		testMe: '/me',
+		apiMe: '/me',
+		apiFeed: '/feed',
+
+		groups: [
+			303201976514746, // "Тепле ІТ середовище"
+			413176182109914 // "LocalDev knowledge sharing"
+		],
 		pollInterval: 5 * 1000
 	},
 	vk: {}
