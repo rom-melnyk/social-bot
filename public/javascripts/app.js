@@ -3,6 +3,7 @@
  */
 angular.module('SocialApp', [
     'SocialApp.controllers',
+    'SocialApp.vk',
     'SocialApp.keyWordController',
     'ui.bootstrap'
 ]);

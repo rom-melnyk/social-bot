@@ -3,26 +3,26 @@
 <head lang="en">
 	<meta charset="UTF-8">
 	<title>Social Monitoring</title>
-	<script src="//connect.facebook.net/en_US/sdk.js">
-	</script>
+	<script src="//connect.facebook.net/en_US/sdk.js"></script>
 	<script src="/javascripts/src/facebookAPI.js"></script>
 	<script src="/javascripts/src/angular/angular.js"></script>
 	<script src="/javascripts/src/ui-bootstrap.js"></script>
 	<script src="/javascripts/src/ui-bootstrap-tpls.js"></script>
 	<script src="/javascripts/app.js"></script>
-	<script src="/javascripts/controllers/main.js"></script>
+	<script src="/javascripts/controllers/fb.js"></script>
+	<script src="/javascripts/controllers/vk.js"></script>
 	<script src="/javascripts/controllers/keyWordsController.js"></script>
 	<link rel="stylesheet" href="/stylesheets/bootstrap.css">
 	<link rel="stylesheet" href="/stylesheets/main.css">
 
 </head>
-<body ng-app="SocialApp" ng-controller="socialController">
+<body ng-app="SocialApp">
 <div class="header-section">
 	<button class="btn btn-primary" ng-click="editKeyWords()">Set keywords</button>
 </div>
 <div class="container">
-	<div class="col-md-6 section">
-		<img class="center-block" src="/images/fbLogo.png" height="50px">
+	<div class="col-md-6 section" ng-controller="fbController">
+		<img class="center-block social-logo" src="/images/fbLogo.png" height="50px">
 		<br/>
 		<div class="groups-section">
 			<div class="list-group">
@@ -35,6 +35,9 @@
 				{{feed.from.name}}:
 				<span ng-bind-html="highlight(feed.message, keyword)"></span>
 				<img ng-src="{{feed.type === 'photo' ? feed.picture : ''}}" ng-show="!!feed.picture">
+				<div>
+					<a ng-click="openFbPage(feed.id)">Read on Facebook</a>
+				</div>
 				<div class="comments-section" ng-show="!!feed.comments">
 					<!-- <h3>Comments</h3>
 					 <ul>
@@ -59,12 +62,11 @@
 						</ul>
 					</div>
 				</div>
-				<a ng-click="openFbPage(feed.id)">Read on Facebook</a>
 			</div>
 		</div>
 	</div>
-	<div class="col-md-6 section">
-		<img class="center-block" src="/images/vkLogo.jpg" height="50px">
+	<div class="col-md-6 section" ng-controller="vkController">
+		<img class="center-block  social-logo" src="/images/vkLogo.jpg" height="50px">
 		<br>
 		<div class="groups-section">
 			<div class="list-group">
@@ -72,7 +74,47 @@
 				<h3 ng-show="!groups.length">There is no groups to display</h3>
 			</div>
 		</div>
+		<div class="feed-section list-group">
+			<div class="feed list-group-item" ng-repeat="feed in filtered = (vkFeeds | keyWordFilter:keyword)">
+				{{feed.from.name}}:
+				<span ng-bind-html="highlight(feed.text, keyword)"></span>
+				<img ng-src="{{feed.type === 'photo' ? feed.picture : ''}}" ng-show="!!feed.picture">
+				<div>
+					<a ng-click="openFbPage(feed.id)">Read on Facebook</a>
+				</div>
+				<div class="comments-section" ng-show="!!feed.comments">
+					<!-- <h3>Comments</h3>
+					 <ul>
+						 <li class="comment" ng-repeat="comment in feed.comments.data">
+							 {{comment.from.name}} :  <span ng-bind-html="highlight(comment.message, keyword)"></span>
+							 <hr>
+						 </li>
+					 </ul>-->
+					<div class="actionBox" ng-repeat="comment in feed.comments.data">
+						<ul class="commentList">
+							<li>
+								<div class="commenterImage">
+									<img src="/images/userImage.png">
+								</div>
+								<div class="commentText">
+									<p class="">
+										<span ng-bind-html="highlight(comment.message, keyword)"></span>
+									</p>
+									<span class="date sub-text" ng-bind-html="formatDate(comment.created_time)"></span>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 </body>
+<script src="https://vk.com/js/api/openapi.js" type="text/javascript"></script>
+<script>
+	VK.init({
+		apiId: 4776400
+	});
+</script>
 </html>

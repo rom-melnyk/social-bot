@@ -14,20 +14,12 @@ a {
     margin-top: 10px;
 }
 
-.section {
-    border-right: 1px solid #bbb;
-}
-
 .feed {
     padding: 10px;
 }
 
 .comments-section {
     margin-top: 10px;
-}
-
-.section:last-child {
-    border: 0;
 }
 
 .feed {
@@ -113,11 +105,18 @@ a {
 
 .sub-text {
     color: #aaa;
-    font-family: Verdana;
+    font-family: Verdana, sans-serif;
     font-size: 11px;
 }
 
 .actionBox {
     border-top: 1px dotted #bbb;
     padding: 10px;
+}
+.social-logo {
+    border-radius: 8px;
+}
+
+.modal-body .group {
+    margin: 10px 0;
 }

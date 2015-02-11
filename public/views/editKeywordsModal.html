@@ -5,8 +5,7 @@
     <div class="modal-body">
         <form role="form" name="groupKeywords" data-ng-submit="submit(groupKeywords)" novalidate="novalidate" class="form-horizontal">
             <div class="error-box"></div>
-            <!--div data-ng-class="{'has-error': !createResource.categoryName.$valid && !createResource.categoryName.$pristine}" class="form-group">-->
-                <div class="row" ng-repeat="group in groups">
+                <div class="row group" ng-repeat="group in groups">
                     <div class="controls col-md-5 col-md-offset-1">
                         <input name="groupName" type="text" placeholder="Group name" data-ng-model="group.name" required="true" class="form-control"/>
                     </div>

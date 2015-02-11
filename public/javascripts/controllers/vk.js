@@ -1,34 +1,44 @@
 /**
- * Created by obryl on 2/4/2015.
+ * Created by obryl on 2/11/2015.
  */
-angular.module('SocialApp.controllers', []).
-    controller('socialController', function($scope, $http, $modal, $sce) {
+angular.module('SocialApp.vk', []).
+    controller('vkController', function($scope, $http, $modal, $sce) {
         var accessToken, uid;
-        $scope.groups = [{
-            id: "303201976514746",
-            name: "Тепле ІТ середовище",
-            keyword: "Перш"
-        }, {
-            id: "413176182109914",
-            name: "LocalDev knowledge sharing",
-            keyword: "прогр"
-        }];
-        FB.getLoginStatus(function(response) {
-            if (response.status === 'connected') {
-                // the user is logged in and has authenticated your
-                // app, and response.authResponse supplies
-                // the user's ID, a valid access token, a signed
-                // request, and the time the access token
-                // and signed request each expire
-                uid = response.authResponse.userID;
-                accessToken = response.authResponse.accessToken;
-                processFB(response);
+        $http.get('/api/token/vk').success(function (response) {
+            if (response.token && response.state !== "auth-fail") {
+                accessToken = response.token;
+                $scope.groups = [{
+                    id: 1111,
+                    name: "Lisp",
+                    keyword: ""
+                }, {
+                    id: 8888,
+                    name: "Домашний тренинг - максимум свободы онлайн",
+                    keyword: ""
+                }];
+                $scope.showGroupPosts = function (groupIndex) {
+                    VK.api('wall.get', {
+                        owner_id: $scope.groups[groupIndex].id
+                        }, function (data) {
+                        if (data.response) {
+                            $scope.vkFeeds = data.response;
+                            $scope.keyword = $scope.groups[groupIndex].keyword;
+                            $scope.emptyMessage =  !$scope.vkFeeds.length;
+                            $scope.activeGroupIndex = groupIndex;
+                        }
+                    });
+                };
             } else {
-                FB.login(processFB);
+                VK.Auth.login(processFB);
             }
         });
         var processFB = function(response) {
-            accessToken = response.authResponse.accessToken;
+            accessToken = response.session.sid;
+            $http.put('/api/token/vk', {
+                token: accessToken
+            }).success(function (response) {
+                console.log('success token save');
+            });
             /*$http.get('https://graph.facebook.com/339711716217437/groups?access_token=' + accessToken).success(function (resp) {
              $scope.userGroups = resp.data;
              $http.get('https://graph.facebook.com/339711716217437/likes?access_token=' + accessToken).success(function (resp) {
@@ -45,12 +55,12 @@ angular.module('SocialApp.controllers', []).
                     $scope.activeGroupIndex = groupIndex;
                 });
             };
-            $scope.isActive = function (groupIndex) {
-                return groupIndex === $scope.activeGroupIndex;
-            };
-            $scope.openFbPage = function (itemId) {
-                    window.open('https://www.facebook.com/' + itemId, '_newtab');
-            };
+        };
+        $scope.isActive = function (groupIndex) {
+            return groupIndex === $scope.activeGroupIndex;
+        };
+        $scope.openFbPage = function (itemId) {
+            window.open('https://www.facebook.com/' + itemId, '_newtab');
         };
         $scope.editKeyWords = function () {
             var modalInstance = $modal.open({
