@@ -33,7 +33,12 @@ var __crawlGroup = function (state, gid) {
 	}
 
 	url = cfg.fb.apiHost + cfg.fb.apiCommon + '/' + gid + cfg.fb.apiFeed;
-	since = Math.round(Date.now() / 1000) - 60 * 60 * 24; // 1 day ago; // TODO replace with actual timeshift
+
+	since = Date.now() - 1000 * 60 * 60 * 24;
+	if (since < (new Date(state.successfulDataRetrievalDate)).getTime()) {
+		since = (new Date(state.successfulDataRetrievalDate)).getTime();
+	}
+	since = Math.round(since / 1000);
 
 	request.get(
 		url + '?since=' + since + '&access_token=' + state.token,
@@ -57,6 +62,13 @@ var __crawlGroup = function (state, gid) {
 				data.save(function (err, data) {
 					if (err) {
 						console.log('[ ERR ] [ FB crawler ]: failed to save the data from the feed page');
+					}
+				});
+				state.state = 'running';
+				state.successfulDataRetrievalDate = Date.now();
+				state.save(function (err, state) {
+					if (err) {
+						console.log('[ ERR ] [ FB crawler ]: failed to update the state');
 					}
 				});
 			} else {
