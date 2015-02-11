@@ -36,11 +36,11 @@ var __createNewToken = function (ntw, req, res, next) {
 module.exports = {
 	/**
 	 * @method GET
-	 * @path /api/token?network=...
+	 * @path /api/token/:network				:network must be in ["fb", "vk"]
 	 * Must be the function that accepts two params for the `request` and the `response`.
 	 */
 	check: function (req, res, next) {
-		var ntw = req.query.network;
+		var ntw = req.params.network;
 
 		if (!(ntw === 'fb' || ntw === 'vk')) {
 			errHandler('Request error, wrong "network" parameter', 592, next);
@@ -68,12 +68,13 @@ module.exports = {
 
 	/**
 	 * @method PUT
-	 * @path /api/token
+	 * @path /api/token/:network
+	 * @payload {Object}				{token: "...."}
 	 * Saves the token
 	 */
 	save: function (req, res, next) {
 		var tkn = req.body.token || '',
-			ntw = req.body.network;
+			ntw = req.params.network;
 
 		if (!(ntw === 'fb' || ntw === 'vk')) {
 			errHandler('Request error, wrong "network" parameter', 592, next);

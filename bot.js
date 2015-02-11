@@ -20,13 +20,10 @@ handlers.test = function (req, res) {
 	});
 };
 app.get('/api/me', handlers.me);
-app.get('/api/token', handlers.token.check);
-app.put('/api/token', handlers.token.save);
+app.get('/api/token/:network', handlers.token.check);
+app.put('/api/token/:network', handlers.token.save);
 // for test purposes
-app.get('/api/test', handlers.test);
-app.post('/api/test', handlers.test);
-app.put('/api/test', handlers.test);
-app.delete('/api/test', handlers.test);
+app.all('/api/test', handlers.test);
 
 // catch errors (404, 500) and forward to error handler
 app.use(function(req, res, next) {
