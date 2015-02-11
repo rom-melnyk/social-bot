@@ -1,10 +1,4 @@
-var request = require('request'),
-	cfg = require('./config'),
-	mongoose = require('mongoose'),
-	State = require('./db/state-model');
-
-var dbUrl = 'mongodb://' + cfg.db.host + '/' + cfg.db.name;
-mongoose.connect(dbUrl);
+var State = require('./db/state-model');
 
 var errHandler = function (msg, status, callback) {
 	var err = new Error(msg);

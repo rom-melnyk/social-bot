@@ -4,6 +4,8 @@ var express = require('express'),
 	handlers = {},
 	bodyParser = require('body-parser');
 
+require('./api/db/connect');
+
 // ------------ statics ------------
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(express.static(__dirname + '/public'));
@@ -12,6 +14,7 @@ app.use(bodyParser.json());
 // ------------ routes ------------
 handlers.me = require('./api/test-me');
 handlers.token = require('./api/token');
+handlers.startStop = require('./api/start-stop');
 handlers.test = function (req, res) {
 	res.status(200).send({
 		requestBody: req.body,
@@ -19,13 +22,16 @@ handlers.test = function (req, res) {
 		requestQuery: req.query
 	});
 };
+
 app.get('/api/me', handlers.me);
 app.get('/api/token/:network', handlers.token.check);
 app.put('/api/token/:network', handlers.token.save);
+app.get('/api/start/:network', handlers.startStop.start);
+app.get('/api/stop/:network', handlers.startStop.stop);
 // for test purposes
 app.all('/api/test', handlers.test);
 
-// catch errors (404, 500) and forward to error handler
+// ------------ routes - errors ------------
 app.use(function(req, res, next) {
 	var err = new Error('Not Found');
 	err.status = 404;
