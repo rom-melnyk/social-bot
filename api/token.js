@@ -37,7 +37,7 @@ module.exports = {
 	/**
 	 * @method GET
 	 * @path /api/token/:network				:network must be in ["fb", "vk"]
-	 * Must be the function that accepts two params for the `request` and the `response`.
+	 * Returns the object with the auth status
 	 */
 	check: function (req, res, next) {
 		var ntw = req.params.network;
@@ -68,8 +68,8 @@ module.exports = {
 
 	/**
 	 * @method PUT
-	 * @path /api/token/:network
-	 * @payload {Object}				{token: "...."}
+	 * @path /api/token/:network				:network must be in ["fb", "vk"]
+	 * @payload {Object}						{token: "...."}
 	 * Saves the token
 	 */
 	save: function (req, res, next) {
