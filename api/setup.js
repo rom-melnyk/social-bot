@@ -1,4 +1,5 @@
-var Setup = require('./db/setup-model');
+var Setup = require('./db/setup-model').setup,
+	Group = require('./db/setup-model').group;
 
 var errHandler = function (msg, status, callback) {
 	var err = new Error(msg);
@@ -7,6 +8,11 @@ var errHandler = function (msg, status, callback) {
 };
 
 module.exports = {
+	/**
+	 * @method GET
+	 * @path /api/setup/:network
+	 * Returns the config of the particular network
+	 */
 	getAllGroups: function (req, res, next) {
 		var ntw = req.params.network;
 
@@ -17,14 +23,20 @@ module.exports = {
 
 		Setup.findOne({network: ntw}, function (err, setup) {
 			if (err) {
-				errHandler('Database error, failed to create the new state for the network "fb"', 591, next);
+				errHandler('Database error, failed to retrieve the setup', 591, next);
 			} else {
 				res.status(200).send(setup);
 			}
 		});
 	},
 
-	createGroup :function (req, res, next) {
+	/**
+	 * @method POST
+	 * @path /api/setup/:network
+	 * @payload {Object}					according to the ./db/setup-model#GroupSchema
+	 * Creates the new group for the network
+	 */
+	createGroup: function (req, res, next) {
 		var ntw = req.params.network,
 			body = req.body || {};
 
@@ -33,6 +45,28 @@ module.exports = {
 			return;
 		}
 
-		Setup
+		Setup.findOne({network: ntw}, function (err, setup) {
+			if (err) {
+				errHandler('Database error, failed to retrieve the setup', 591, next);
+			} else {
+				if (!setup) {
+					throw new Error('The no entry for the "' + ntw + '" found in the "setups" collection.');
+				} else {
+					setup.groups.push({
+						id: body.id,
+						name: body.name,
+						description: body.description,
+						keywords: body.keywords
+					});
+					setup.save(function (err, setup) {
+						if (err) {
+							errHandler('Database error, failed to update the setup', 591, next);
+						} else {
+							res.status(200).send(setup);
+						}
+					});
+				}
+			}
+		});
 	}
 };

@@ -14,5 +14,5 @@ module.exports = {
 		keywords: Array,
 		groups: [GroupSchema]
 	}),
-	group: GroupSchema
+	group: mongoose.model('Group', GroupSchema)
 };
