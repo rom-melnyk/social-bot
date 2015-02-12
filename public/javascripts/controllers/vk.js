@@ -4,12 +4,12 @@
 angular.module('SocialApp.vk', []).
     controller('vkController', function($scope, $http, $modal, $sce) {
         var accessToken, uid;
-        $http.get('/api/token/vk').success(function (response) {
-            if (response.token && response.state !== "auth-fail") {
+        $http.get('/api/state/vk').success(function (response) {
+            if (response.state && response.state !== "auth-fail") {
                 if (response.state !== "running") {
                     $http.get('/api/start/vk').success(function (response) {});
                 }
-                accessToken = response.token;
+                accessToken = response.state;
                 $scope.groups = [{
                     id: 1111,
                     name: "Lisp",
@@ -38,10 +38,10 @@ angular.module('SocialApp.vk', []).
         });
         var processFB = function(response) {
             accessToken = response.session.sid;
-            $http.put('/api/token/vk', {
-                token: accessToken
+            $http.put('/api/state/vk', {
+                state: accessToken
             }).success(function (response) {
-                console.log('success token save');
+                console.log('success state save');
             });
             /*$http.get('https://graph.facebook.com/339711716217437/groups?access_token=' + accessToken).success(function (resp) {
              $scope.userGroups = resp.data;

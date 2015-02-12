@@ -12,9 +12,9 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
 // ------------ routes ------------
-handlers.me = require('./api/test-me');
-handlers.token = require('./api/token');
+handlers.state = require('./api/state');
 handlers.startStop = require('./api/start-stop');
+handlers.setup = require('./api/setup');
 handlers.test = function (req, res) {
 	res.status(200).send({
 		requestBody: req.body,
@@ -23,11 +23,18 @@ handlers.test = function (req, res) {
 	});
 };
 
-app.get('/api/me', handlers.me);
-app.get('/api/token/:network', handlers.token.check);
-app.put('/api/token/:network', handlers.token.save);
+app.get('/api/state/:network', handlers.state.check);
+app.put('/api/state/:network', handlers.state.save);
+
 app.get('/api/start/:network', handlers.startStop.start);
 app.get('/api/stop/:network', handlers.startStop.stop);
+
+app.get('/api/setup/:network', handlers.setup.getAllGroups);
+// app.post('/api/setup/:network', handlers.setup.createGroup);
+// app.get('/api/setup/:network/:gid', handlers.setup.getGroup);
+// app.put('/api/setup/:network/:gid', handlers.setup.updateGroup);
+// app.delete('/api/setup/:network/:gid', handlers.setup.deleteGroup);
+
 // for test purposes
 app.all('/api/test', handlers.test);
 

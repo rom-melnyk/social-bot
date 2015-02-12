@@ -16,12 +16,12 @@ angular.module('SocialApp.controllers', []).
                 }];
             };
 
-        $http.get('/api/token/fb').success(function (response) {
-            if (response.token && response.state !== "auth-fail") {
+        $http.get('/api/state/fb').success(function (response) {
+            if (response.state && response.state !== "auth-fail") {
                 if (response.state !== "running") {
                     $http.get('/api/start/fb').success(function (response) {});
                 }
-                accessToken = response.token;
+                accessToken = response.state;
                 getGroups();
                 $scope.showGroupPosts = function (groupIndex) {
                     $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken).success(function (resp) {
@@ -44,10 +44,10 @@ angular.module('SocialApp.controllers', []).
         var processFB = function(response) {
             accessToken = response.authResponse.accessToken;
             getGroups();
-            $http.put('/api/token/fb', {
-                token: accessToken
+            $http.put('/api/state/fb', {
+                state: accessToken
             }).success(function (response) {
-                console.log('success token save');
+                console.log('success state save');
             });
             /*$http.get('https://graph.facebook.com/339711716217437/groups?access_token=' + accessToken).success(function (resp) {
              $scope.userGroups = resp.data;

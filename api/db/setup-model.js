@@ -1,13 +1,18 @@
 var mongoose = require('mongoose');
 
-var GgroupSchema = new mongoose.Schema({
-	id: mongoose.Schema.Types.Mixed,
+var GroupSchema = new mongoose.Schema({
+	id: String,
+	name: String,
+	description: String,
 	keywords: Array,
-	dataRetrieved: Date
+	dataRetrievedAt: Date
 });
 
-module.exports = mongoose.model('Setup', {
-	network: String,					// one of "fb" or "vk"
-	keywords: Array,
-	groups: [GgroupSchema]
-});
+module.exports = {
+	setup: mongoose.model('Setup', {
+		network: String,					// one of "fb" or "vk"
+		keywords: Array,
+		groups: [GroupSchema]
+	}),
+	group: GroupSchema
+};

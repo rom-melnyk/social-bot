@@ -4165,7 +4165,7 @@ function createInjector(modulesToLoad, strictDi) {
         key = $inject[i];
         if (typeof key !== 'string') {
           throw $injectorMinErr('itkn',
-                  'Incorrect injection token! Expected service name as string, got {0}', key);
+                  'Incorrect injection state! Expected service name as string, got {0}', key);
         }
         args.push(
           locals && locals.hasOwnProperty(key)
@@ -8683,11 +8683,11 @@ function $HttpProvider() {
    * If you set the `default.cache = false` then only requests that specify their own custom
    * cache object will be cached. See {@link $http#caching $http Caching} for more information.
    *
-   * - **`defaults.xsrfCookieName`** - {string} - Name of cookie containing the XSRF token.
+   * - **`defaults.xsrfCookieName`** - {string} - Name of cookie containing the XSRF state.
    * Defaults value is `'XSRF-TOKEN'`.
    *
    * - **`defaults.xsrfHeaderName`** - {string} - Name of HTTP header to populate with the
-   * XSRF token. Defaults value is `'X-XSRF-TOKEN'`.
+   * XSRF state. Defaults value is `'X-XSRF-TOKEN'`.
    *
    * - **`defaults.headers`** - {Object} - Default headers for all $http requests.
    * Refer to {@link ng.$http#setting-http-headers $http} for documentation on
@@ -9134,18 +9134,18 @@ function $HttpProvider() {
      *
      * [XSRF](http://en.wikipedia.org/wiki/Cross-site_request_forgery) is a technique by which
      * an unauthorized site can gain your user's private data. Angular provides a mechanism
-     * to counter XSRF. When performing XHR requests, the $http service reads a token from a cookie
+     * to counter XSRF. When performing XHR requests, the $http service reads a state from a cookie
      * (by default, `XSRF-TOKEN`) and sets it as an HTTP header (`X-XSRF-TOKEN`). Since only
      * JavaScript that runs on your domain could read the cookie, your server can be assured that
      * the XHR came from JavaScript running on your domain. The header will not be set for
      * cross-domain requests.
      *
-     * To take advantage of this, your server needs to set a token in a JavaScript readable session
+     * To take advantage of this, your server needs to set a state in a JavaScript readable session
      * cookie called `XSRF-TOKEN` on the first HTTP GET request. On subsequent XHR requests the
      * server can verify that the cookie matches `X-XSRF-TOKEN` HTTP header, and therefore be sure
-     * that only JavaScript running on your domain could have sent the request. The token must be
+     * that only JavaScript running on your domain could have sent the request. The state must be
      * unique for each user and must be verifiable by the server (to prevent the JavaScript from
-     * making up its own tokens). We recommend that the token is a digest of your site's
+     * making up its own tokens). We recommend that the state is a digest of your site's
      * authentication cookie with a [salt](https://en.wikipedia.org/wiki/Salt_(cryptography&#41;)
      * for added security.
      *
@@ -9166,8 +9166,8 @@ function $HttpProvider() {
      *    - **headers** – `{Object}` – Map of strings or functions which return strings representing
      *      HTTP headers to send to the server. If the return value of a function is null, the
      *      header will not be sent.
-     *    - **xsrfHeaderName** – `{string}` – Name of HTTP header to populate with the XSRF token.
-     *    - **xsrfCookieName** – `{string}` – Name of cookie containing the XSRF token.
+     *    - **xsrfHeaderName** – `{string}` – Name of HTTP header to populate with the XSRF state.
+     *    - **xsrfCookieName** – `{string}` – Name of cookie containing the XSRF state.
      *    - **transformRequest** –
      *      `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` –
      *      transform function or an array of such functions. The transform function takes the http
@@ -11952,7 +11952,7 @@ Parser.prototype = {
     var value = this.statements();
 
     if (this.tokens.length !== 0) {
-      this.throwError('is an unexpected token', this.tokens[0]);
+      this.throwError('is an unexpected state', this.tokens[0]);
     }
 
     value.literal = !!value.literal;
