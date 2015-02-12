@@ -9,6 +9,7 @@
 	<script src="/javascripts/src/ui-bootstrap.js"></script>
 	<script src="/javascripts/src/ui-bootstrap-tpls.js"></script>
 	<script src="/javascripts/app.js"></script>
+	<script src="/javascripts/controllers/main.js"></script>
 	<script src="/javascripts/controllers/fb.js"></script>
 	<script src="/javascripts/controllers/vk.js"></script>
 	<script src="/javascripts/controllers/keyWordsController.js"></script>
@@ -16,7 +17,7 @@
 	<link rel="stylesheet" href="/stylesheets/main.css">
 
 </head>
-<body ng-app="SocialApp">
+<body ng-app="SocialApp" ng-controller="mainController">
 <div class="header-section">
 	<button class="btn btn-primary" ng-click="editKeyWords()">Set keywords</button>
 </div>
@@ -39,13 +40,6 @@
 					<a ng-click="openFbPage(feed.id)">Read on Facebook</a>
 				</div>
 				<div class="comments-section" ng-show="!!feed.comments">
-					<!-- <h3>Comments</h3>
-					 <ul>
-						 <li class="comment" ng-repeat="comment in feed.comments.data">
-							 {{comment.from.name}} :  <span ng-bind-html="highlight(comment.message, keyword)"></span>
-							 <hr>
-						 </li>
-					 </ul>-->
 					<div class="actionBox" ng-repeat="comment in feed.comments.data">
 						<ul class="commentList">
 							<li>
@@ -70,26 +64,17 @@
 		<br>
 		<div class="groups-section">
 			<div class="list-group">
-				<a class="list-group-item" ng-repeat="group in groups" ng-class="{ active: isActive($index) }" ng-click="showGroupPosts($index)"><span class="badge">{{filtered.length}}</span>{{group.name}}</a>
+				<a class="list-group-item" ng-repeat="group in groups" ng-class="{ active: isActive($index) }" ng-click="showGroupPosts($index)"><span class="badge">{{vkFeeds.length}}</span>{{group.name}}</a>
 				<h3 ng-show="!groups.length">There is no groups to display</h3>
 			</div>
 		</div>
 		<div class="feed-section list-group">
-			<div class="feed list-group-item" ng-repeat="feed in filtered = (vkFeeds | keyWordFilter:keyword)">
-				{{feed.from.name}}:
-				<span ng-bind-html="highlight(feed.text, keyword)"></span>
-				<img ng-src="{{feed.type === 'photo' ? feed.picture : ''}}" ng-show="!!feed.picture">
-				<div>
-					<a ng-click="openFbPage(feed.id)">Read on Facebook</a>
+			<div class="feed list-group-item" ng-repeat="feed in vkFeeds" ng-show="feed.text">
+				<div class="commenterImage">
+					<img src="/images/userImage.png">
 				</div>
+				<span ng-bind-html="highlight(feed.text, keyword)"></span>
 				<div class="comments-section" ng-show="!!feed.comments">
-					<!-- <h3>Comments</h3>
-					 <ul>
-						 <li class="comment" ng-repeat="comment in feed.comments.data">
-							 {{comment.from.name}} :  <span ng-bind-html="highlight(comment.message, keyword)"></span>
-							 <hr>
-						 </li>
-					 </ul>-->
 					<div class="actionBox" ng-repeat="comment in feed.comments.data">
 						<ul class="commentList">
 							<li>

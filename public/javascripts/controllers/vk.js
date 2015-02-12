@@ -6,6 +6,9 @@ angular.module('SocialApp.vk', []).
         var accessToken, uid;
         $http.get('/api/token/vk').success(function (response) {
             if (response.token && response.state !== "auth-fail") {
+                if (response.state !== "running") {
+                    $http.get('/api/start/vk').success(function (response) {});
+                }
                 accessToken = response.token;
                 $scope.groups = [{
                     id: 1111,
@@ -21,6 +24,7 @@ angular.module('SocialApp.vk', []).
                         owner_id: $scope.groups[groupIndex].id
                         }, function (data) {
                         if (data.response) {
+                            console.log(data.response);
                             $scope.vkFeeds = data.response;
                             $scope.keyword = $scope.groups[groupIndex].keyword;
                             $scope.emptyMessage =  !$scope.vkFeeds.length;
@@ -48,35 +52,20 @@ angular.module('SocialApp.vk', []).
              });
              });*/
             $scope.showGroupPosts = function (groupIndex) {
-                $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken).success(function (resp) {
-                    $scope.facebookFeeds = resp.data;
-                    $scope.keyword = $scope.groups[groupIndex].keyword;
-                    $scope.emptyMessage =  !$scope.facebookFeeds.length;
-                    $scope.activeGroupIndex = groupIndex;
+                VK.api('wall.get', {
+                    owner_id: $scope.groups[groupIndex].id
+                }, function (data) {
+                    if (data.response) {
+                        $scope.vkFeeds = data.response;
+                        $scope.keyword = $scope.groups[groupIndex].keyword;
+                        $scope.emptyMessage =  !$scope.vkFeeds.length;
+                        $scope.activeGroupIndex = groupIndex;
+                    }
                 });
             };
         };
         $scope.isActive = function (groupIndex) {
             return groupIndex === $scope.activeGroupIndex;
-        };
-        $scope.openFbPage = function (itemId) {
-            window.open('https://www.facebook.com/' + itemId, '_newtab');
-        };
-        $scope.editKeyWords = function () {
-            var modalInstance = $modal.open({
-                templateUrl: "../../views/editKeyWordsModal.html",
-                controller: "keyWordsController",
-                backdrop: true,
-                resolve: {
-                    groups: function () {
-                        return $scope.groups;
-                    }
-                }
-            });
-            modalInstance.result.then(function (groups) {
-                $scope.groups = groups;
-                $scope.facebookFeeds = [];
-            });
         };
         $scope.highlight = function(text, search) {
             if (!search) {
@@ -88,28 +77,4 @@ angular.module('SocialApp.vk', []).
             return $sce.trustAsHtml(new Date(dateString).toUTCString());
         };
 
-    }).filter('keyWordFilter', function () {
-        return function (items, keyword) {
-            var filtered = [];
-            if (items && items.length && keyword) {
-                for (var i = 0; i < items.length; i++) {
-                    var item = items[i],
-                        containsWord = false;
-                    if (item.message && item.message.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
-                        filtered.push(item);
-                    } else if (item.comments) {
-                        item.comments.data.forEach(function (value) {
-                            if (value.message.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
-                                containsWord = true;
-                            }
-                        });
-                        containsWord && filtered.push(item);
-                        containsWord = false;
-                    }
-                }
-            } else {
-                return items;
-            }
-            return filtered;
-        };
     });

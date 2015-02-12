@@ -3,10 +3,8 @@
  */
 angular.module('SocialApp.controllers', []).
     controller('fbController', function($scope, $http, $modal, $sce) {
-        var accessToken, uid;
-        $http.get('/api/token/fb').success(function (response) {
-            if (response.token && response.state !== "auth-fail") {
-                accessToken = response.token;
+        var accessToken, uid,
+            getGroups = function () {
                 $scope.groups = [{
                     id: "303201976514746",
                     name: "Тепле ІТ середовище",
@@ -16,6 +14,15 @@ angular.module('SocialApp.controllers', []).
                     name: "LocalDev knowledge sharing",
                     keyword: "прогр"
                 }];
+            };
+
+        $http.get('/api/token/fb').success(function (response) {
+            if (response.token && response.state !== "auth-fail") {
+                if (response.state !== "running") {
+                    $http.get('/api/start/fb').success(function (response) {});
+                }
+                accessToken = response.token;
+                getGroups();
                 $scope.showGroupPosts = function (groupIndex) {
                     $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken).success(function (resp) {
                         $scope.facebookFeeds = resp.data;
@@ -36,6 +43,7 @@ angular.module('SocialApp.controllers', []).
         });
         var processFB = function(response) {
             accessToken = response.authResponse.accessToken;
+            getGroups();
             $http.put('/api/token/fb', {
                 token: accessToken
             }).success(function (response) {
@@ -63,22 +71,6 @@ angular.module('SocialApp.controllers', []).
         };
         $scope.openFbPage = function (itemId) {
             window.open('https://www.facebook.com/' + itemId, '_newtab');
-        };
-        $scope.editKeyWords = function () {
-            var modalInstance = $modal.open({
-                templateUrl: "../../views/editKeyWordsModal.html",
-                controller: "keyWordsController",
-                backdrop: true,
-                resolve: {
-                    groups: function () {
-                        return $scope.groups;
-                    }
-                }
-            });
-            modalInstance.result.then(function (groups) {
-                $scope.groups = groups;
-                $scope.facebookFeeds = [];
-            });
         };
         $scope.highlight = function(text, search) {
             if (!search) {
