@@ -1,5 +1,4 @@
-var mongoose = require('mongoose'),
-	async = require('async'),
+var async = require('async'),
 	Setup = require('./api/db/setup-model').setup,
 	Data = require('./api/db/data-model'),
 	State = require('./api/db/state-model');
