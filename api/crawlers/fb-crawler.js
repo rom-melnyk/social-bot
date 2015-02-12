@@ -1,4 +1,5 @@
-var cfg = require('../config'),
+var async = require('async'),
+	cfg = require('../config'),
 	State = require('../db/state-model'),
 	Setup = require('../db/setup-model'),
 	Data = require('../db/data-model'),
@@ -7,31 +8,58 @@ var cfg = require('../config'),
 
 
 var crawler = function () {
-	State.findOne({network: 'fb'}, function (err, state) {
-		if (err || !state) {
-			// console.log('[ i ] ' + (new Date()).toString() + ' [ FB crawler ]: state not found; skipping');
-			return;
-		}
-
-		if (state.state === 'auth-fail') {
-			console.log('[ i ] ' + (new Date()).toString() + ' [ FB crawler ]: not authenticated; skipping');
-			return;
-		}
-
-		Setup.findOne({network: 'fb'}, function (err, setup) {
-			if (err || !setup) {
-				// console.log('[ i ] ' + (new Date()).toString() + ' [ FB crawler ]: setup not found; skipping');
+	async.parallel(
+		{
+			state: function (cb) {
+				State.findOne({network: 'fb'}, function (err, state) {
+					cb(err || !state, state);
+				});
+			},
+			setup: function (cb) {
+				Setup.findOne({network: 'fb'}, function (err, setup) {
+					cb(err || !setup, setup);
+				});
+			}
+		},
+		function (err, results) {
+			if (err || !results.state || !results.setup) {
+				console.log('[ ERR ] ' + (new Date()).toString() + ' [ FB crawler ]: failed to retrieve the State or the Setup');
+				clearInterval(interval);
 				return;
 			}
 
-			for (var i = 0; i < setup.groups.length; i++) {
-				if (!crawlGroup(state, cfg.fb.groups[i])) {
-					break;
-				}
+			if (results.state.state === 'auth-fail') {
+				console.log('[ i ] ' + (new Date()).toString() + ' [ FB crawler ]: not authenticated');
+				clearInterval(interval);
+				return;
 			}
-		});
 
-	});
+			// TODO adopt the `crawlGroup(item, cb)` for this call
+			async.map(setup.groups, crawlGroup, function (err, _res) {
+				// we update the state ans the setup anyway;
+				if (!err) {
+					results.state.state = 'running';
+				}
+				results.state.stateUpdatedAt = Date.now();
+				results.state.save(function (err, state) {
+					if (err) {
+						console.log('[ ERR ] ' + (new Date()).toString() + ' [ FB crawler ]: failed to update the state');
+						clearInterval(interval);
+					}
+				});
+				results.setup.save(function (err, setup) {
+					if (err) {
+						console.log('[ ERR ] ' + (new Date()).toString() + ' [ FB crawler ]: failed to update the setup');
+						clearInterval(interval);
+					}
+				});
+
+				if (err) {
+					clearInterval(interval);
+				}
+			});
+		}
+	);
 };
 
 module.exports = {
