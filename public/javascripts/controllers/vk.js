@@ -43,14 +43,6 @@ angular.module('SocialApp.vk', []).
             }).success(function (response) {
                 console.log('success state save');
             });
-            /*$http.get('https://graph.facebook.com/339711716217437/groups?access_token=' + accessToken).success(function (resp) {
-             $scope.userGroups = resp.data;
-             $http.get('https://graph.facebook.com/339711716217437/likes?access_token=' + accessToken).success(function (resp) {
-             resp.data.forEach(function (value) {
-             $scope.userGroups.push(value);
-             });
-             });
-             });*/
             $scope.showGroupPosts = function (groupIndex) {
                 VK.api('wall.get', {
                     owner_id: $scope.groups[groupIndex].id

@@ -11,8 +11,11 @@ angular.module('SocialApp.keyWordController', []).
                 keyword: ""
             })
         };
-        $scope.ok = function () {
-            $modalInstance.close($scope.groups);
+
+        $scope.submitChanges = function () {
+            $http.post('api/setup', $scope.groups).success(function (response) {
+                $modalInstance.close(response);
+            });
         };
 
         $scope.cancel = function () {
