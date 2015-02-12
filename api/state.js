@@ -22,7 +22,7 @@ module.exports = {
 
 		State.findOne({network: ntw}, function (err, state) {
 			if (err) {
-				errHandler('Database error, failed to find the state for the network "' + ntw + '"', 591, next);
+				errHandler('Database error, failed to retrieve the state', 591, next);
 			} else {
 				if (!state) {
 					throw new Error('The no entry for the "' + ntw + '" found in the "states" collection.');
