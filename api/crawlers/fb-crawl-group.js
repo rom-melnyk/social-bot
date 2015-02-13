@@ -1,4 +1,5 @@
-var request = require('request');
+var cfg = require('../config'),
+	request = require('request');
 
 /**
  * @private
@@ -15,15 +16,16 @@ var jsonParse = function (str) {
 	return ret;
 };
 
-var __crawlGroup = function (state, setup, gid) {
+module.exports = function (state, setup, group, callback) {
 	var url,
 		since;
 
 	if (state.state === 'auth-fail') {
+		callback(true, null);
 		return false;
 	}
 
-	url = cfg.fb.apiHost + cfg.fb.apiCommon + '/' + gid + cfg.fb.apiFeed;
+	url = cfg.fb.apiHost + cfg.fb.apiCommon + '/' + group.id + cfg.fb.apiFeed;
 
 	since = Date.now() - 1000 * 60 * 60 * 24;
 	if (since < (new Date(state.successfulDataRetrievalDate)).getTime()) {

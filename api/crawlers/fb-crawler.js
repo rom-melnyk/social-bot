@@ -35,29 +35,34 @@ var crawler = function () {
 			}
 
 			// TODO adopt the `crawlGroup(item, cb)` for this call
-			async.map(setup.groups, crawlGroup, function (err, _res) {
-				// we update the state ans the setup anyway;
-				if (!err) {
-					results.state.state = 'running';
-				}
-				results.state.stateUpdatedAt = Date.now();
-				results.state.save(function (err, state) {
-					if (err) {
-						console.log('[ ERR ] ' + (new Date()).toString() + ' [ FB crawler ]: failed to update the state');
-						clearInterval(interval);
+			async.map(
+				setup.groups,
+				function (item, cb) {
+					crawlGroup(results.state, results.setup, item, cb);
+				},
+				function (err, _res) {
+					// we update the state ans the setup anyway;
+					if (!err) {
+						results.state.state = 'running';
 					}
-				});
-				results.setup.save(function (err, setup) {
-					if (err) {
-						console.log('[ ERR ] ' + (new Date()).toString() + ' [ FB crawler ]: failed to update the setup');
-						clearInterval(interval);
-					}
-				});
+					results.state.stateUpdatedAt = Date.now();
+					results.state.save(function (err, state) {
+						if (err) {
+							console.log('[ ERR ] ' + (new Date()).toString() + ' [ FB crawler ]: failed to update the state');
+							clearInterval(interval);
+						}
+					});
+					results.setup.save(function (err, setup) {
+						if (err) {
+							console.log('[ ERR ] ' + (new Date()).toString() + ' [ FB crawler ]: failed to update the setup');
+							clearInterval(interval);
+						}
+					});
 
-				if (err) {
-					clearInterval(interval);
-				}
-			});
+					if (err) {
+						clearInterval(interval);
+					}
+				});
 		}
 	);
 };
