@@ -32,9 +32,9 @@
 			</div>
 		</div>
 		<div class="feed-section list-group">
-			<div class="feed list-group-item" ng-repeat="feed in filtered = (facebookFeeds | keyWordFilter:keyword)">
+			<div class="feed list-group-item" ng-repeat="feed in filtered = (facebookFeeds | keyWordFilter:keywords[0])">
 				{{feed.from.name}}:
-				<span ng-bind-html="highlight(feed.message, keyword)"></span>
+				<span ng-bind-html="highlight(feed.message, keywords[0])"></span>
 				<img ng-src="{{feed.type === 'photo' ? feed.picture : ''}}" ng-show="!!feed.picture">
 				<div>
 					<a ng-click="openFbPage(feed.id)">Read on Facebook</a>
@@ -48,7 +48,7 @@
 								</div>
 								<div class="commentText">
 									<p class="">
-										<span ng-bind-html="highlight(comment.message, keyword)"></span>
+										<span ng-bind-html="highlight(comment.message, keywords[0])"></span>
 									</p>
 									<span class="date sub-text" ng-bind-html="formatDate(comment.created_time)"></span>
 								</div>
@@ -73,7 +73,7 @@
 				<div class="commenterImage">
 					<img src="/images/userImage.png">
 				</div>
-				<span ng-bind-html="highlight(feed.text, keyword)"></span>
+				<span ng-bind-html="highlight(feed.text, keywords[0])"></span>
 				<div class="comments-section" ng-show="!!feed.comments">
 					<div class="actionBox" ng-repeat="comment in feed.comments.data">
 						<ul class="commentList">
@@ -83,7 +83,7 @@
 								</div>
 								<div class="commentText">
 									<p class="">
-										<span ng-bind-html="highlight(comment.message, keyword)"></span>
+										<span ng-bind-html="highlight(comment.message, keywords[0])"></span>
 									</p>
 									<span class="date sub-text" ng-bind-html="formatDate(comment.created_time)"></span>
 								</div>

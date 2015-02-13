@@ -8,12 +8,13 @@ angular.module('SocialApp.keyWordController', []).
             $scope.groups.push({
                 id: "",
                 name: "",
-                keyword: ""
+                description: "",
+                keywords: []
             })
         };
 
         $scope.submitChanges = function () {
-            $http.post('api/setup', $scope.groups).success(function (response) {
+            $http.post('api/setup/fb', $scope.groups[$scope.groups.length - 1]).success(function (response) {
                 $modalInstance.close(response);
             });
         };

@@ -9,23 +9,23 @@ angular.module('SocialApp.main', []).
         $scope.groups = [{
             id: "303201976514746",
             name: "Тепле ІТ середовище",
-            keyword: "Перш"
+            keywords: ["Перш"]
         }, {
             id: "413176182109914",
             name: "LocalDev knowledge sharing",
-            keyword: "прогр"
+            keywords: ["прогр"]
         }, {
             id: 1111,
             name: "Lisp",
-            keyword: ""
+            keywords: [""]
         }, {
             id: 8888,
             name: "Домашний тренинг - максимум свободы онлайн",
-            keyword: ""
+            keywords: [""]
         }];
-        $http.get('api/setup').success(function (response) {
-            if (response.data) {
-                $scope.groups = response.data;
+        $http.get('api/setup/fb').success(function (response) {
+            if (response.groups) {
+                $scope.groups = response.groups;
             }
         });
         $scope.editKeyWords = function () {

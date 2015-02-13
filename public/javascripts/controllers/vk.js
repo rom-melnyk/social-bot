@@ -9,7 +9,7 @@ angular.module('SocialApp.vk', []).
                 if (response.state !== "running") {
                     $http.get('/api/start/vk').success(function (response) {});
                 }
-                accessToken = response.state;
+                accessToken = response.token;
                 $scope.groups = [{
                     id: 1111,
                     name: "Lisp",
@@ -39,7 +39,7 @@ angular.module('SocialApp.vk', []).
         var processFB = function(response) {
             accessToken = response.session.sid;
             $http.put('/api/state/vk', {
-                state: accessToken
+                token: accessToken
             }).success(function (response) {
                 console.log('success state save');
             });
