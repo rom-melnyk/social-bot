@@ -1,1 +1,6 @@
-curl --include --request PUT --header "Content-Type: application/json" --data "{\"token\": 123456}" localhost:3000/api/token/fb
+# create the new token
+curl --include --request PUT --header "Content-Type: application/json" --data "{\"token\": 123456}" localhost:3000/api/state/fb
+
+# create the new FB group
+curl --include --request POST --header "Content-Type: application/json" --data "{\"id\": 453544624728446, \"name\": \"IFTS\", \"description\": \"test description\", \"keywords\": [\"a\", \"b\"]}" localhost:3000/api/setup/fb
+

@@ -14,7 +14,8 @@ module.exports = {
 
 		groups: [
 			303201976514746, // "Тепле ІТ середовище"
-			413176182109914 // "LocalDev knowledge sharing"
+			413176182109914, // "LocalDev knowledge sharing"
+
 		],
 		pollInterval: 5 * 1000
 	},
