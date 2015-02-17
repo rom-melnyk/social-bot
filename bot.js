@@ -30,10 +30,12 @@ app.get('/api/start/:network', handlers.startStop.start);
 app.get('/api/stop/:network', handlers.startStop.stop);
 
 app.get('/api/setup/:network', handlers.setup.getAllGroups);
+app.put('/api/setup/:network', handlers.setup.updateAllGroups);
 app.post('/api/setup/:network', handlers.setup.createGroup);
-// app.get('/api/setup/:network/:gid', handlers.setup.getGroup);
-// app.put('/api/setup/:network/:gid', handlers.setup.updateGroup);
-// app.delete('/api/setup/:network/:gid', handlers.setup.deleteGroup);
+app.put('/api/setup/:network/keywords', handlers.setup.updateNetworkKeywords);
+app.get('/api/setup/:network/:gid', handlers.setup.getGroup);
+app.put('/api/setup/:network/:gid', handlers.setup.updateGroup);
+app.delete('/api/setup/:network/:gid', handlers.setup.deleteGroup);
 
 // for test purposes
 app.all('/api/test', handlers.test);

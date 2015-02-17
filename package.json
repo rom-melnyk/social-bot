@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/rom-melnyk/social-bot",
   "dependencies": {
+    "array.prototype.find": "^1.0.0",
     "async": "^0.9.0",
     "body-parser": "^1.11.0",
     "express": "^4.11.2",
