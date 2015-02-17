@@ -2,8 +2,8 @@
 This is the bot for analyzing comments in VKontakte and in Facebook.
 
 ## The roadmap
-* +The general backbone+
-* +The FB API - data retrieval+
+* ~~The general backbone~~
+* ~~The FB API - data retrieval~~
 * The VK API - data retrieval
 * The data analysis
 
