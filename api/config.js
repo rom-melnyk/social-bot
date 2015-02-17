@@ -22,7 +22,8 @@ module.exports = {
 		],*/
 		/**
 		 * @cfg {Number} pollInterval
-		 * Sets the interval between two consequence polls (API calls)
+		 * Sets the interval between two consequence polls (API calls).
+		 * 5 sec is for the testing only; change it on the PROD!
 		 */
 		pollInterval: 5 * 1000,
 		/**
