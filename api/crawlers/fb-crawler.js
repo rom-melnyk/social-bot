@@ -4,7 +4,9 @@ var async = require('async'),
 	Setup = require('../db/setup-model').setup,
 	Data = require('../db/data-model'),
 	crawlGroup = require('./fb-crawl-group'),
-	interval = undefined;
+	$log = require('./log')('fb'),
+	interval = undefined,
+	runAtFirstTime = true;
 
 
 var crawler = function () {
@@ -23,18 +25,21 @@ var crawler = function () {
 		},
 		function (err, results) {
 			if (err || !results.state || !results.setup) {
-				console.log('[ ERR ] ' + (new Date()).toString() + ' [ FB crawler ]: failed to retrieve the State or the Setup');
+				$log('e','failed to retrieve the State or the Setup');
 				stopCrawler();
 				return;
 			}
 
 			if (results.state.state === 'auth-fail') {
-				console.log('[ i ] ' + (new Date()).toString() + ' [ FB crawler ]: not authenticated');
+				$log('i', 'not authenticated');
 				stopCrawler();
 				return;
 			}
 
-			// TODO adopt the `crawlGroup(state, group, cb)` for this call
+			if (runAtFirstTime) {
+				$log('i', results.setup.groups.length + ' groups found');
+				runAtFirstTime = false;
+			}
 			async.map(
 				results.setup.groups,
 				function (item, cb) {
@@ -53,13 +58,13 @@ var crawler = function () {
 					results.state.stateUpdatedAt = Date.now();
 					results.state.save(function (err, state) {
 						if (err) {
-							console.log('[ ERR ] ' + (new Date()).toString() + ' [ FB crawler ]: failed to update the state');
+							$log('e', 'failed to update the state');
 							stopCrawler();
 						}
 					});
 					results.setup.save(function (err, setup) {
 						if (err) {
-							console.log('[ ERR ] ' + (new Date()).toString() + ' [ FB crawler ]: failed to update the setup');
+							$log('e', 'failed to update the setup');
 							stopCrawler();
 						}
 					});
@@ -75,9 +80,9 @@ var crawler = function () {
 var startCrawler = function () {
 	if (interval === undefined) {
 		interval = setInterval(crawler, cfg.fb.pollInterval);
-		console.log('[ i ] ' + (new Date()).toString() + ' [ FB crawler ]: started');
+		$log('i', 'started');
 	} else {
-		console.log('[ w ] ' + (new Date()).toString() + ' [ FB crawler ]: already running; won\'t start twice');
+		$log('w', 'already running; won\'t start twice');
 	}
 };
 
@@ -92,13 +97,14 @@ var stopCrawler = function (force) {
 		if (force) {
 			State.findOneAndUpdate({network: 'fb'}, {state: 'stopped'}, function (err, state) {
 				if (err) {
-					console.log('[ ERR ] ' + (new Date()).toString() + ' [ FB crawler ]: failed to update the state');
+					$log('e', 'failed to update the state');
 				}
 			});
 		}
-		console.log('[ i ] ' + (new Date()).toString() + ' [ FB crawler ]: stopped');
+		$log('i', 'stopped');
+		runAtFirstTime = true;
 	} else {
-		console.log('[ w ] ' + (new Date()).toString() + ' [ FB crawler ]: not running; nothing to stop');
+		$log('w', 'not running; nothing to stop');
 	}
 };
 
