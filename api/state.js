@@ -47,7 +47,7 @@ module.exports = {
 	 * Saves the state
 	 */
 	save: function (req, res, next) {
-		var tkn = req.body.state || '',
+		var tkn = req.body.token || '',
 			ntw = req.params.network;
 
 		if (!(ntw === 'fb' || ntw === 'vk')) {
@@ -62,7 +62,7 @@ module.exports = {
 				if (!state) {
 					throw new Error('The no entry for the "' + ntw + '" found in the "states" collection.');
 				} else {
-					state.state = 'state-updated';
+					state.state = 'token-updated';
 					state.stateUpdatedAt = Date.now();
 					state.token = tkn;
 					state.tokenUpdatedAt = Date.now();

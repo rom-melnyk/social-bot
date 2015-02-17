@@ -38,7 +38,7 @@ module.exports = {
 			return;
 		}
 
-		fbCrawler.stop();
+		fbCrawler.stop(true);
 		res.status(200).send({
 			network: ntw,
 			status: 'stopped'

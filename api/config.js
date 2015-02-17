@@ -17,7 +17,8 @@ module.exports = {
 			413176182109914, // "LocalDev knowledge sharing"
 
 		],
-		pollInterval: 5 * 1000
+		pollInterval: 5 * 1000,
+		loadDataBehind: 1000 * 60 * 60 * 24
 	},
 	vk: {}
 };
