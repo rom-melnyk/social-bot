@@ -255,5 +255,37 @@ module.exports = {
 				});
 			}
 		})
-	}
+	},
+
+	/**
+	 * @method GET
+	 * @path /api/setup/:network/reset-dates
+	 * Reset dates in all the groups
+	 */
+    resetDates: function (req, res, next) {
+        var ntw = req.params.network,
+            gid = req.params.gid;
+
+        if (!(ntw === 'fb' || ntw === 'vk')) {
+            errHandler('Request error, wrong "network" parameter - "' + ntw + '"', 590, next);
+            return;
+        }
+
+        Setup.findOne({network: ntw}, function (err, setup) {
+            if (err) {
+                errHandler('Database error, failed to retrieve the setup', 591, next);
+            } else {
+                setup.groups.forEach(function (grp) {
+                    grp.dataRetrievedAt = new Date(0);
+                });
+                setup.save(function (err, setup) {
+                    if (err) {
+                        errHandler('Database error, failed to update the setup', 591, next);
+                    } else {
+                        res.status(200).send(setup);
+                    }
+                });
+            }
+        })
+    }
 };

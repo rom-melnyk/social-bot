@@ -8,10 +8,17 @@ angular.module('SocialApp.keyWordController', []).
             if (group.keywords.length && !(group.keywords instanceof Array)) {
                 $scope.group.keywords = $scope.group.keywords.split(",");
             }
-            $http.put('api/setup/' + ntw + '/' + $scope.group.id, $scope.group).success(function (response) {
-                $rootScope.$emit('groupsChanged');
-                $modalInstance.close(response);
-            });
+            if (newGroup) {
+                $http.post('api/setup/' + ntw, $scope.group).success(function (response) {
+                    $rootScope.$emit('groupsChanged');
+                    $modalInstance.close(response);
+                });
+            } else {
+                $http.put('api/setup/' + ntw + '/' + $scope.group.id, $scope.group).success(function (response) {
+                    $rootScope.$emit('groupsChanged');
+                    $modalInstance.close(response);
+                });
+            }
         };
 
         $scope.cancel = function () {

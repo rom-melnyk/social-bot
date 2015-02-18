@@ -11,19 +11,20 @@ a {
 }
 
 .header-section * {
-    margin-top: 10px;
+    margin: 10px;
 }
 
 .feed {
     padding: 10px;
+    margin: 10px 0;
 }
 
 .comments-section {
     margin-top: 10px;
 }
 
-.feed {
-    margin: 10px 0;
+.feed-container {
+    word-break: break-word;
 }
 
 .modal.fade {

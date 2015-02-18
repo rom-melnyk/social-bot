@@ -100,19 +100,6 @@ angular.module('SocialApp.vk', []).
         $scope.isActive = function (groupIndex) {
             return groupIndex === $scope.activeGroupIndex;
         };
-        $scope.highlight = function(text, search) {
-            if (text) {
-                if (!search) {
-                    return $sce.trustAsHtml(text);
-                }
-                return $sce.trustAsHtml(text.replace(new RegExp(search, 'i'), '<span class="highlightedText">$&</span>'));
-            }
-            return "";
-        };
-        $scope.formatDate = function (dateString) {
-            return $sce.trustAsHtml(new Date(dateString*1000).toUTCString());
-        };
-
         $scope.showMore = function (index, event) {
             if (!$scope.vkFeeds[index].showFullText) {
                 event.currentTarget.innerText = "Show less";

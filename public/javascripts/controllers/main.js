@@ -5,21 +5,7 @@
  * Created by obryl on 2/5/2015.
  */
 angular.module('SocialApp.main', []).
-    controller('mainController', function($scope, $http, $modal, $rootScope) {
-        $scope.editKeyWords = function (ntw) {
-            var modalInstance = $modal.open({
-                templateUrl: "../../views/editKeyWordsModal.html",
-                controller: "keyWordsController",
-                resolve: {
-                    ntw: function () {
-                        return ntw;
-                    }
-                }
-            });
-            modalInstance.result.then(function (groups) {
-
-            });
-        };
+    controller('mainController', function($scope, $http, $modal, $rootScope, $sce) {
         $scope.editGroup = function (group, ntw) {
             var modalInstance = $modal.open({
                 templateUrl: "../../views/editKeyWordsModal.html",
@@ -30,6 +16,9 @@ angular.module('SocialApp.main', []).
                     },
                     group: function () {
                         return group;
+                    },
+                    newGroup: function () {
+                        return false;
                     }
                 }
             });
@@ -49,8 +38,23 @@ angular.module('SocialApp.main', []).
                     },
                     group: function () {
                         return {};
+                    },
+                    newGroup: function () {
+                        return true;
                     }
                 }
             });
+        };
+        $scope.highlight = function(text, search) {
+            if (text) {
+                if (!search) {
+                    return $sce.trustAsHtml(text);
+                }
+                return $sce.trustAsHtml(text.replace(new RegExp(search, 'gi'), '<span class="highlightedText">$&</span>'));
+            }
+            return "";
+        };
+        $scope.formatDate = function (dateString) {
+            return $sce.trustAsHtml(new Date(dateString).toUTCString());
         };
     });

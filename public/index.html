@@ -123,7 +123,7 @@
                                         <p class="">
                                             <span ng-bind-html="highlight(comment.text, keywords[0])"></span>
                                         </p>
-                                        <span class="date sub-text" ng-bind-html="formatDate(comment.date)"></span>
+                                        <span class="date sub-text" ng-bind-html="formatDate(comment.date * 1000)"></span>
                                     </div>
                                 </li>
                             </ul>

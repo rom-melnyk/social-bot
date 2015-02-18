@@ -81,6 +81,7 @@ var crawler = function () {
 							// perform the analysis twice; once for per-group keywords,...
 							analyze(obj.data.payload, obj.group.keywords, function (instance) {
 								console.log('-----------');
+								console.log(obj.group.name + ": ");
 								console.log(instance);
 								console.log('-----------');
 							});

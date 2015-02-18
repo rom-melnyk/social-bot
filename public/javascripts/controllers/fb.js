@@ -61,15 +61,6 @@ angular.module('SocialApp.controllers', []).
         $scope.openFbPage = function (itemId) {
             window.open('https://www.facebook.com/' + itemId, '_newtab');
         };
-        $scope.highlight = function(text, search) {
-            if (!search) {
-                return $sce.trustAsHtml(text);
-            }
-            return $sce.trustAsHtml(text.replace(new RegExp(search, 'i'), '<span class="highlightedText">$&</span>'));
-        };
-        $scope.formatDate = function (dateString) {
-            return $sce.trustAsHtml(new Date(dateString).toUTCString());
-        };
         $scope.showMore = function (index, event) {
             if (!$scope.facebookFeeds[index].showFullText) {
                 event.currentTarget.innerText = "Show less";

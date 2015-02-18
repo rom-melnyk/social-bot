@@ -33,6 +33,9 @@ app.get('/api/setup/:network', handlers.setup.getAllGroups);
 app.put('/api/setup/:network', handlers.setup.updateAllGroups);
 app.post('/api/setup/:network', handlers.setup.createGroup);
 app.put('/api/setup/:network/keywords', handlers.setup.updateNetworkKeywords);
+// for internal purposes only!
+app.get('/api/setup/:network/reset-dates', handlers.setup.resetDates);
+
 app.get('/api/setup/:network/:gid', handlers.setup.getGroup);
 app.put('/api/setup/:network/:gid', handlers.setup.updateGroup);
 app.delete('/api/setup/:network/:gid', handlers.setup.deleteGroup);
