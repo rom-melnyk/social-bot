@@ -22,7 +22,7 @@ module.exports = function (state, group, callback) {
 		nowTimestamp - sinceTimestamp > cfg.fb.loadDataBehind
 		? nowTimestamp - cfg.fb.loadDataBehind
 		: sinceTimestamp;
-	// since = nowTimestamp - 1000 * 60 * 60 * 24 * 5; // TODO for test purposes only!
+	// since = nowTimestamp - 1000 * 60 * 60 * 24 * 5; // [rmelnyk] for test purposes only!
 	since = Math.round(since / 1000);
 
 	request.get(

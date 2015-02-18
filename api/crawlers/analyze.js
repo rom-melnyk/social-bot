@@ -51,5 +51,7 @@ var __analyzeObj = function (obj, keywords, callback, parent) {
  * @param {Function} callback		describes what to do with the object if any of keywords was met
  */
 module.exports = function (obj, keywords, callback) {
-	__analyzeObj(obj, keywords || [], callback || function () {});
+	if (__isArray(keywords) && typeof callback === 'function') {
+		__analyzeObj(obj, keywords, callback);
+	}
 };

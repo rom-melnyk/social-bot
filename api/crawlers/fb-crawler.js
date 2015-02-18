@@ -78,7 +78,14 @@ var crawler = function () {
 								return;
 							}
 
+							// perform the analysis twice; once for per-group keywords,...
 							analyze(obj.data.payload, obj.group.keywords, function (instance) {
+								console.log('-----------');
+								console.log(instance);
+								console.log('-----------');
+							});
+							// ...and second time for per-network keywords
+							analyze(obj.data.payload, results.setup.keywords, function (instance) {
 								console.log('-----------');
 								console.log(instance);
 								console.log('-----------');
