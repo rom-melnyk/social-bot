@@ -23,10 +23,24 @@ module.exports = {
 		}
 
 		Setup.findOne({network: ntw}, function (err, setup) {
+			var _setup;
 			if (err) {
 				errHandler('Database error, failed to retrieve the setup', 591, next);
 			} else {
-				res.status(200).send(setup);
+				_setup = {
+					network: setup.network,
+					keywords: setup.keywords,
+					groups: []
+				};
+				setup.groups.forEach(function (grp) {
+					_setup.groups.push({
+						id: grp.id,
+						name: grp.name,
+						description: grp.description,
+						keywords: grp.keywords
+					});
+				});
+				res.status(200).send(_setup);
 			}
 		});
 	},
@@ -47,6 +61,14 @@ module.exports = {
 			return;
 		}
 
+		// following shouldn't be updated
+		delete body._id;
+		delete body.network;
+		if (body.groups && body.groups.forEach) {
+			body.groups.forEach(function (grp) {
+				delete grp._id;
+			});
+		}
 		Setup.findOneAndUpdate({network: ntw}, body, function (err, setup) {
 			if (err) {
 				errHandler('Database error, failed to retrieve the setup', 591, next);
@@ -71,6 +93,7 @@ module.exports = {
 			return;
 		}
 
+		delete body._id;
 		Setup.findOne({network: ntw}, function (err, setup) {
 			if (err) {
 				errHandler('Database error, failed to retrieve the setup', 591, next);
@@ -144,7 +167,12 @@ module.exports = {
 				});
 
 				if (group) {
-					res.status(200).send(group);
+					res.status(200).send({
+						id: group.id,
+						name: group.name,
+						description: group.description,
+						keywords: group.keywords
+					});
 				} else {
 					errHandler('Request error, the group "' + gid + '" not found', 590, next);
 				}
