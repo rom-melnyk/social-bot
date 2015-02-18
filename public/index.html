@@ -13,6 +13,7 @@
 	<script src="/javascripts/controllers/fb.js"></script>
 	<script src="/javascripts/controllers/vk.js"></script>
 	<script src="/javascripts/controllers/keyWordsController.js"></script>
+    <script src="/javascripts/controllers/networkKeywordsController.js"></script>
 	<link rel="stylesheet" href="/stylesheets/bootstrap.css">
 	<link rel="stylesheet" href="/stylesheets/main.css">
 
@@ -24,6 +25,7 @@
 		<br/>
         <div class="header-section">
             <button class="btn btn-primary" ng-click="addNewGroup('fb')">Add Facebook group</button>
+            <button class="btn btn-primary" ng-click="setNetworkKeywords('fb')">Set FB keywords</button>
         </div>
 		<div class="groups-section">
 			<div class="list-group">
@@ -88,6 +90,7 @@
 		<br>
         <div class="header-section">
             <button class="btn btn-primary" ng-click="addNewGroup('vk')">Add VK group</button>
+            <button class="btn btn-primary" ng-click="setNetworkKeywords('vk')">Set VK keywords</button>
         </div>
 		<div class="groups-section">
 			<div class="list-group">

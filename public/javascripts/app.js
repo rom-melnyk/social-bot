@@ -6,5 +6,6 @@ angular.module('SocialApp', [
     'SocialApp.controllers',
     'SocialApp.vk',
     'SocialApp.keyWordController',
+    'SocialApp.networkKeywordController',
     'ui.bootstrap'
 ]);

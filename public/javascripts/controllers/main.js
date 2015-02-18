@@ -6,7 +6,7 @@
  */
 angular.module('SocialApp.main', []).
     controller('mainController', function($scope, $http, $modal, $rootScope, $sce) {
-        $scope.editGroup = function (group, ntw) {
+        var openModal = function (ntw, newGroup, group) {
             var modalInstance = $modal.open({
                 templateUrl: "../../views/editKeyWordsModal.html",
                 controller: "keyWordsController",
@@ -18,10 +18,13 @@ angular.module('SocialApp.main', []).
                         return group;
                     },
                     newGroup: function () {
-                        return false;
+                        return newGroup;
                     }
                 }
             });
+        };
+        $scope.editGroup = function (group, ntw) {
+            openModal(ntw, false, group);
         };
         $scope.removeGroup = function (group, ntw) {
             $http.delete('api/setup/' + ntw + '/' + group.id).success(function (response) {
@@ -29,18 +32,15 @@ angular.module('SocialApp.main', []).
             });
         };
         $scope.addNewGroup = function (ntw) {
+            openModal(ntw, true, {});
+        };
+        $scope.setNetworkKeywords = function (ntw) {
             var modalInstance = $modal.open({
-                templateUrl: "../../views/editKeyWordsModal.html",
-                controller: "keyWordsController",
+                templateUrl: "../../views/editNetworkKeyword.html",
+                controller: "networkKeywordsController",
                 resolve: {
                     ntw: function () {
                         return ntw;
-                    },
-                    group: function () {
-                        return {};
-                    },
-                    newGroup: function () {
-                        return true;
                     }
                 }
             });
