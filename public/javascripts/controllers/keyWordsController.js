@@ -2,7 +2,7 @@
  * Created by obryl on 2/5/2015.
  */
 angular.module('SocialApp.keyWordController', []).
-    controller('keyWordsController', function($scope, $http, $modalInstance, groups) {
+    controller('keyWordsController', function($scope, $http, $modalInstance, groups, $rootScope) {
         $scope.groups = groups;
         $scope.addNewGroup = function () {
             $scope.groups.push({
@@ -14,7 +14,13 @@ angular.module('SocialApp.keyWordController', []).
         };
 
         $scope.submitChanges = function () {
-            $http.post('api/setup/fb', $scope.groups[$scope.groups.length - 1]).success(function (response) {
+            $scope.groups.forEach(function (group, index) {
+                if (group.keywords.length && !(group.keywords instanceof Array)) {
+                    $scope.groups[index].keywords = group.keywords.split(",");
+                }
+            });
+            $http.put('api/setup/fb', $scope.groups).success(function (response) {
+                $rootScope.$emit('groupsChanged');
                 $modalInstance.close(response);
             });
         };
