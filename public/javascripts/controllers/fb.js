@@ -33,7 +33,7 @@ angular.module('SocialApp.controllers', []).
             getGroups();
             $scope.loading = false;
             $http.put('/api/state/fb', {
-                state: accessToken
+                token: accessToken
             }).success(function (response) {
                 console.log('success state save');
             });

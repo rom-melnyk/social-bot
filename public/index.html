@@ -18,16 +18,23 @@
 
 </head>
 <body ng-app="SocialApp" ng-controller="mainController">
-<div class="header-section">
-	<button class="btn btn-primary" ng-click="editKeyWords()">Set keywords</button>
-</div>
 <div class="container">
 	<div class="col-md-6 section" ng-controller="fbController">
 		<img class="center-block social-logo" src="/images/fbLogo.png" height="50px">
 		<br/>
+        <div class="header-section">
+            <button class="btn btn-primary" ng-click="addNewGroup('fb')">Add Facebook group</button>
+        </div>
 		<div class="groups-section">
 			<div class="list-group">
-				<a class="list-group-item" ng-repeat="group in groups" ng-show="group.name" ng-class="{ active: isActive($index) }" ng-click="showGroupPosts($index)"><span class="badge" ng-show="isActive($index)">{{filtered.length}}</span>{{group.name}}</a>
+				<a class="list-group-item" ng-repeat="group in groups" ng-show="group.name" ng-class="{ active: isActive($index) }" ng-click="showGroupPosts($index)">
+                    <span class="badge" ng-show="isActive($index)">{{filtered.length}}</span>
+                    {{group.name}}
+                    <div class="actions-bar">
+                        <span class="glyphicon glyphicon-remove pull-right" ng-click="removeGroup(group, 'fb'); $event.stopPropagation(); $event.preventDefault()"></span>
+                        <span class="glyphicon glyphicon-edit pull-right" ng-click="editGroup(group, 'fb'); $event.stopPropagation(); $event.preventDefault()"></span>
+                    </div>
+                </a>
 				<h3 ng-show="!groups.length">There is no groups to display</h3>
 			</div>
 		</div>
@@ -79,9 +86,19 @@
 	<div class="col-md-6 section" ng-controller="vkController">
 		<img class="center-block  social-logo" src="/images/vkLogo.jpg" height="50px">
 		<br>
+        <div class="header-section">
+            <button class="btn btn-primary" ng-click="addNewGroup('vk')">Add Vk group</button>
+        </div>
 		<div class="groups-section">
 			<div class="list-group">
-				<a class="list-group-item" ng-repeat="group in groups" ng-class="{ active: isActive($index) }" ng-click="showGroupPosts($index)"><span class="badge" ng-show="isActive($index)">{{vkFeeds.length}}</span>{{group.name}}</a>
+				<a class="list-group-item" ng-repeat="group in groups" ng-class="{ active: isActive($index) }" ng-click="showGroupPosts($index)">
+                    <span class="badge" ng-show="isActive($index)">{{vkFeeds.length}}</span>
+                    {{group.name}}
+                    <div class="actions-bar">
+                        <span class="glyphicon glyphicon-remove pull-right" ng-click="removeGroup(group, 'vk'); $event.stopPropagation(); $event.preventDefault()"></span>
+                        <span class="glyphicon glyphicon-edit pull-right" ng-click="editGroup(group, 'vk'); $event.stopPropagation(); $event.preventDefault()"></span>
+                    </div>
+                </a>
 				<h3 ng-show="!groups.length">There is no groups to display</h3>
 			</div>
 		</div>

@@ -2,24 +2,13 @@
  * Created by obryl on 2/5/2015.
  */
 angular.module('SocialApp.keyWordController', []).
-    controller('keyWordsController', function($scope, $http, $modalInstance, groups, $rootScope) {
-        $scope.groups = groups;
-        $scope.addNewGroup = function () {
-            $scope.groups.push({
-                id: "",
-                name: "",
-                description: "",
-                keywords: []
-            })
-        };
-
+    controller('keyWordsController', function($scope, $http, $modalInstance, ntw, group, newGroup, $rootScope) {
+        $scope.group = group;
         $scope.submitChanges = function () {
-            $scope.groups.forEach(function (group, index) {
-                if (group.keywords.length && !(group.keywords instanceof Array)) {
-                    $scope.groups[index].keywords = group.keywords.split(",");
-                }
-            });
-            $http.put('api/setup/fb', $scope.groups).success(function (response) {
+            if (group.keywords.length && !(group.keywords instanceof Array)) {
+                $scope.group.keywords = $scope.group.keywords.split(",");
+            }
+            $http.put('api/setup/' + ntw + '/' + $scope.group.id, $scope.group).success(function (response) {
                 $rootScope.$emit('groupsChanged');
                 $modalInstance.close(response);
             });

@@ -76,12 +76,13 @@ angular.module('SocialApp.vk', []).
         });
         $scope.showGroupPosts = function (groupIndex) {
             $scope.loading = true;
-            $http.jsonp("https://api.vk.com/method/wall.get?access_token=" + accessToken + "&callback=JSON_CALLBACK&owner_id=" + (-$scope.groups[groupIndex].id) + "&count=50&extended=1")
+            $http.jsonp("https://api.vk.com/method/wall.get?access_token=" + accessToken + "&callback=JSON_CALLBACK&owner_id=" + (-$scope.groups[groupIndex].id) + "&count=100&extended=1")
                 .success(function (data) {
                     if (data.error) {
                         VK.Auth.login(processFB);
                         $scope.loading = false;
                     } else if (data.response) {
+                        console.log(data.response);
                         if (data.response.wall instanceof Array) {
                             data.response.wall.shift();
                             $scope.keywords = $scope.groups[groupIndex].keywords;
@@ -109,7 +110,7 @@ angular.module('SocialApp.vk', []).
             return "";
         };
         $scope.formatDate = function (dateString) {
-            return $sce.trustAsHtml(new Date(dateString).toUTCString());
+            return $sce.trustAsHtml(new Date(dateString*1000).toUTCString());
         };
 
         $scope.showMore = function (index, event) {
@@ -134,54 +135,10 @@ angular.module('SocialApp.vk', []).
             return $sce.trustAsHtml(value);
         };
         var setGroups = function () {
-            $scope.groups = [{
-                id: 36573302,
-                name: "Typical IF",
-                keywords: ["президент"]
-            }, {
-                id: 56861614,
-                name: "Я ♥ Івано-Франківськ",
-                keywords: ["президент"]
-            }, {
-                name: "Наше Місто Івано-Франківськ",
-                id: 3849694,
-                keywords: ["президент"]
-            }, {
-                name: "Пороблено [В] Івано-Франківську ",
-                id: 67398221,
-                keywords: ["президент"]
-            }, {
-                name: "НАШЕ ПРИКАРПАТТЯ",
-                id: 72084641,
-                keywords: ["президент"]
-            }, {
-                name: "Івано-Франківськ",
-                id: 972865,
-                keywords: ["президент"]
-            }, {
-                name: "Типова Надвірна",
-                id: 50377159,
-                keywords: ["президент"]
-            }, {
-                name: "Типова Коломия",
-                id: 52375606,
-                keywords: ["президент"]
-            }, {
-                name: "Типовий Бурштин",
-                id: 40218000,
-                keywords: ["президент"]
-            }, {
-                name: "Молодь за Україну. Івано-Франківськ.",
-                id: 17775029,
-                keywords: ["президент"]
-            }, {
-                name: "ПРАВИЙ СЕКТОР (м. КОЛОМИЯ)",
-                id: 65321851,
-                keywords: ["президент"]
-            }, {
-                name: "Правий Сектор Прикарпаття",
-                id: 63233193,
-                keywords: ["президент"]
-            }];
+            $http.get('api/setup/vk').success(function (response) {
+                if (response.groups) {
+                    $scope.groups = response.groups;
+                }
+            });
         };
     });

@@ -135,3 +135,16 @@ a {
 .modal-dialog {
     width: 800px;
 }
+
+span.glyphicon {
+    margin: 0 5px;
+}
+
+.actions-bar {
+    display: none;
+}
+
+.list-group-item:hover .actions-bar {
+    display: inline;
+    opacity: 0.7;
+}
