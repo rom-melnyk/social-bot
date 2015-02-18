@@ -65,9 +65,9 @@ angular.module('SocialApp.vk', []).
         };
         $http.get('/api/state/vk').success(function (response) {
             if (response.state && response.state !== "auth-fail") {
-                if (response.state !== "running") {
+                /*if (response.state !== "running") {
                     $http.get('/api/stop/vk').success(function (response) {});
-                }
+                }*/
                 accessToken = response.token;
                 setGroups();
             } else {

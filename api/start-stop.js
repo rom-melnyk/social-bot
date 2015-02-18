@@ -38,7 +38,12 @@ module.exports = {
 			return;
 		}
 
-		fbCrawler.stop(true);
+		if (ntw === 'fb') {
+		    fbCrawler.stop(true);
+		} else if (ntw === 'fb') {
+		    // TBD
+		    // vkCrawler.stop(true);
+		}
 		res.status(200).send({
 			network: ntw,
 			status: 'stopped'

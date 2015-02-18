@@ -14,7 +14,7 @@ angular.module('SocialApp.controllers', []).
                 $http.get('/api/state/fb').success(function (response) {
                     if (response.token && response.state !== "auth-fail") {
                         if (response.state !== "running") {
-                            $http.get('/api/start/fb').success(function (response) {});
+                            $http.get('/api/stop/fb').success(function (response) {});
                         }
                         accessToken = response.token;
                         getGroups();
