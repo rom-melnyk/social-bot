@@ -120,3 +120,18 @@ a {
 .modal-body .group {
     margin: 10px 0;
 }
+.spinner {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 96%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    padding: 40%;
+    color: #FFF;
+    border-radius: 8px;
+}
+
+.modal-dialog {
+    width: 800px;
+}
