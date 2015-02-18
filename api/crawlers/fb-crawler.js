@@ -3,6 +3,7 @@ var async = require('async'),
 	State = require('../db/state-model'),
 	Setup = require('../db/setup-model').setup,
 	Data = require('../db/data-model'),
+	analyze = require('./analyze'),
 	crawlGroup = require('./fb-crawl-group'),
 	$log = require('./log')('fb'),
 	interval = undefined,
@@ -71,6 +72,18 @@ var crawler = function () {
 
 					if (err) {
 						stopCrawler();
+					} else {
+						_res.forEach(function (obj) {
+							if (!obj || !obj.group || !obj.data) {
+								return;
+							}
+
+							analyze(obj.data.payload, obj.group.keywords, function (instance) {
+								console.log('-----------');
+								console.log(instance);
+								console.log('-----------');
+							});
+						});
 					}
 				});
 		}

@@ -22,6 +22,7 @@ module.exports = function (state, group, callback) {
 		nowTimestamp - sinceTimestamp > cfg.fb.loadDataBehind
 		? nowTimestamp - cfg.fb.loadDataBehind
 		: sinceTimestamp;
+	// since = nowTimestamp - 1000 * 60 * 60 * 24 * 5; // TODO for test purposes only!
 	since = Math.round(since / 1000);
 
 	request.get(
@@ -51,16 +52,16 @@ module.exports = function (state, group, callback) {
 								+ 'group ' + group.name
 								+ '; found ' + body.data.length + ' new items');
 							group.dataRetrievedAt = new Date();
-							callback(false, group);
+							callback(false, {group: group, data: data});
 						}
 					});
 				} else {
 					// do not save empty results
-					$log('i', ''
-						+ 'group ' + group.name
-						+ '; nothing changed since ' + group.dataRetrievedAt.toString());
+					// $log('i', ''
+					// 	+ 'group ' + group.name
+					// 	+ '; nothing changed since ' + group.dataRetrievedAt.toString());
 					group.dataRetrievedAt = new Date();
-					callback(false, group);
+					callback(false, null);
 				}
 			} else {
 				$log('e', 'the API returned the unknown data format');

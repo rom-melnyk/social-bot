@@ -30,7 +30,7 @@ module.exports = {
 		 * @cfg {Number} loadDataBehind
 		 * If the bot was not running for a long time, how far ago should it grab the data at the first run?
 		 */
-		loadDataBehind: 1000 * 60 * 60 * 24 * 2 // 2 days
+		loadDataBehind: 1000 * 60 * 60 * 24 * 5 // 5 days
 	},
 	vk: {}
 };
