@@ -5,7 +5,7 @@ angular.module('SocialApp.keyWordController', []).
     controller('keyWordsController', function($scope, $http, $modalInstance, ntw, group, newGroup, $rootScope) {
         $scope.group = group;
         $scope.submitChanges = function () {
-            if (group.keywords.length && !(group.keywords instanceof Array)) {
+            if (group.keywords && group.keywords.length && !(group.keywords instanceof Array)) {
                 $scope.group.keywords = $scope.group.keywords.split(",");
             }
             if (newGroup) {
@@ -14,6 +14,9 @@ angular.module('SocialApp.keyWordController', []).
                     $modalInstance.close(response);
                 });
             } else {
+                if (!$scope.group.keywords) {
+                    $scope.group.keywords = [];
+                }
                 $http.put('api/setup/' + ntw + '/' + $scope.group.id, $scope.group).success(function (response) {
                     $rootScope.$emit('groupsChanged');
                     $modalInstance.close(response);

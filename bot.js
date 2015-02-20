@@ -40,6 +40,7 @@ app.get('/api/setup/:network/:gid', handlers.setup.getGroup);
 app.put('/api/setup/:network/:gid', handlers.setup.updateGroup);
 app.delete('/api/setup/:network/:gid', handlers.setup.deleteGroup);
 
+app.get('/api/setup/:network/posts', handlers.setup.getGroup);
 // for test purposes
 app.all('/api/test', handlers.test);
 

@@ -1,0 +1,59 @@
+<div class="col-md-6 section" ng-controller="vkController">
+    <img class="center-block  social-logo" src="/images/vkLogo.jpg" height="50px">
+    <br>
+    <div class="header-section">
+        <button class="btn btn-primary" ng-click="addNewGroup('vk')">Add VK group</button>
+        <button class="btn btn-primary" ng-click="setNetworkKeywords('vk', vkKeywords)">Set VK keywords</button>
+        <button class="btn btn-success" ng-click="showAllGroupsPosts()" disabled>Search in VK groups</button>
+    </div>
+    <div class="groups-section">
+        <div class="list-group">
+            <a class="list-group-item" ng-repeat="group in groups" ng-class="{ active: isActive($index) }" ng-click="showGroupPosts($index)">
+                <span class="badge" ng-show="isActive($index)">{{vkFeeds.length}}</span>
+                {{group.name}}
+                <div class="actions-bar">
+                    <span class="glyphicon glyphicon-remove pull-right" ng-click="removeGroup(group, 'vk'); $event.stopPropagation(); $event.preventDefault()"></span>
+                    <span class="glyphicon glyphicon-edit pull-right" ng-click="editGroup(group, 'vk'); $event.stopPropagation(); $event.preventDefault()"></span>
+                </div>
+            </a>
+            <h3 ng-show="!groups.length">There is no groups to display</h3>
+        </div>
+    </div>
+    <div class="feed-section list-group">
+        <div class="spinner" ng-show="loading">
+            <h2>
+                Loading...
+            </h2>
+        </div>
+        <h3 ng-show="vkFeeds.length">Query results:</h3>
+        <div class="feed list-group-item" ng-repeat="feed in vkFeeds">
+            <div class="feed-container" ng-show="vkFeeds[$index].showFullText">
+                <span ng-bind-html="highlight(feed.text, keywords)"></span>
+                <div class="comments-section" ng-show="!!feed.comments">
+                    <div class="actionBox" ng-repeat="comment in feed.comments">
+                        <ul class="commentList">
+                            <li>
+                                <div class="commenterImage">
+                                    <img src="/images/userImage.png">
+                                </div>
+                                <div class="commentText">
+                                    <p class="">
+                                        <span ng-bind-html="highlight(comment.text, keywords)"></span>
+                                    </p>
+                                    <span class="date sub-text" ng-bind-html="formatDate(comment.date * 1000)"></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="post-crop">
+                <div ng-show="!vkFeeds[$index].showFullText">
+                    <span ng-bind-html="cropText(feed.text, 50)" ng-show="!vkFeeds[$index].showFullText"></span><br/>
+                    <a ng-click="openVKPage(feed.to_id, feed.id)">Read on VK</a>
+                </div>
+                <a ng-click="showMore(vkFeeds[$index], $event)">Show more</a>
+            </div>
+        </div>
+    </div>
+</div>

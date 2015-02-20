@@ -2,20 +2,26 @@
  * Created by obryl on 2/4/2015.
  */
 angular.module('SocialApp.controllers', []).
-    controller('fbController', function($scope, $http, $modal, $sce, $rootScope) {
+    controller('fbController', function($scope, $http, $modal, $sce, $rootScope, $filter) {
+        $scope.groupsArray = [];
+        $scope.sinceDate = new Date();
+        $scope.setDate = function (since) {
+            $scope.sinceDate = since;
+        }
         var accessToken, uid,
             getGroups = function () {
                 $http.get('api/setup/fb').success(function (response) {
                     if (response.groups) {
                         $scope.groups = response.groups;
+                        $scope.networkKeywords = response.keywords;
                     }
                 });
             }, getLoginAccess = function () {
                 $http.get('/api/state/fb').success(function (response) {
                     if (response.token && response.state !== "auth-fail") {
-                        if (response.state !== "running") {
+                        /*if (response.state !== "running") {
                             $http.get('/api/stop/fb').success(function (response) {});
-                        }
+                        }*/
                         accessToken = response.token;
                         getGroups();
                     } else {
@@ -42,8 +48,9 @@ angular.module('SocialApp.controllers', []).
 
         //static scope methods
         $scope.showGroupPosts = function (groupIndex) {
+            $scope.groupsArray = [];
             $scope.loading = true;
-            $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken).success(function (resp) {
+            $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken + "&since=2015-02-19&limit=50").success(function (resp) {
                 if (resp.data) {
                     $scope.facebookFeeds = resp.data;
                     $scope.keywords = $scope.groups[groupIndex].keywords;
@@ -55,51 +62,73 @@ angular.module('SocialApp.controllers', []).
                  FB.login(processFB);
             });
         };
-        $scope.isActive = function (groupIndex) {
-            return groupIndex === $scope.activeGroupIndex;
+        $scope.showAllGroupsPosts = function () {
+            $scope.facebookFeeds = [];
+            $scope.groupsArray = [];
+            $scope.groups.forEach(function (group) {
+                var feedsArray = [],
+                    page = 0,
+                    since = $scope.sinceDate.toLocaleDateString().split('.').join('-');
+                var getFeeds = function (nextPage) {
+                    var url = 'https://graph.facebook.com/' + group.id + '/feed?access_token=' + accessToken + '&since=' + since;
+                    if (nextPage) {
+                        url = nextPage + '&since=' + since;
+                    }
+                    $http.get(url).success(function (resp) {
+                        if (resp.data) {
+                            $scope.networkKeywords.forEach(function (kw) {
+                                if (group.keywords.indexOf(kw) === -1) {
+                                    group.keywords.push(kw);
+                                }
+                            });
+                            if (resp.paging && resp.paging.next) {
+                                page++;
+                                getFeeds(resp.paging.next);
+                            } else {
+                                console.log("no next page found");
+                                $scope.groupsArray.push({
+                                    group: group,
+                                    feeds: feedsArray
+                                });
+                            }
+                            var filtered = $filter('keyWordFilter')(resp.data, group.keywords);
+                            feedsArray = feedsArray.concat(filtered);
+
+                        }
+                    });
+                    };
+                    getFeeds();
+                });
         };
         $scope.openFbPage = function (itemId) {
             window.open('https://www.facebook.com/' + itemId, '_newtab');
         };
-        $scope.showMore = function (index, event) {
-            if (!$scope.facebookFeeds[index].showFullText) {
-                event.currentTarget.innerText = "Show less";
-            } else {
-                event.currentTarget.innerText = "Show more";
-            }
-            $scope.facebookFeeds[index].showFullText = !$scope.facebookFeeds[index].showFullText;
+        $scope.isActive = function (groupIndex) {
+            return groupIndex === $scope.activeGroupIndex;
         };
-        $scope.cropText = function (value, len, word) {
-            if (value && value.length > len) {
-                if (word) {
-                    var vs = value.substr(0, len - 2),
-                    index = Math.max(vs.lastIndexOf(' '), vs.lastIndexOf('.'), vs.lastIndexOf('!'), vs.lastIndexOf('?'));
-                    if (index !== -1 && index >= (len - 15)) {
-                        return vs.substr(0, index) + "...";
-                    }
-                }
-                return $sce.trustAsHtml(value.substr(0, len - 3) + "...");
-            }
-            return $sce.trustAsHtml(value);
-        }
 
         $rootScope.$on('groupsChanged', function () {
             getGroups();
         });
 
     }).filter('keyWordFilter', function () {
-        return function (items, keyword) {
+        return function (items, keywords) {
             var filtered = [];
-            if (items && items.length && keyword) {
+            if (items && items.length && keywords.length) {
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i],
                         containsWord = false;
-                    if (item.message && item.message.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
-                        filtered.push(item);
+                    if (item.message) {
+                        for (var j = 0; j < keywords.length; j++) {
+                        	RE = new RegExp(keywords[j], 'gi');
+                        	containsWord = containsWord || RE.test(item.message);
+                        }
+                        containsWord && filtered.push(item);
                     } else if (item.comments) {
                         item.comments.data.forEach(function (value) {
-                            if (value.message.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
-                                containsWord = true;
+                            for (var j = 0; j < keywords.length; j++) {
+                            	RE = new RegExp(keywords[j], 'gi');
+                            	containsWord = containsWord || RE.test(value.message);
                             }
                         });
                         containsWord && filtered.push(item);

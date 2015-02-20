@@ -2,7 +2,7 @@
  * Created by obryl on 2/11/2015.
  */
 angular.module('SocialApp.vk', []).
-    controller('vkController', function($scope, $http, $modal, $sce) {
+    controller('vkController', function($scope, $http, $modal, $sce, $rootScope) {
         var accessToken, uid, processFB = function(response) {
             accessToken = response.session.sid;
             $http.put('/api/state/vk', {
@@ -14,7 +14,10 @@ angular.module('SocialApp.vk', []).
             var finalFeeds = [], indexWithComment = 1, lastIndexWithComment = 0;
             feeds.forEach(function (value, index) {
                 //searching for keyword in post message
-                feeds[index].includeKeyword = !(!value.text || ($scope.keywords[0] && value.text.toLowerCase().indexOf($scope.keywords[0].toLowerCase()) === -1));
+                for (var j = 0; j < $scope.keywords.length; j++) {
+                	RE = new RegExp($scope.keywords[j], 'gi');
+                	feeds[index].includeKeyword = feeds[index].includeKeyword || RE.test(value.text);
+                }
                 if (value.comments && value.comments.count) {
                     //require to set timeout: VK API can handle only 3 requests per second
                     setTimeout(function () {
@@ -51,10 +54,10 @@ angular.module('SocialApp.vk', []).
         }, filterComments = function (value, index, finalFeeds, lastIndexWithComment) {
             //searching for keyword in comments
             value.comments.forEach(function (comment, commentIndex) {
-                value.includeKeyword =
-                    value.includeKeyword
-                    ||
-                    !($scope.keywords[0] && comment.text.toLowerCase().indexOf($scope.keywords[0].toLowerCase()) === -1);
+                for (var j = 0; j < $scope.keywords.length; j++) {
+                	RE = new RegExp($scope.keywords[j], 'gi');
+                	value.includeKeyword = value.includeKeyword || RE.test(comment.text);
+                }
                 if (value.includeKeyword && finalFeeds.indexOf(value) === -1) {
                     finalFeeds.push(value);
                 }
@@ -76,16 +79,20 @@ angular.module('SocialApp.vk', []).
         });
         $scope.showGroupPosts = function (groupIndex) {
             $scope.loading = true;
-            $http.jsonp("https://api.vk.com/method/wall.get?access_token=" + accessToken + "&callback=JSON_CALLBACK&owner_id=" + (-$scope.groups[groupIndex].id) + "&count=100&extended=1")
+            $http.jsonp("https://api.vk.com/method/wall.get?access_token=" + accessToken + "&callback=JSON_CALLBACK&owner_id=" + (-$scope.groups[groupIndex].id) + "&count=50&extended=1")
                 .success(function (data) {
                     if (data.error) {
                         VK.Auth.login(processFB);
                         $scope.loading = false;
                     } else if (data.response) {
-                        console.log(data.response);
                         if (data.response.wall instanceof Array) {
                             data.response.wall.shift();
                             $scope.keywords = $scope.groups[groupIndex].keywords;
+                            $scope.vkKeywords.forEach(function (kw) {
+                                if ($scope.keywords.indexOf(kw) === -1) {
+                                    $scope.keywords.push(kw);
+                                }
+                            });
                             filterFeedData(data.response.wall, groupIndex);
                             $scope.groupDomain = data.response.groups[0].screen_name;
                         }
@@ -100,32 +107,15 @@ angular.module('SocialApp.vk', []).
         $scope.isActive = function (groupIndex) {
             return groupIndex === $scope.activeGroupIndex;
         };
-        $scope.showMore = function (index, event) {
-            if (!$scope.vkFeeds[index].showFullText) {
-                event.currentTarget.innerText = "Show less";
-            } else {
-                event.currentTarget.innerText = "Show more";
-            }
-            $scope.vkFeeds[index].showFullText = !$scope.vkFeeds[index].showFullText;
-        };
-        $scope.cropText = function (value, len, word) {
-            if (value && value.length > len) {
-                if (word) {
-                    var vs = value.substr(0, len - 2),
-                    index = Math.max(vs.lastIndexOf(' '), vs.lastIndexOf('.'), vs.lastIndexOf('!'), vs.lastIndexOf('?'));
-                    if (index !== -1 && index >= (len - 15)) {
-                        return vs.substr(0, index) + "...";
-                    }
-                }
-                return $sce.trustAsHtml(value.substr(0, len - 3) + "...");
-            }
-            return $sce.trustAsHtml(value);
-        };
         var setGroups = function () {
             $http.get('api/setup/vk').success(function (response) {
                 if (response.groups) {
                     $scope.groups = response.groups;
+                    $scope.vkKeywords = response.keywords;
                 }
             });
         };
+        $rootScope.$on('groupsChanged', function () {
+            setGroups();
+        });
     });

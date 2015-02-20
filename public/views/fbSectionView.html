@@ -1,0 +1,66 @@
+    <img class="center-block social-logo" src="/images/fbLogo.png" height="50px">
+    <br/>
+    <div class="header-section">
+        <button class="btn btn-primary" ng-click="addNewGroup('fb')">Add FB group</button>
+        <button class="btn btn-primary" ng-click="setNetworkKeywords('fb', networkKeywords)">Set FB keywords</button>
+        <button class="btn btn-success" ng-click="showAllGroupsPosts()">Search in FB groups</button>
+        <input type="date" class="form-control" name="sinceFilter" ng-model="sinceDate" ng-change="setDate(sinceDate)"/>
+    </div>
+    <div class="groups-section">
+        <div class="list-group">
+            <a class="list-group-item" ng-repeat="group in groups" ng-show="group.name" ng-class="{ active: isActive($index) }" ng-click="showGroupPosts($index)">
+                <span class="badge" ng-show="isActive($index)">{{filtered.length}}</span>
+                {{group.name}}
+                <div class="actions-bar">
+                    <span class="glyphicon glyphicon-remove pull-right" ng-click="removeGroup(group, 'fb'); $event.stopPropagation(); $event.preventDefault()"></span>
+                    <span class="glyphicon glyphicon-edit pull-right" ng-click="editGroup(group, 'fb'); $event.stopPropagation(); $event.preventDefault()"></span>
+                </div>
+            </a>
+            <h3 ng-show="!groups.length">There is no groups to display</h3>
+        </div>
+    </div>
+    <div class="feed-section list-group">
+        <div class="spinner" ng-show="loading">
+            <h2>
+                Loading...
+            </h2>
+        </div>
+        <h3 ng-show="filtered.length">Query results:</h3>
+        <div class="feed list-group-item" ng-repeat="feed in filtered = (facebookFeeds | keyWordFilter:keywords)">
+            <div class="feed-container" ng-show="facebookFeeds[$index].showFullText">
+                {{feed.from.name}}:
+                <span ng-bind-html="highlight(feed.message, keywords)"></span>
+                <img ng-src="{{feed.type === 'photo' ? feed.picture : ''}}" ng-show="!!feed.picture">
+                <div>
+                    <a ng-click="openFbPage(feed.id)">Read on Facebook</a>
+                </div>
+                <div class="comments-section" ng-show="!!feed.comments">
+                    <div class="actionBox" ng-repeat="comment in feed.comments.data">
+                        <ul class="commentList">
+                            <li>
+                                <div class="commenterImage">
+                                    <img src="/images/userImage.png">
+                                </div>
+                                <div class="commentText">
+                                    <p class="">
+                                        <span ng-bind-html="highlight(comment.message, keywords)"></span>
+                                    </p>
+                                    <span class="date sub-text" ng-bind-html="formatDate(comment.created_time)"></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="post-crop">
+                <div>
+                    <div ng-show="!facebookFeeds[$index].showFullText">
+                        <span>{{feed.from.name}}:</span>
+                        <span ng-bind-html="cropText(feed.message, 50)"></span><br/>
+                        <a ng-click="openFbPage(feed.id)">Read on Facebook</a>
+                    </div>
+                </div>
+                <a ng-click="showMore(facebookFeeds[$index], $event)">Show more</a>
+            </div>
+        </div>
+    </div>

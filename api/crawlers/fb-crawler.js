@@ -78,16 +78,16 @@ var crawler = function () {
 								return;
 							}
 
-							// perform the analysis twice; once for per-group keywords,...
-							analyze(obj.data.payload, obj.group.keywords, function (instance) {
+							// concatenating network and groups keywords into one array
+							var keywords = [].concat(obj.group.keywords);
+							results.setup.keywords.forEach(function (kw) {
+							    if (keywords.indexOf(kw) === -1) {
+							        keywords.push(kw);
+							    }
+							});
+							analyze(obj.data.payload, keywords, function (instance) {
 								console.log('-----------');
 								console.log(obj.group.name + ": ");
-								console.log(instance);
-								console.log('-----------');
-							});
-							// ...and second time for per-network keywords
-							analyze(obj.data.payload, results.setup.keywords, function (instance) {
-								console.log('-----------');
 								console.log(instance);
 								console.log('-----------');
 							});

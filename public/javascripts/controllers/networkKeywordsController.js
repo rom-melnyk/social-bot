@@ -2,12 +2,19 @@
  * Created by obryl on 2/5/2015.
  */
 angular.module('SocialApp.networkKeywordController', []).
-    controller('networkKeywordsController', function($scope, $http, $modalInstance, ntw, $rootScope) {
+    controller('networkKeywordsController', function($scope, $http, $modalInstance, ntw, keywords, $rootScope) {
+        var networkNamesMap = {
+            fb: "Facebook",
+            vk: "Vkontakte"
+        };
+        $scope.keywords = keywords;
+        $scope.networkName = networkNamesMap[ntw];
         $scope.submitChanges = function () {
             $http.put('/api/setup/' + ntw + '/keywords', {
             keywords: $scope.keywords.split(',')
             }).success(function (response) {
                 $modalInstance.close(response);
+                $rootScope.$emit('groupsChanged');
             });
         };
 
