@@ -6,7 +6,7 @@ angular.module('SocialApp.vk', []).
         var accessToken, uid, processFB = function(response) {
             accessToken = response.session.sid;
             $http.put('/api/state/vk', {
-                state: accessToken
+                token: accessToken
             }).success(function (response) {
                 console.log('success state save');
             });

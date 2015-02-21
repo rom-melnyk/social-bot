@@ -4,47 +4,54 @@ var async = require('async'),
 	Setup = require('../db/setup-model').setup,
 	Data = require('../db/data-model'),
 	analyze = require('./analyze'),
-	crawlGroup = require('./fb-crawl-group'),
-	$log = require('./log')('fb'),
+	crawlFBGroup = require('./fb-crawl-group'),
+	crawlVKGroup = require('./vk-crawl-group'),
+	$log = require('./log'),
 	interval = undefined,
 	runAtFirstTime = true;
 
 
-var crawler = function () {
+var crawler = function (ntw) {
 	async.parallel(
 		{
 			state: function (cb) {
-				State.findOne({network: 'fb'}, function (err, state) {
+				State.findOne({network: ntw}, function (err, state) {
 					cb(err || !state, state);
 				});
 			},
 			setup: function (cb) {
-				Setup.findOne({network: 'fb'}, function (err, setup) {
+				Setup.findOne({network: ntw}, function (err, setup) {
 					cb(err || !setup, setup);
 				});
 			}
 		},
 		function (err, results) {
 			if (err || !results.state || !results.setup) {
-				$log('e','failed to retrieve the State or the Setup');
-				stopCrawler();
+				$log(ntw)('e','failed to retrieve the State or the Setup');
+				stopCrawler(ntw);
 				return;
 			}
 
 			if (results.state.state === 'auth-fail') {
-				$log('i', 'not authenticated');
-				stopCrawler();
+				$log(ntw)('i', 'not authenticated');
+				stopCrawler(ntw);
 				return;
 			}
 
 			if (runAtFirstTime) {
-				$log('i', results.setup.groups.length + ' groups found');
+				$log(ntw)('i', results.setup.groups.length + ' groups found');
 				runAtFirstTime = false;
 			}
 			async.map(
 				results.setup.groups,
 				function (item, cb) {
-					crawlGroup(results.state, item, cb);
+				    if (ntw === 'fb') {
+					    crawlFBGroup(results.state, item, cb);
+				    } else if (ntw === 'vk') {
+				        setTimeout(function () {
+				            crawlVKGroup(results.state, item, cb);
+				        }, 350 * results.setup.groups.indexOf(item));
+				    }
 				},
 				function (err, _res) {
 					if (err) {
@@ -59,19 +66,19 @@ var crawler = function () {
 					results.state.stateUpdatedAt = Date.now();
 					results.state.save(function (err, state) {
 						if (err) {
-							$log('e', 'failed to update the state');
-							stopCrawler();
+							$log(ntw)('e', 'failed to update the state');
+							stopCrawler(ntw);
 						}
 					});
 					results.setup.save(function (err, setup) {
 						if (err) {
-							$log('e', 'failed to update the setup');
-							stopCrawler();
+							$log(ntw)('e', 'failed to update the setup');
+							stopCrawler(ntw);
 						}
 					});
 
 					if (err) {
-						stopCrawler();
+						stopCrawler(ntw);
 					} else {
 						_res.forEach(function (obj) {
 							if (!obj || !obj.group || !obj.data) {
@@ -98,34 +105,36 @@ var crawler = function () {
 	);
 };
 
-var startCrawler = function () {
+var startCrawler = function (ntw) {
 	if (interval === undefined) {
-		interval = setInterval(crawler, cfg.fb.pollInterval);
-		$log('i', 'started');
+		interval = setInterval(function () {
+		    crawler(ntw);
+		}, cfg.fb.pollInterval);
+		$log(ntw)('i', 'started');
 	} else {
-		$log('w', 'already running; won\'t start twice');
+		$log(ntw)('w', 'already running; won\'t start twice');
 	}
 };
 
 /**
  * @param {Boolean} [force=false]				whether or not to update the state intentionally
  */
-var stopCrawler = function (force) {
+var stopCrawler = function (ntw, force) {
 	if (interval !== undefined) {
 		clearInterval(interval);
 		interval = undefined;
 
 		if (force) {
-			State.findOneAndUpdate({network: 'fb'}, {state: 'stopped'}, function (err, state) {
+			State.findOneAndUpdate({network: ntw}, {state: 'stopped'}, function (err, state) {
 				if (err) {
-					$log('e', 'failed to update the state');
+					$log(ntw)('e', 'failed to update the state');
 				}
 			});
 		}
-		$log('i', 'stopped');
+		$log(ntw)('i', 'stopped');
 		runAtFirstTime = true;
 	} else {
-		$log('w', 'not running; nothing to stop');
+		$log(ntw)('w', 'not running; nothing to stop');
 	}
 };
 

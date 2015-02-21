@@ -65,6 +65,7 @@ angular.module('SocialApp.controllers', []).
         $scope.showAllGroupsPosts = function () {
             $scope.facebookFeeds = [];
             $scope.groupsArray = [];
+            $scope.activeGroupIndex = null;
             $scope.groups.forEach(function (group) {
                 var feedsArray = [],
                     page = 0,

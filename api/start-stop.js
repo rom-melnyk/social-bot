@@ -19,7 +19,7 @@ module.exports = {
 			return;
 		}
 
-		fbCrawler.start();
+		fbCrawler.start(ntw);
 		res.status(200).send({
 			network: ntw,
 			status: 'started'
@@ -39,10 +39,9 @@ module.exports = {
 		}
 
 		if (ntw === 'fb') {
-		    fbCrawler.stop(true);
-		} else if (ntw === 'fb') {
-		    // TBD
-		    // vkCrawler.stop(true);
+		    fbCrawler.stop(ntw, true);
+		} else if (ntw === 'vk') {
+		    fbCrawler.stop(ntw, true);
 		}
 		res.status(200).send({
 			network: ntw,
