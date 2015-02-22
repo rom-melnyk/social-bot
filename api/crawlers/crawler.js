@@ -7,11 +7,12 @@ var async = require('async'),
 	crawlFBGroup = require('./fb-crawl-group'),
 	crawlVKGroup = require('./vk-crawl-group'),
 	Log = require('./log'),
-    $log,
-    network,
+	$log,
+	network,
 	interval = undefined,
 	runAtFirstTime = true;
 
+var actionConsoleLog = require('../actions/action-console-log');
 
 var crawler = function () {
 	async.parallel(
@@ -29,7 +30,7 @@ var crawler = function () {
 		},
 		function (err, results) {
 			if (err || !results.state || !results.setup) {
-				$log('e','failed to retrieve the State or the Setup');
+				$log('e', 'failed to retrieve the State or the Setup');
 				stopCrawler();
 				return;
 			}
@@ -47,13 +48,13 @@ var crawler = function () {
 			async.map(
 				results.setup.groups,
 				function (item, cb) {
-				    if (network === 'fb') {
-					    crawlFBGroup(results.state, item, cb);
-				    } else if (network === 'vk') {
-				        setTimeout(function () {
-				            crawlVKGroup(results.state, item, cb);
-				        }, 350 * results.setup.groups.indexOf(item));
-				    }
+					if (network === 'fb') {
+						crawlFBGroup(results.state, item, cb);
+					} else if (network === 'vk') {
+						setTimeout(function () {
+							crawlVKGroup(results.state, item, cb);
+						}, 350 * results.setup.groups.indexOf(item));
+					}
 				},
 				function (err, _res) {
 					if (err) {
@@ -90,15 +91,19 @@ var crawler = function () {
 							// concatenating network and groups keywords into one array
 							var keywords = [].concat(obj.group.keywords);
 							results.setup.keywords.forEach(function (kw) {
-							    if (keywords.indexOf(kw) === -1) {
-							        keywords.push(kw);
-							    }
+								if (keywords.indexOf(kw) === -1) {
+									keywords.push(kw);
+								}
 							});
 							analyze(obj.data.payload, keywords, function (instance) {
-								console.log('-----------');
-								console.log(obj.group.name + ": ");
-								console.log(instance);
-								console.log('-----------');
+								// Place here all the actions you want to perform with the data containing a keyword.
+								// Actions should reside in "../actions" and must be included via `require()` well.
+								// Make sure you pass the config that might be useful for the Action as the first param.
+								actionConsoleLog({
+									network: network,
+									group: obj.group,
+									keywords: keywords
+								}, instance);
 							});
 						});
 					}
@@ -108,12 +113,12 @@ var crawler = function () {
 };
 
 var startCrawler = function () {
-    var pollInterval = cfg[network] && cfg[network].pollInterval || 1000 * 60 * 10; // 10 min by default
-    // pollInterval = 5 * 1000; // [rmelnyk] for testing purposes
+	var pollInterval = cfg[network] && cfg[network].pollInterval || 1000 * 60 * 10; // 10 min by default
+	// pollInterval = 5 * 1000; // [rmelnyk] for testing purposes
 
-    if (interval === undefined) {
-        interval = setInterval(function () {
-		    crawler();
+	if (interval === undefined) {
+		interval = setInterval(function () {
+			crawler();
 		}, pollInterval);
 		$log('i', 'started');
 	} else {
@@ -122,7 +127,7 @@ var startCrawler = function () {
 };
 
 /**
- * @param {Boolean} [force=false]				whether or not to update the state intentionally
+ * @param {Boolean} [force=false]                whether or not to update the state intentionally
  */
 var stopCrawler = function (force) {
 	if (interval !== undefined) {
@@ -144,10 +149,10 @@ var stopCrawler = function (force) {
 };
 
 module.exports = function (ntw) {
-    $log = Log(ntw);
-    network = ntw;
-    return {
-        start: startCrawler,
-        stop: stopCrawler
-    }
+	$log = Log(ntw);
+	network = ntw;
+	return {
+		start: startCrawler,
+		stop: stopCrawler
+	}
 };
