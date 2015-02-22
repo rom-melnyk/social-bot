@@ -6,48 +6,50 @@ var async = require('async'),
 	analyze = require('./analyze'),
 	crawlFBGroup = require('./fb-crawl-group'),
 	crawlVKGroup = require('./vk-crawl-group'),
-	$log = require('./log'),
+	Log = require('./log'),
+    $log,
+    network,
 	interval = undefined,
 	runAtFirstTime = true;
 
 
-var crawler = function (ntw) {
+var crawler = function () {
 	async.parallel(
 		{
 			state: function (cb) {
-				State.findOne({network: ntw}, function (err, state) {
+				State.findOne({network: network}, function (err, state) {
 					cb(err || !state, state);
 				});
 			},
 			setup: function (cb) {
-				Setup.findOne({network: ntw}, function (err, setup) {
+				Setup.findOne({network: network}, function (err, setup) {
 					cb(err || !setup, setup);
 				});
 			}
 		},
 		function (err, results) {
 			if (err || !results.state || !results.setup) {
-				$log(ntw)('e','failed to retrieve the State or the Setup');
-				stopCrawler(ntw);
+				$log('e','failed to retrieve the State or the Setup');
+				stopCrawler();
 				return;
 			}
 
 			if (results.state.state === 'auth-fail') {
-				$log(ntw)('i', 'not authenticated');
-				stopCrawler(ntw);
+				$log('i', 'not authenticated');
+				stopCrawler();
 				return;
 			}
 
 			if (runAtFirstTime) {
-				$log(ntw)('i', results.setup.groups.length + ' groups found');
+				$log('i', results.setup.groups.length + ' groups found');
 				runAtFirstTime = false;
 			}
 			async.map(
 				results.setup.groups,
 				function (item, cb) {
-				    if (ntw === 'fb') {
+				    if (network === 'fb') {
 					    crawlFBGroup(results.state, item, cb);
-				    } else if (ntw === 'vk') {
+				    } else if (network === 'vk') {
 				        setTimeout(function () {
 				            crawlVKGroup(results.state, item, cb);
 				        }, 350 * results.setup.groups.indexOf(item));
@@ -66,19 +68,19 @@ var crawler = function (ntw) {
 					results.state.stateUpdatedAt = Date.now();
 					results.state.save(function (err, state) {
 						if (err) {
-							$log(ntw)('e', 'failed to update the state');
-							stopCrawler(ntw);
+							$log('e', 'failed to update the state');
+							stopCrawler();
 						}
 					});
 					results.setup.save(function (err, setup) {
 						if (err) {
-							$log(ntw)('e', 'failed to update the setup');
-							stopCrawler(ntw);
+							$log('e', 'failed to update the setup');
+							stopCrawler();
 						}
 					});
 
 					if (err) {
-						stopCrawler(ntw);
+						stopCrawler();
 					} else {
 						_res.forEach(function (obj) {
 							if (!obj || !obj.group || !obj.data) {
@@ -105,40 +107,47 @@ var crawler = function (ntw) {
 	);
 };
 
-var startCrawler = function (ntw) {
-	if (interval === undefined) {
-		interval = setInterval(function () {
-		    crawler(ntw);
-		}, cfg.fb.pollInterval);
-		$log(ntw)('i', 'started');
+var startCrawler = function () {
+    var pollInterval = cfg[network] && cfg[network].pollInterval || 1000 * 60 * 10; // 10 min by default
+    // pollInterval = 5 * 1000; // [rmelnyk] for testing purposes
+
+    if (interval === undefined) {
+        interval = setInterval(function () {
+		    crawler();
+		}, pollInterval);
+		$log('i', 'started');
 	} else {
-		$log(ntw)('w', 'already running; won\'t start twice');
+		$log('w', 'already running; won\'t start twice');
 	}
 };
 
 /**
  * @param {Boolean} [force=false]				whether or not to update the state intentionally
  */
-var stopCrawler = function (ntw, force) {
+var stopCrawler = function (force) {
 	if (interval !== undefined) {
 		clearInterval(interval);
 		interval = undefined;
 
 		if (force) {
-			State.findOneAndUpdate({network: ntw}, {state: 'stopped'}, function (err, state) {
+			State.findOneAndUpdate({network: network}, {state: 'stopped'}, function (err, state) {
 				if (err) {
-					$log(ntw)('e', 'failed to update the state');
+					$log('e', 'failed to update the state');
 				}
 			});
 		}
-		$log(ntw)('i', 'stopped');
+		$log('i', 'stopped');
 		runAtFirstTime = true;
 	} else {
-		$log(ntw)('w', 'not running; nothing to stop');
+		$log('w', 'not running; nothing to stop');
 	}
 };
 
-module.exports = {
-	start: startCrawler,
-	stop: stopCrawler
+module.exports = function (ntw) {
+    $log = Log(ntw);
+    network = ntw;
+    return {
+        start: startCrawler,
+        stop: stopCrawler
+    }
 };

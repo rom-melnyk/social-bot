@@ -1,10 +1,22 @@
-var fbCrawler = require('./crawlers/fb-crawler');
+var State = require('./db/state-model'),
+    crawler = require('./crawlers/crawler');
 
 var errHandler = function (msg, status, callback) {
 	var err = new Error(msg);
 	err.status = status || 500;
 	callback(err);
 };
+
+State.find({}, function (err, states) {
+    if (err) {
+        console.log('[ warn ] Failed to reset states');
+    }
+
+    states.forEach(function (state) {
+        state.state = 'stopped';
+        state.save();
+    });
+});
 
 module.exports = {
 	/**
@@ -19,7 +31,7 @@ module.exports = {
 			return;
 		}
 
-		fbCrawler.start(ntw);
+		crawler(ntw).start();
 		res.status(200).send({
 			network: ntw,
 			status: 'started'
@@ -38,11 +50,7 @@ module.exports = {
 			return;
 		}
 
-		if (ntw === 'fb') {
-		    fbCrawler.stop(ntw, true);
-		} else if (ntw === 'vk') {
-		    fbCrawler.stop(ntw, true);
-		}
+        crawler(ntw).stop(true);
 		res.status(200).send({
 			network: ntw,
 			status: 'stopped'
