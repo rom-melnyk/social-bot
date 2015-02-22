@@ -6,8 +6,8 @@ var errHandler = function (msg, status, callback) {
 	callback(err);
 };
 
-var getData = function (since, callback) {
-	var condition = {};
+var getData = function (ntw, since, callback) {
+	var condition = {network: ntw};
 	if (since) {
 		condition.date = {$gt: new Date(since)}
 	}
@@ -37,7 +37,7 @@ module.exports = {
 			since = undefined;
 		}
 
-		getData(since, function (data) {
+		getData(ntw, since, function (data) {
 			if (!data) {
 				errHandler('Database error, failed to retrieve the data', 591, next);
 			} else {
