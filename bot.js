@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 handlers.state = require('./api/state');
 handlers.startStop = require('./api/start-stop');
 handlers.setup = require('./api/setup');
+handlers.rawData = require('./api/raw-data');
 handlers.test = function (req, res) {
 	res.status(200).send({
 		requestBody: req.body,
@@ -40,7 +41,9 @@ app.get('/api/setup/:network/:gid', handlers.setup.getGroup);
 app.put('/api/setup/:network/:gid', handlers.setup.updateGroup);
 app.delete('/api/setup/:network/:gid', handlers.setup.deleteGroup);
 
-app.get('/api/setup/:network/posts', handlers.setup.getGroup);
+app.get('/api/data/:network/raw', handlers.rawData.getRawData);
+// app.get('/api/data/:network/analyzed', handlers.rawData.getAnalyzedData);
+
 // for test purposes
 app.all('/api/test', handlers.test);
 
