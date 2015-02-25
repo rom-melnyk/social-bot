@@ -4,7 +4,9 @@
 module.exports = {
 	db: {
 		host: 'ds039301.mongolab.com:39301',
-		name: 'social-bot'
+		name: 'social-bot',
+		user: 'admin',
+		password: 'admin'
 	},
 	fb: {
 		/**
