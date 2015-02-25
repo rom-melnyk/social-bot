@@ -3,7 +3,7 @@
  */
 module.exports = {
 	db: {
-		host: 'localhost',
+		host: 'ds039301.mongolab.com:39301',
 		name: 'social-bot'
 	},
 	fb: {
@@ -25,7 +25,7 @@ module.exports = {
 		 * Sets the interval between two consequence polls (API calls).
 		 * 5 sec is for the testing only; change it on the PROD!
 		 */
-		pollInterval: 60 * 1000,
+		pollInterval: 5 * 1000,
 		/**
 		 * @cfg {Number} loadDataBehind
 		 * If the bot was not running for a long time, how far ago should it grab the data at the first run?
@@ -35,6 +35,7 @@ module.exports = {
 	vk: {
 	    apiHost: 'https://api.vk.com',
         apiFeed: '/method/wall.get',
-        apiComments: '/method/wall.getComments'
+        apiComments: '/method/wall.getComments',
+        pollInterval: 360 * 10000
 	}
 };
