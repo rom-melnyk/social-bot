@@ -6,6 +6,7 @@ var async = require('async'),
 	analyze = require('./analyze'),
 	crawlFBGroup = require('./fb-crawl-group'),
 	crawlVKGroup = require('./vk-crawl-group'),
+	vkQueue = require('./vk-queue'),
 	Log = require('./log'),
 	$log,
 	network,
@@ -51,9 +52,9 @@ var crawler = function () {
 					if (network === 'fb') {
 						crawlFBGroup(results.state, item, cb);
 					} else if (network === 'vk') {
-						setTimeout(function () {
-							crawlVKGroup(results.state, item, cb);
-						}, 1500 * results.setup.groups.indexOf(item));
+					    vkQueue.add(function (vkQcb) {
+					        crawlVKGroup(results.state, item, cb, vkQcb);
+					    });
 					}
 				},
 				function (err, _res) {

@@ -76,7 +76,9 @@ module.exports = {
                     };
     		        item.payload.forEach(function (post) {
     		            analyze(post, keywords, function (instance) {
-    			            groupInstance.payload.push(post);
+    		                if (groupInstance.payload.indexOf(post) === -1) {
+    			                groupInstance.payload.push(post);
+    		                }
     		            });
     		        });
     		        if (groupInstance.payload.length) {

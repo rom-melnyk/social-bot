@@ -3,9 +3,10 @@ var cfg = require('../config'),
 	request = require('request'),
 	Data = require('../db/data-model'),
 	$log = require('./log')('vk'),
-	jsonParse = require('./json-parse');
+	jsonParse = require('./json-parse'),
+	vkQueue = require('./vk-queue');
 
-module.exports = function (state, group, callback) {
+module.exports = function (state, group, callback, vkQcb) {
 	var url,
 	    commentsUrl,
 		sinceTimestamp, nowTimestamp,
@@ -25,7 +26,7 @@ module.exports = function (state, group, callback) {
 		nowTimestamp - sinceTimestamp > cfg.fb.loadDataBehind
 		? nowTimestamp - cfg.fb.loadDataBehind
 		: sinceTimestamp;
-	// since = nowTimestamp - 1000 * 60 * 60 * 24 * 5; // [rmelnyk] for test purposes only!
+	//since = nowTimestamp - 1000 * 60 * 60 * 24 * 5; // [rmelnyk] for test purposes only!
 	since = Math.round(since / 1000);
 
 	request.get(
@@ -33,6 +34,7 @@ module.exports = function (state, group, callback) {
 			'&owner_id=' + -group.id +
 			'&extended=1',
 		function (err, response, body) {
+		    vkQcb();
 			body = jsonParse(body);
 			if (body && body.error && body.error.type === 'OAuthException') {
 				callback(true, 'auth-fail');
@@ -40,52 +42,68 @@ module.exports = function (state, group, callback) {
 			    $log('e', body.error.error_msg);
 			} else if (body && body.response) {
 				if (body.response.wall && body.response.wall.length > 0) {
-				    async.map(
-                        [body.response.wall[1], body.response.wall[2]],
-                        function (post, cb) {
-                            if (post.comments && post.comments.count > 0) {
-                                setTimeout(function () {
-                                    request.get(
-                                    	commentsUrl + '?access_token=' + state.token +
-                                    	'&owner_id=' + -group.id +
-                                    	'&post_id=' + post.id,
-                                    function (err, response, payload) {
-                                        var payload = jsonParse(payload);
-                                        if (err) {
-                                            $log('e', 'failed to save the data from the feed page');
-                                        } else {
-                                            $log('i', ''
-                                            + 'group ' + group.name
-                                            + '; found ' + payload.response + 'comments');
-                                            post.comments.data = payload.response;
-                                            cb(false);
-                                        }
+				    var wallLength = body.response.wall.length;
+				    for (var i = wallLength - 1; i >= 0; i--) {
+				        if (body.response.wall[i] && body.response.wall[i].date < since) {
+				            body.response.wall.splice(0, i + 1);
+				            break;
+				        }
+				    }
+				    if (body.response.wall.length > 0) {
+				        async.map(
+                            body.response.wall,
+                            function (post, cb) {
+                                if (post.comments && post.comments.count > 0) {
+                                    vkQueue.add(function (vkQcb) {
+                                        request.get(
+                                        	commentsUrl + '?access_token=' + state.token +
+                                        	'&owner_id=' + -group.id +
+                                        	'&post_id=' + post.id,
+                                        function (err, response, payload) {
+                                            var payload = jsonParse(payload);
+                                            if (err) {
+                                                $log('e', 'failed to save the data from the feed page');
+                                            } else {
+                                                $log('i', ''
+                                                + 'group ' + group.name
+                                                + '; found ' + payload.response + 'comments');
+                                                post.comments.data = payload.response;
+                                                vkQcb();
+                                                cb(false);
+                                            }
+                                        });
                                     });
-                                }, 2000 * body.response.wall.indexOf(post));
+                                } else {
+                                    $log('i', ''
+                                    + 'post: ' + post.id
+                                    + ' comments not found');
+                                    cb(false);
+                                }
+                            },
+                            function (err, _res) {
+                                var data = new Data({
+                                	url: url,
+                                	type: 'feed',
+                                	payload: body.response.wall,
+                                	date: Date.now(),
+                                	network: 'vk',
+                                	group: group
+                                });
+                                data.save(function (err, data) {
+                                	if (err) {
+                                		$log('e', 'failed to save the data from the feed page');
+                                		callback(true, null);
+                                	} else {
+                                		$log('i', ''
+                                			+ 'group ' + group.name
+                                			+ '; found ' + body.response.wall.length + ' new items');
+                                		group.dataRetrievedAt = new Date();
+                                		callback(false, {group: group, data: data});
+                                	}
+                                });
                             }
-                        },
-                        function (err, _res) {
-                            var data = new Data({
-                            	url: url,
-                            	type: 'feed',
-                            	payload: body.response.wall,
-                            	date: Date.now(),
-                            	network: 'vk'
-                            });
-                            data.save(function (err, data) {
-                            	if (err) {
-                            		$log('e', 'failed to save the data from the feed page');
-                            		callback(true, null);
-                            	} else {
-                            		$log('i', ''
-                            			+ 'group ' + group.name
-                            			+ '; found ' + body.response.wall.length + ' new items');
-                            		group.dataRetrievedAt = new Date();
-                            		callback(false, {group: group, data: data});
-                            	}
-                            });
-                        }
-                    );
+                        );
+				    }
 				} else {
 					// do not save empty results
 					// $log('i', ''
@@ -95,7 +113,7 @@ module.exports = function (state, group, callback) {
 					callback(false, null);
 				}
 			} else {
-				$log('e', 'the API returned the unknown data format');
+				$log('e', 'the API returned the unknown data format' + body);
 				callback(true, null);
 			}
 		});
