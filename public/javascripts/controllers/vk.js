@@ -107,7 +107,7 @@ angular.module('SocialApp.vk', []).
                 });
         };
         $scope.openVKPage = function (ownerId, postId) {
-            window.open("http://vk.com/" + $scope.groupDomain + "?w=wall" + ownerId + "_" + postId);
+            window.open("http://vk.com/public" + (-ownerId) + "?w=wall" + ownerId + "_" + postId);
         };
         $scope.isActive = function (groupIndex) {
             return groupIndex === $scope.activeGroupIndex;

@@ -74,6 +74,7 @@ var crawler = function () {
 							stopCrawler();
 						}
 					});
+					console.log('before setup save');
 					results.setup.save(function (err, setup) {
 						if (err) {
 							$log('e', 'failed to update the setup');

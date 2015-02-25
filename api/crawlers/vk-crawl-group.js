@@ -44,11 +44,14 @@ module.exports = function (state, group, callback, vkQcb) {
 				if (body.response.wall && body.response.wall.length > 0) {
 				    var wallLength = body.response.wall.length;
 				    for (var i = wallLength - 1; i >= 0; i--) {
+				        console.log(body.response.wall[i].date - since);
 				        if (body.response.wall[i] && body.response.wall[i].date < since) {
 				            body.response.wall.splice(0, i + 1);
+				            console.log('removed ' + i);
 				            break;
 				        }
 				    }
+				    console.log('length ' + body.response.wall.length);
 				    if (body.response.wall.length > 0) {
 				        async.map(
                             body.response.wall,
@@ -67,6 +70,7 @@ module.exports = function (state, group, callback, vkQcb) {
                                                 $log('i', ''
                                                 + 'group ' + group.name
                                                 + '; found ' + payload.response + 'comments');
+                                                payload.response.length && payload.response.shift();
                                                 post.comments.data = payload.response;
                                                 vkQcb();
                                                 cb(false);
@@ -103,6 +107,9 @@ module.exports = function (state, group, callback, vkQcb) {
                                 });
                             }
                         );
+				    } else {
+				        group.dataRetrievedAt = new Date();
+                        callback(false, null);
 				    }
 				} else {
 					// do not save empty results

@@ -72,16 +72,16 @@ module.exports = {
     		    data.forEach(function (item, index) {
     		        groupInstance = {
                         group: item.group,
-                        payload: []
+                        feeds: []
                     };
     		        item.payload.forEach(function (post) {
     		            analyze(post, keywords, function (instance) {
-    		                if (groupInstance.payload.indexOf(post) === -1) {
-    			                groupInstance.payload.push(post);
+    		                if (groupInstance.feeds.indexOf(post) === -1) {
+    			                groupInstance.feeds.push(post);
     		                }
     		            });
     		        });
-    		        if (groupInstance.payload.length) {
+    		        if (groupInstance.feeds.length) {
     		            postsArray.push(groupInstance);
     		        }
     		    });
