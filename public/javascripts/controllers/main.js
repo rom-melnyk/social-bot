@@ -8,7 +8,7 @@ angular.module('SocialApp.main', []).
     controller('mainController', function($scope, $http, $modal, $rootScope, $sce) {
         var openModal = function (ntw, newGroup, group) {
             var modalInstance = $modal.open({
-                templateUrl: "../../views/editKeyWordsModal.html",
+                templateUrl: "../../views/editKeywordsModal.html",
                 controller: "keyWordsController",
                 resolve: {
                     ntw: function () {
