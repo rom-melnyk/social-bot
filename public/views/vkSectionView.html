@@ -4,7 +4,7 @@
     <div class="header-section">
         <button class="btn btn-primary" ng-click="addNewGroup('vk')">Add VK group</button>
         <button class="btn btn-primary" ng-click="setNetworkKeywords('vk', vkKeywords)">Set VK keywords</button>
-        <button class="btn btn-success" ng-click="showAllGroupsPosts()" disabled>Search in VK groups</button>
+        <button class="btn btn-success" ng-click="showAllGroupsPosts()">Search in VK groups</button>
     </div>
     <div class="groups-section">
         <div class="list-group">
@@ -56,4 +56,5 @@
             </div>
         </div>
     </div>
+    <div ng-include src="'views/vkAllGroupsView.html'"></div>
 </div>

@@ -53,7 +53,7 @@ var crawler = function () {
 					} else if (network === 'vk') {
 						setTimeout(function () {
 							crawlVKGroup(results.state, item, cb);
-						}, 350 * results.setup.groups.indexOf(item));
+						}, 1500 * results.setup.groups.indexOf(item));
 					}
 				},
 				function (err, _res) {

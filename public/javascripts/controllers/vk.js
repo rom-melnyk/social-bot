@@ -77,6 +77,11 @@ angular.module('SocialApp.vk', []).
                 VK.Auth.login(processFB);
             }
         });
+        $scope.showAllGroupsPosts = function () {
+            $http.get('/api/data/vk/analyzed').success(function (resp) {
+                $scope.groupsArray = resp;
+            });
+        };
         $scope.showGroupPosts = function (groupIndex) {
             $scope.loading = true;
             $http.jsonp("https://api.vk.com/method/wall.get?access_token=" + accessToken + "&callback=JSON_CALLBACK&owner_id=" + (-$scope.groups[groupIndex].id) + "&count=50&extended=1")

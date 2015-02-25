@@ -41,7 +41,7 @@ module.exports = function (state, group, callback) {
 			} else if (body && body.response) {
 				if (body.response.wall && body.response.wall.length > 0) {
 				    async.map(
-                        [body.response.wall[1]],
+                        [body.response.wall[1], body.response.wall[2]],
                         function (post, cb) {
                             if (post.comments && post.comments.count > 0) {
                                 setTimeout(function () {
@@ -49,40 +49,43 @@ module.exports = function (state, group, callback) {
                                     	commentsUrl + '?access_token=' + state.token +
                                     	'&owner_id=' + -group.id +
                                     	'&post_id=' + post.id,
-                                    function (err, response, body) {
+                                    function (err, response, payload) {
+                                        var payload = jsonParse(payload);
                                         if (err) {
                                             $log('e', 'failed to save the data from the feed page');
                                         } else {
-                                            post.comments = response;
+                                            $log('i', ''
+                                            + 'group ' + group.name
+                                            + '; found ' + payload.response + 'comments');
+                                            post.comments.data = payload.response;
                                             cb(false);
                                         }
                                     });
-                                }, 350 * body.response.wall.indexOf(post));
+                                }, 2000 * body.response.wall.indexOf(post));
                             }
                         },
                         function (err, _res) {
-                            $log('i', _res);
+                            var data = new Data({
+                            	url: url,
+                            	type: 'feed',
+                            	payload: body.response.wall,
+                            	date: Date.now(),
+                            	network: 'vk'
+                            });
+                            data.save(function (err, data) {
+                            	if (err) {
+                            		$log('e', 'failed to save the data from the feed page');
+                            		callback(true, null);
+                            	} else {
+                            		$log('i', ''
+                            			+ 'group ' + group.name
+                            			+ '; found ' + body.response.wall.length + ' new items');
+                            		group.dataRetrievedAt = new Date();
+                            		callback(false, {group: group, data: data});
+                            	}
+                            });
                         }
                     );
-					/*var data = new Data({
-						url: url,
-						type: 'feed',
-						payload: body.response.wall,
-						date: Date.now(),
-						network: 'vk'
-					});
-					data.save(function (err, data) {
-						if (err) {
-							$log('e', 'failed to save the data from the feed page');
-							callback(true, null);
-						} else {
-							$log('i', ''
-								+ 'group ' + group.name
-								+ '; found ' + body.response.wall.length + ' new items');
-							group.dataRetrievedAt = new Date();
-							callback(false, {group: group, data: data});
-						}
-					});*/
 				} else {
 					// do not save empty results
 					// $log('i', ''

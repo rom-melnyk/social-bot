@@ -42,7 +42,7 @@ app.put('/api/setup/:network/:gid', handlers.setup.updateGroup);
 app.delete('/api/setup/:network/:gid', handlers.setup.deleteGroup);
 
 app.get('/api/data/:network/raw', handlers.rawData.getRawData);
-// app.get('/api/data/:network/analyzed', handlers.rawData.getAnalyzedData);
+app.get('/api/data/:network/analyzed', handlers.rawData.getAnalyzedData);
 
 // for test purposes
 app.all('/api/test', handlers.test);

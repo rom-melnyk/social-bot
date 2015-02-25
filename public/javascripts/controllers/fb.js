@@ -112,33 +112,4 @@ angular.module('SocialApp.controllers', []).
             getGroups();
         });
 
-    }).filter('keyWordFilter', function () {
-        return function (items, keywords) {
-            var filtered = [];
-            if (items && items.length && keywords.length) {
-                for (var i = 0; i < items.length; i++) {
-                    var item = items[i],
-                        containsWord = false;
-                    if (item.message) {
-                        for (var j = 0; j < keywords.length; j++) {
-                        	RE = new RegExp(keywords[j], 'gi');
-                        	containsWord = containsWord || RE.test(item.message);
-                        }
-                        containsWord && filtered.push(item);
-                    } else if (item.comments) {
-                        item.comments.data.forEach(function (value) {
-                            for (var j = 0; j < keywords.length; j++) {
-                            	RE = new RegExp(keywords[j], 'gi');
-                            	containsWord = containsWord || RE.test(value.message);
-                            }
-                        });
-                        containsWord && filtered.push(item);
-                        containsWord = false;
-                    }
-                }
-            } else {
-                return items;
-            }
-            return filtered;
-        };
-    });
+    })

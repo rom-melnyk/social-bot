@@ -41,7 +41,8 @@ module.exports = function (state, group, callback) {
 						type: 'feed',
 						payload: body.data,
 						date: Date.now(),
-						network: 'fb'
+						network: 'fb',
+						group: group
 					});
 					data.save(function (err, data) {
 						if (err) {
