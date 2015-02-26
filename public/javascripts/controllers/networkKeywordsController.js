@@ -11,8 +11,11 @@ angular.module('SocialApp.networkKeywordController', []).
         $scope.networkName = networkNamesMap[ntw];
         $scope.submitChanges = function () {
             $scope.keywords = $scope.keywords ? $scope.keywords : "";
+            if (!($scope.keywords instanceof Array)) {
+               $scope.keywords = $scope.keywords.split(',');
+            }
             $http.put('/api/setup/' + ntw + '/keywords', {
-            keywords: $scope.keywords.split(',')
+            keywords: $scope.keywords
             }).success(function (response) {
                 $modalInstance.close(response);
                 $rootScope.$emit('groupsChanged');
