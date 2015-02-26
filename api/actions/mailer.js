@@ -1,11 +1,11 @@
-var mailer = require('nodemailer');
+var nodemailer = require('nodemailer');
 
 // create reusable transporter object using SMTP transport
 var transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-        user: 'gmail.user@gmail.com',
-        pass: 'userpass'
+        user: 'botsawyer@gmail.com',
+        pass: 'simplepass123'
     }
 });
 
@@ -13,19 +13,29 @@ var transporter = nodemailer.createTransport({
 // the same transporter object for all e-mails
 
 // setup e-mail data with unicode symbols
-var mailOptions = {
-    from: 'Fred Foo ✔ <foo@blurdybloop.com>', // sender address
-    to: 'bar@blurdybloop.com, baz@blurdybloop.com', // list of receivers
-    subject: 'Hello ✔', // Subject line
-    text: 'Hello world ✔', // plaintext body
-    html: '<b>Hello world ✔</b>' // html body
-};
-
+var createMailBody = function (data) {
+    var htmlTemplate = '';
+    data.forEach(function (item) {
+        htmlTemplate += "Post: " + item.instance.text ? item.instance.text : item.instance.message + "<br/> network: " + item.network +
+        "<a href=http://vk.com/public" + (-item.instance.to_id) + "?w=wall" + item.instance.to_id + "_" + item.instance.id + ">Read on VK</a>" +
+        "-----------------------------------------------------------<br>";
+    });
+    return mailOptions = {
+        from: 'Social Bot ✔', // sender address
+        to: 'olehbr29@gmail.com', // list of receivers
+        subject: 'Social bot notification', // Subject line
+        text: "Post: " + data[0].instance + " network: " + data[0].network, // plaintext body
+        html: htmlTemplate // html body
+    };
+}
 // send mail with defined transport object
-transporter.sendMail(mailOptions, function(error, info){
-    if(error){
-        console.log(error);
-    }else{
-        console.log('Message sent: ' + info.response);
-    }
-});
+module.exports = function (dataArray) {
+    var mailOptions = createMailBody(dataArray);
+    transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+            console.log(error);
+        }else{
+            console.log('Message sent: ' + info);
+        }
+    });
+};

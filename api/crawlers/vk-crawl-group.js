@@ -28,7 +28,6 @@ module.exports = function (state, group, callback, vkQcb) {
 		: sinceTimestamp;
 	//since = nowTimestamp - 1000 * 60 * 60 * 24 * 5; // [rmelnyk] for test purposes only!
 	since = Math.round(since / 1000);
-    console.log(since);
 	request.get(
 			url + '?access_token=' + state.token +
 			'&owner_id=' + -group.id +
@@ -42,13 +41,10 @@ module.exports = function (state, group, callback, vkQcb) {
 			    $log('e', body.error.error_msg);
 			} else if (body && body.response) {
 				if (body.response.wall && body.response.wall.length > 0) {
+				    body.response.wall.splice(0, 2);
 				    var wallLength = body.response.wall.length;
 				    for (var i = 0; i <= wallLength - 1; i++) {
-				        if (body.response.wall[i + 2] && body.response.wall[i + 2].date < since) {
-				        console.log(body.response.wall[i].text);
-				            if (i !== 0) {
-				                i++;
-				            }
+				        if (body.response.wall[i] && body.response.wall[i].date < since) {
 				            body.response.wall.splice(i, wallLength);
 				            break;
 				        }
@@ -68,9 +64,6 @@ module.exports = function (state, group, callback, vkQcb) {
                                             if (err) {
                                                 $log('e', 'failed to save the data from the feed page');
                                             } else {
-                                                $log('i', ''
-                                                + 'group ' + group.name
-                                                + '; found ' + payload.response + 'comments');
                                                 payload.response.length && payload.response.shift();
                                                 post.comments.data = payload.response;
                                                 vkQcb();
@@ -79,9 +72,6 @@ module.exports = function (state, group, callback, vkQcb) {
                                         });
                                     });
                                 } else {
-                                    $log('i', ''
-                                    + 'post: ' + post.id
-                                    + ' comments not found');
                                     cb(false);
                                 }
                             },

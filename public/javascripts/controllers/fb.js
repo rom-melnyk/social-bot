@@ -48,12 +48,18 @@ angular.module('SocialApp.controllers', []).
 
         //static scope methods
         $scope.showGroupPosts = function (groupIndex) {
+            var since = $scope.sinceDate.toLocaleDateString().split('.').join('-');
             $scope.groupsArray = [];
             $scope.loading = true;
-            $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken + "&since=2015-02-19&limit=50").success(function (resp) {
+            $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken + "&since=" + since + "&limit=50").success(function (resp) {
                 if (resp.data) {
                     $scope.facebookFeeds = resp.data;
                     $scope.keywords = $scope.groups[groupIndex].keywords;
+                    $scope.networkKeywords.forEach(function (kw) {
+                        if ($scope.keywords.indexOf(kw) === -1) {
+                            $scope.keywords.push(kw);
+                        }
+                    });
                     $scope.emptyMessage =  !$scope.facebookFeeds.length;
                     $scope.activeGroupIndex = groupIndex;
                     $scope.loading = false;
@@ -94,7 +100,6 @@ angular.module('SocialApp.controllers', []).
                             }
                             var filtered = $filter('keyWordFilter')(resp.data, group.keywords);
                             feedsArray = feedsArray.concat(filtered);
-
                         }
                     });
                     };

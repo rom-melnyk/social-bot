@@ -12,8 +12,9 @@ var async = require('async'),
 	network,
 	interval = undefined,
 	runAtFirstTime = true;
-
-var actionConsoleLog = require('../actions/action-console-log');
+//actions for retrieved data
+var actionConsoleLog = require('../actions/action-console-log'),
+    mailer = require('../actions/mailer');
 
 var crawler = function () {
 	async.parallel(
@@ -85,7 +86,9 @@ var crawler = function () {
 						stopCrawler();
 						startCrawler();
 					} else {
+					    var responseArray = [];
 						_res.forEach(function (obj) {
+
 							if (!obj || !obj.group || !obj.data) {
 								return;
 							}
@@ -106,8 +109,17 @@ var crawler = function () {
 									group: obj.group,
 									keywords: keywords
 								}, instance);
+								responseArray.push({
+                                	network: network,
+                                	group: obj.group,
+                                	keywords: keywords,
+                                	instance: instance
+                                });
 							});
 						});
+						if (responseArray.length) {
+						    mailer(responseArray);
+						}
 					}
 				});
 		}

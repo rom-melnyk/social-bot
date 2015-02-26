@@ -3,7 +3,6 @@ var express = require('express'),
 	favicon = require('express-favicon'),
 	handlers = {},
 	bodyParser = require('body-parser');
-
 require('./api/db/connect');
 
 // ------------ statics ------------
