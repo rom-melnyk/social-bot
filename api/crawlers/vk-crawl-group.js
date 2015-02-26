@@ -28,11 +28,11 @@ module.exports = function (state, group, callback, vkQcb) {
 		: sinceTimestamp;
 	//since = nowTimestamp - 1000 * 60 * 60 * 24 * 5; // [rmelnyk] for test purposes only!
 	since = Math.round(since / 1000);
-
+    console.log(since);
 	request.get(
 			url + '?access_token=' + state.token +
 			'&owner_id=' + -group.id +
-			'&extended=1',
+			'&extended=1&count=20',
 		function (err, response, body) {
 		    vkQcb();
 			body = jsonParse(body);
@@ -43,15 +43,16 @@ module.exports = function (state, group, callback, vkQcb) {
 			} else if (body && body.response) {
 				if (body.response.wall && body.response.wall.length > 0) {
 				    var wallLength = body.response.wall.length;
-				    for (var i = wallLength - 1; i >= 0; i--) {
-				        console.log(body.response.wall[i].date - since);
-				        if (body.response.wall[i] && body.response.wall[i].date < since) {
-				            body.response.wall.splice(0, i + 1);
-				            console.log('removed ' + i);
+				    for (var i = 0; i <= wallLength - 1; i++) {
+				        if (body.response.wall[i + 2] && body.response.wall[i + 2].date < since) {
+				        console.log(body.response.wall[i].text);
+				            if (i !== 0) {
+				                i++;
+				            }
+				            body.response.wall.splice(i, wallLength);
 				            break;
 				        }
 				    }
-				    console.log('length ' + body.response.wall.length);
 				    if (body.response.wall.length > 0) {
 				        async.map(
                             body.response.wall,

@@ -13,7 +13,7 @@ var __grep = function (string, keywords) {
 
 	for (var i = 0; i < keywords.length; i++) {
 		try {
-			RE = new RegExp(keywords[i]);
+			RE = new RegExp(keywords[i], 'gi');
 			ret = ret || RE.test(string);
 			if (ret) {
 				break;

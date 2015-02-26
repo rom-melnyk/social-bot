@@ -38,6 +38,6 @@ module.exports = {
 	    apiHost: 'https://api.vk.com',
         apiFeed: '/method/wall.get',
         apiComments: '/method/wall.getComments',
-        pollInterval: 5 * 10000
+        pollInterval: 15 * 10000
 	}
 };
