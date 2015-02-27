@@ -10,7 +10,10 @@ var async = require('async'),
 	Log = require('./log'),
 	$log,
 	network,
-	interval = undefined,
+	interval = {
+	    vk: undefined,
+	    fb: undefined
+	},
 	runAtFirstTime = true;
 //actions for retrieved data
 var actionConsoleLog = require('../actions/action-console-log'),
@@ -110,15 +113,18 @@ var crawler = function () {
                                 		group: obj.group,
                                 		keywords: keywords
                                 	}, instance);
-                                	var responsObj = {
+                                	var responseObj = {
                                         network: network,
                                         group: obj.group,
                                         keywords: keywords,
                                         instance: post
-                                    };
-                                    if (responseArray.indexOf(responsObj) === -1) {
-                                        responseArray.push(responsObj);
-                                    }
+                                    }, hasElement = false;
+                                    responseArray.forEach(function (item) {
+                                        if (item.instance.id === responseObj.instance.id) {
+                                            hasElement = true;
+                                        }
+                                    });
+                                    !hasElement && responseArray.push(responseObj);
                                 });
 							});
 						});
@@ -135,8 +141,8 @@ var startCrawler = function () {
 	var pollInterval = cfg[network] && cfg[network].pollInterval || 1000 * 60 * 10; // 10 min by default
 	// pollInterval = 5 * 1000; // [rmelnyk] for testing purposes
 
-	if (interval === undefined) {
-		interval = setInterval(function () {
+	if (interval[network] === undefined) {
+		interval[network] = setInterval(function () {
 			crawler();
 		}, pollInterval);
 		$log('i', 'started');
@@ -149,9 +155,9 @@ var startCrawler = function () {
  * @param {Boolean} [force=false]                whether or not to update the state intentionally
  */
 var stopCrawler = function (force) {
-	if (interval !== undefined) {
-		clearInterval(interval);
-		interval = undefined;
+	if (interval[network] !== undefined) {
+		clearInterval(interval[network]);
+		interval[network] = undefined;
 
 		if (force) {
 			State.findOneAndUpdate({network: network}, {state: 'stopped'}, function (err, state) {
