@@ -24,10 +24,6 @@ module.exports = function (state, group, callback) {
 		: sinceTimestamp;
 	// since = nowTimestamp - 1000 * 60 * 60 * 24 * 5; // [rmelnyk] for test purposes only!
 	since = Math.round(since / 1000);
-    console.log(url + '?since=' + since
-                				// the "&fields" might be removed if you need the exhaustive data
-                				+ '&fields=id,from,message,name,description,comments'
-                				+ '&access_token=' + state.token);
 	request.get(
 			url + '?since=' + since
 				// the "&fields" might be removed if you need the exhaustive data

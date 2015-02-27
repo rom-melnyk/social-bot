@@ -117,11 +117,14 @@ var crawler = function () {
                                         network: network,
                                         group: obj.group,
                                         keywords: keywords,
-                                        instance: post
+                                        instance: post,
+                                        found: 1
                                     }, hasElement = false;
                                     responseArray.forEach(function (item) {
                                         if (item.instance.id === responseObj.instance.id) {
                                             hasElement = true;
+                                        } else {
+                                            item.count++;
                                         }
                                     });
                                     !hasElement && responseArray.push(responseObj);
