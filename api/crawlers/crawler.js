@@ -117,7 +117,7 @@ var crawler = function () {
                                         instance: post
                                     };
                                     if (responseArray.indexOf(responsObj) === -1) {
-                                        responseArray.push();
+                                        responseArray.push(responsObj);
                                     }
                                 });
 							});

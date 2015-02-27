@@ -16,7 +16,15 @@ var transporter = nodemailer.createTransport({
 var createMailBody = function (data) {
     var htmlTemplate = '';
     data.forEach(function (item) {
-        htmlTemplate += /*"Post: " + item.instance.text ? item.instance.text : item.instance.message + "<br/> network: " + item.network + */"<a href=http://vk.com/public" + (-item.instance.to_id) + "?w=wall" + item.instance.to_id + "_" + item.instance.id + ">Read on VK</a>" + "-----------------------------------------------------------<br>";
+        if (item.network === 'vk') {
+            htmlTemplate += "Post: " + item.instance.text + "<br/> network: " + item.network + "<br>" +
+                "<a href=http://vk.com/public" + (-item.instance.to_id) + "?w=wall" + item.instance.to_id + "_" + item.instance.id + ">Read on VK</a><br>" +
+                "-----------------------------------------------------------<br>";
+        } else if (network === "fb") {
+            htmlTemplate += "Post: " + item.instance.message + "<br/> network: " + item.network + "<br>" +
+                "<a href='https://www.facebook.com/'" + item.instance.id + "'>Read on Facebook</a><br>" +
+                "-----------------------------------------------------------<br>";
+        }
     });
     return mailOptions = {
         from: 'Social Bot ✔', // sender address
