@@ -100,20 +100,25 @@ var crawler = function () {
 									keywords.push(kw);
 								}
 							});
-							analyze(obj.data.payload, keywords, function (instance) {
-								// Place here all the actions you want to perform with the data containing a keyword.
-								// Actions should reside in "../actions" and must be included via `require()` well.
-								// Make sure you pass the config that might be useful for the Action as the first param.
-								actionConsoleLog({
-									network: network,
-									group: obj.group,
-									keywords: keywords
-								}, instance);
-								responseArray.push({
-                                	network: network,
-                                	group: obj.group,
-                                	keywords: keywords,
-                                	instance: instance
+							obj.data.payload.forEach(function (post) {
+							    analyze(post, keywords, function (instance) {
+                                	// Place here all the actions you want to perform with the data containing a keyword.
+                                	// Actions should reside in "../actions" and must be included via `require()` well.
+                                	// Make sure you pass the config that might be useful for the Action as the first param.
+                                	actionConsoleLog({
+                                		network: network,
+                                		group: obj.group,
+                                		keywords: keywords
+                                	}, instance);
+                                	var responsObj = {
+                                        network: network,
+                                        group: obj.group,
+                                        keywords: keywords,
+                                        instance: post
+                                    };
+                                    if (responseArray.indexOf(responsObj) === -1) {
+                                        responseArray.push();
+                                    }
                                 });
 							});
 						});

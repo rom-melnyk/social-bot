@@ -7,15 +7,15 @@ angular.module('SocialApp.networkKeywordController', []).
             fb: "Facebook",
             vk: "Vkontakte"
         };
-        $scope.keywords = keywords;
+        $scope.networkKeywords = keywords;
         $scope.networkName = networkNamesMap[ntw];
         $scope.submitChanges = function () {
-            $scope.keywords = $scope.keywords ? $scope.keywords : "";
-            if (!($scope.keywords instanceof Array)) {
-               $scope.keywords = $scope.keywords.split(',');
+            $scope.networkKeywords = $scope.networkKeywords ? $scope.networkKeywords : "";
+            if (!($scope.networkKeywords instanceof Array)) {
+               $scope.networkKeywords = $scope.networkKeywords.split(',');
             }
             $http.put('/api/setup/' + ntw + '/keywords', {
-            keywords: $scope.keywords
+            keywords: $scope.networkKeywords
             }).success(function (response) {
                 $modalInstance.close(response);
                 $rootScope.$emit('groupsChanged');

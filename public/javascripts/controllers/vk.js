@@ -22,7 +22,7 @@ angular.module('SocialApp.vk', []).
                     //require to set timeout: VK API can handle only 3 requests per second
                     setTimeout(function () {
                         //getting post comment
-                        $http.jsonp("https://api.vk.com/method/wall.getComments?access_token=" + accessToken + "&callback=JSON_CALLBACK&count=100&owner_id=" + (-$scope.groups[groupIndex].id) + "&post_id=" + value.id)
+                        $http.jsonp("https://api.vk.com/method/wall.getComments?access_token=" + accessToken + "&scope=offline&callback=JSON_CALLBACK&count=100&owner_id=" + (-$scope.groups[groupIndex].id) + "&post_id=" + value.id)
                         .success(function (resp) {
                             var response = resp.response;
                             feeds[index].comments = response;
@@ -84,7 +84,7 @@ angular.module('SocialApp.vk', []).
         };
         $scope.showGroupPosts = function (groupIndex) {
             $scope.loading = true;
-            $http.jsonp("https://api.vk.com/method/wall.get?access_token=" + accessToken + "&callback=JSON_CALLBACK&owner_id=" + (-$scope.groups[groupIndex].id) + "&count=50&extended=1")
+            $http.jsonp("https://api.vk.com/method/wall.get?access_token=" + accessToken + "&callback=JSON_CALLBACK&owner_id=" + (-$scope.groups[groupIndex].id) + "&count=50&extended=1&scope=offline")
                 .success(function (data) {
                     if (data.error) {
                         VK.Auth.login(processFB);

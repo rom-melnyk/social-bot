@@ -31,7 +31,7 @@ module.exports = function (state, group, callback, vkQcb) {
 	request.get(
 			url + '?access_token=' + state.token +
 			'&owner_id=' + -group.id +
-			'&extended=1&count=20',
+			'&extended=1&count=20&scope=offline',
 		function (err, response, body) {
 		    vkQcb();
 			body = jsonParse(body);
@@ -57,7 +57,7 @@ module.exports = function (state, group, callback, vkQcb) {
                                     vkQueue.add(function (vkQcb) {
                                         request.get(
                                         	commentsUrl + '?access_token=' + state.token +
-                                        	'&owner_id=' + -group.id +
+                                        	'&scope=offline&owner_id=' + -group.id +
                                         	'&post_id=' + post.id,
                                         function (err, response, payload) {
                                             var payload = jsonParse(payload);

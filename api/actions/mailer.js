@@ -16,15 +16,13 @@ var transporter = nodemailer.createTransport({
 var createMailBody = function (data) {
     var htmlTemplate = '';
     data.forEach(function (item) {
-        htmlTemplate += "Post: " + item.instance.text ? item.instance.text : item.instance.message + "<br/> network: " + item.network +
-        "<a href=http://vk.com/public" + (-item.instance.to_id) + "?w=wall" + item.instance.to_id + "_" + item.instance.id + ">Read on VK</a>" +
-        "-----------------------------------------------------------<br>";
+        htmlTemplate += /*"Post: " + item.instance.text ? item.instance.text : item.instance.message + "<br/> network: " + item.network + */"<a href=http://vk.com/public" + (-item.instance.to_id) + "?w=wall" + item.instance.to_id + "_" + item.instance.id + ">Read on VK</a>" + "-----------------------------------------------------------<br>";
     });
     return mailOptions = {
         from: 'Social Bot ✔', // sender address
         to: 'olehbr29@gmail.com', // list of receivers
         subject: 'Social bot notification', // Subject line
-        text: "Post: " + data[0].instance + " network: " + data[0].network, // plaintext body
+        //text: "Post: " + data[0].instance + " network: " + data[0].network, // plaintext body
         html: htmlTemplate // html body
     };
 }
@@ -35,7 +33,7 @@ module.exports = function (dataArray) {
         if(error){
             console.log(error);
         }else{
-            console.log('Message sent: ' + info);
+            console.log('Message sent: ' + JSON.stringify(info));
         }
     });
 };
