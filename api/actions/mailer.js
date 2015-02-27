@@ -20,7 +20,7 @@ var createMailBody = function (data) {
             htmlTemplate += "Post: " + item.instance.text + "<br/> network: " + item.network + "<br>" +
                 "<a href=http://vk.com/public" + (-item.instance.to_id) + "?w=wall" + item.instance.to_id + "_" + item.instance.id + ">Read on VK</a><br>" +
                 "-----------------------------------------------------------<br>";
-        } else if (network === "fb") {
+        } else if (item.network === "fb") {
             htmlTemplate += "Post: " + item.instance.message + "<br/> network: " + item.network + "<br>" +
                 "<a href='https://www.facebook.com/'" + item.instance.id + "'>Read on Facebook</a><br>" +
                 "-----------------------------------------------------------<br>";
