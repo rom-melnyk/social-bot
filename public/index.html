@@ -8,19 +8,19 @@
 
 </head>
 <body ng-app="SocialApp" ng-controller="mainController">
-<div id="fb-root"></div>
-<div class="container">
+    <div id="fb-root"></div>
+    <div class="container">
 
-    <div class="col-md-6 section" ng-controller="fbController">
-        <div ng-include src="'views/fbSectionView.html'"></div>
-        <!--all fb network feeds-->
-        <div ng-include src="'views/facebookAllGroupsView.html'"></div>
-	</div>
+        <div class="col-md-6 section" ng-controller="fbController">
+            <div ng-include src="'views/fbSectionView.html'"></div>
+            <!--all fb network feeds-->
+            <div ng-include src="'views/facebookAllGroupsView.html'"></div>
+        </div>
 
 
-    <!--VK section-->
-    <div ng-include src="'views/vkSectionView.html'"></div>
-</div>
+        <!--VK section-->
+        <div ng-include src="'views/vkSectionView.html'"></div>
+    </div>
 </body>
 <script src="//connect.facebook.net/en_US/sdk.js"></script>
 <script src="/javascripts/src/facebookAPI.js"></script>
