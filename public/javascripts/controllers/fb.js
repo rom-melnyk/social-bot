@@ -48,7 +48,7 @@ angular.module('SocialApp.controllers', []).
 
         //static scope methods
         $scope.showGroupPosts = function (groupIndex) {
-            var since = $scope.sinceDate.getTime()/1000;
+            var since = Math.round($scope.sinceDate.getTime()/1000);
             $scope.groupsArray = [];
             $scope.loading = true;
             $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken + "&since=" + since + "&limit=50").success(function (resp) {
