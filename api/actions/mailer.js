@@ -37,10 +37,10 @@ var createMailBody = function (data) {
 // send mail with defined transport object
 module.exports = function (dataArray) {
     var mailOptions = createMailBody(dataArray);
-    transporter.sendMail(mailOptions, function(error, info){
-        if(error){
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
             console.log(error);
-        }else{
+        } else {
             console.log('Message sent: ' + JSON.stringify(info));
         }
     });

@@ -32,7 +32,9 @@ var __analyzeObj = function (obj, keywords, callback, parent) {
 	} else if (__isObject(obj)) {
 		// traversing the object
 		for (var key in obj) {
-			__analyzeObj(obj[key], keywords, callback, obj);
+		    if (key !== "group") {
+			    __analyzeObj(obj[key], keywords, callback, obj);
+		    }
 		}
 	} else if (__isArray(obj)) {
 		// traversing the array

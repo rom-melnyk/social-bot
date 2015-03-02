@@ -27,7 +27,7 @@ module.exports = function (state, group, callback) {
 	request.get(
 			url + '?since=' + since
 				// the "&fields" might be removed if you need the exhaustive data
-				+ '&fields=id,from,message,name,description,comments'
+				+ '&fields=id,from,message,name,description,comments,actions'
 				+ '&access_token=' + state.token,
 		function (err, response, body) {
 			body = jsonParse(body);

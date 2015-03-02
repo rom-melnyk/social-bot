@@ -1,5 +1,6 @@
 var State = require('./db/state-model'),
-    crawler = require('./crawlers/crawler');
+    crawler = require('./crawlers/crawler'),
+    ntwCrawlers = {};
 
 var errHandler = function (msg, status, callback) {
 	var err = new Error(msg);
@@ -30,8 +31,10 @@ module.exports = {
 			errHandler('Request error, wrong "network" parameter', 592, next);
 			return;
 		}
-
-		crawler(ntw).start();
+        if (!ntwCrawlers[ntw]) {
+            ntwCrawlers[ntw] = crawler(ntw);
+        }
+		ntwCrawlers[ntw].start();
 		res.status(200).send({
 			network: ntw,
 			status: 'started'
@@ -49,8 +52,9 @@ module.exports = {
 			errHandler('Request error, wrong "network" parameter', 592, next);
 			return;
 		}
-
-        crawler(ntw).stop(true);
+        if (ntwCrawlers[ntw]) {
+            ntwCrawlers[ntw].stop(true);
+        }
 		res.status(200).send({
 			network: ntw,
 			status: 'stopped'

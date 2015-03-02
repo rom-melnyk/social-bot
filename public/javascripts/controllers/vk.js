@@ -86,6 +86,7 @@ angular.module('SocialApp.vk', []).
         $scope.showAllGroupsPosts = function () {
             var since = Math.round(($scope.sinceDate && $scope.sinceDate.getTime()) || (new Date().getTime()));
             $http.get('/api/data/vk/analyzed?since=' + since).success(function (resp) {
+                $scope.vkFeeds = [];
                 $scope.groupsArray = resp;
             });
         };
