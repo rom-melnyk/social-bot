@@ -4,6 +4,7 @@
         <button class="btn btn-primary" ng-click="addNewGroup('fb')">Add FB group</button>
         <button class="btn btn-primary" ng-click="setNetworkKeywords('fb', networkKeywords)">Set FB keywords</button>
         <button class="btn btn-success" ng-click="showAllGroupsPosts()">Search in FB groups</button>
+        <button class="btn btn-success" ng-class="{'btn-danger': state === 'running'}"  ng-click="startCrawler($event)">{{crawlerText}}</button>
         <input type="date" class="form-control" name="sinceFilter" ng-model="sinceDate" ng-change="setDate(sinceDate)"/>
     </div>
     <div class="groups-section">
@@ -32,7 +33,7 @@
                 <span ng-bind-html="highlight(feed.message, keywords)"></span>
                 <img ng-src="{{feed.type === 'photo' ? feed.picture : ''}}" ng-show="!!feed.picture">
                 <div>
-                    <a ng-click="openFbPage(feed.id)">Read on Facebook</a>
+                    <a ng-click="openFbPage(feed.link || feed.actions[0].link)">Read on Facebook</a>
                 </div>
                 <div class="comments-section" ng-show="!!feed.comments">
                     <div class="actionBox" ng-repeat="comment in feed.comments.data">
@@ -57,7 +58,7 @@
                     <div ng-show="!facebookFeeds[$index].showFullText">
                         <span>{{feed.from.name}}:</span>
                         <span ng-bind-html="cropText(feed.message, 50)"></span><br/>
-                        <a ng-click="openFbPage(feed.id)">Read on Facebook</a>
+                        <a ng-click="openFbPage(feed.link || feed.actions[0].link)">Read on Facebook</a>
                     </div>
                 </div>
                 <a ng-click="showMore(facebookFeeds[$index], $event)">Show more</a>

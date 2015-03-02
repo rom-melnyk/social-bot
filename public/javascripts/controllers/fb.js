@@ -4,10 +4,9 @@
 angular.module('SocialApp.controllers', []).
     controller('fbController', function($scope, $http, $modal, $sce, $rootScope, $filter) {
         $scope.groupsArray = [];
-        $scope.sinceDate = new Date();
         $scope.setDate = function (since) {
             $scope.sinceDate = since;
-        }
+        };
         var accessToken, uid,
             getGroups = function () {
                 $http.get('api/setup/fb').success(function (response) {
@@ -19,9 +18,12 @@ angular.module('SocialApp.controllers', []).
             }, getLoginAccess = function () {
                 $http.get('/api/state/fb').success(function (response) {
                     if (response.token && response.state !== "auth-fail") {
-                        /*if (response.state !== "running") {
-                            $http.get('/api/stop/fb').success(function (response) {});
-                        }*/
+                        $scope.state = response.state;
+                        if (response.state !== "running") {
+                            $scope.crawlerText = "Start FB crawler";
+                        } else {
+                            $scope.crawlerText = "Stop FB crawler";
+                        }
                         accessToken = response.token;
                         getGroups();
                     } else {
@@ -48,7 +50,7 @@ angular.module('SocialApp.controllers', []).
 
         //static scope methods
         $scope.showGroupPosts = function (groupIndex) {
-            var since = Math.round($scope.sinceDate.getTime()/1000);
+            var since = Math.round($scope.sinceDate && $scope.sinceDate.getTime()/1000 || new Date().getTime()/1000);
             $scope.groupsArray = [];
             $scope.loading = true;
             $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken + "&since=" + since + "&limit=50").success(function (resp) {
@@ -75,7 +77,7 @@ angular.module('SocialApp.controllers', []).
             $scope.groups.forEach(function (group) {
                 var feedsArray = [],
                     page = 0,
-                    since = $scope.sinceDate.toLocaleDateString().split('.').join('-');
+                    since = Math.round($scope.sinceDate && $scope.sinceDate.getTime()/1000 || new Date().getTime()/1000);
                 var getFeeds = function (nextPage) {
                     var url = 'https://graph.facebook.com/' + group.id + '/feed?access_token=' + accessToken + '&since=' + since;
                     if (nextPage) {
@@ -106,13 +108,25 @@ angular.module('SocialApp.controllers', []).
                     getFeeds();
                 });
         };
-        $scope.openFbPage = function (itemId) {
-            window.open('https://www.facebook.com/' + itemId, '_newtab');
+        $scope.openFbPage = function (link) {
+            window.open(link, '_newtab');
         };
         $scope.isActive = function (groupIndex) {
             return groupIndex === $scope.activeGroupIndex;
         };
-
+        $scope.startCrawler = function (event) {
+            if ($scope.state !== "running") {
+                $http.get('/api/start/fb').success(function (response) {
+                    $scope.state = "running";
+                    $scope.crawlerText = "Stop FB crawler";
+                });
+            } else {
+                $http.get('/api/stop/fb').success(function (response) {
+                    $scope.state = "stopped";
+                    $scope.crawlerText = "Start FB crawler";
+                });
+            }
+        };
         $rootScope.$on('groupsChanged', function () {
             getGroups();
         });

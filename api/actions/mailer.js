@@ -17,12 +17,12 @@ var createMailBody = function (data) {
     var htmlTemplate = '';
     data.forEach(function (item) {
         if (item.network === 'vk') {
-            htmlTemplate += "Post: " + item.instance.text + "<br/> network: " + item.network + "<br>" +
+            htmlTemplate += "Count: " + item.found + " Post: " + item.instance.text + "<br/> network: " + item.network + "<br>" +
                 "<a href=http://vk.com/public" + (-item.instance.to_id) + "?w=wall" + item.instance.to_id + "_" + item.instance.id + ">Read on VK</a><br>" +
                 "-----------------------------------------------------------<br>";
         } else if (item.network === "fb") {
-            htmlTemplate += "count: " + item.count + "Post: " + item.instance.message + "<br/> network: " + item.network + "<br>" +
-                "<a href='https://www.facebook.com/" + item.instance.id + "'>Read on Facebook</a><br>" +
+            htmlTemplate += "Count: " + item.found + " Post: " + item.instance.message + "<br/> network: " + item.network + "<br>" +
+                "<a href='" + (item.instance.link || item.instance.actions[0].link) + "'>Read on Facebook</a><br>" +
                 "-----------------------------------------------------------<br>";
         }
     });

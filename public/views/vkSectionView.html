@@ -5,6 +5,8 @@
         <button class="btn btn-primary" ng-click="addNewGroup('vk')">Add VK group</button>
         <button class="btn btn-primary" ng-click="setNetworkKeywords('vk', vkKeywords)">Set VK keywords</button>
         <button class="btn btn-success" ng-click="showAllGroupsPosts()">Search in VK groups</button>
+        <button class="btn btn-success" ng-class="{'btn-danger': state === 'running'}"  ng-click="startCrawler($event)">{{crawlerText}}</button>
+        <input type="date" class="form-control" name="sinceFilter" ng-model="sinceDate" ng-change="setDate(sinceDate)"/>
     </div>
     <div class="groups-section">
         <div class="list-group">

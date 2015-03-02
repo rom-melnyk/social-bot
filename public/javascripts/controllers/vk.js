@@ -66,11 +66,17 @@ angular.module('SocialApp.vk', []).
                 }
             });
         };
+        $scope.setDate = function (since) {
+            $scope.sinceDate = since;
+        };
         $http.get('/api/state/vk').success(function (response) {
             if (response.state && response.state !== "auth-fail") {
-                /*if (response.state !== "running") {
-                    $http.get('/api/stop/vk').success(function (response) {});
-                }*/
+                $scope.state = response.state;
+                if (response.state !== "running") {
+                    $scope.crawlerText = "Start VK crawler";
+                } else {
+                    $scope.crawlerText = "Stop VK crawler";
+                }
                 accessToken = response.token;
                 setGroups();
             } else {
@@ -78,7 +84,8 @@ angular.module('SocialApp.vk', []).
             }
         });
         $scope.showAllGroupsPosts = function () {
-            $http.get('/api/data/vk/analyzed').success(function (resp) {
+            var since = Math.round(($scope.sinceDate && $scope.sinceDate.getTime()) || (new Date().getTime()));
+            $http.get('/api/data/vk/analyzed?since=' + since).success(function (resp) {
                 $scope.groupsArray = resp;
             });
         };
@@ -119,6 +126,19 @@ angular.module('SocialApp.vk', []).
                     $scope.vkKeywords = response.keywords;
                 }
             });
+        };
+        $scope.startCrawler = function (event) {
+            if ($scope.state !== "running") {
+                $http.get('/api/start/vk').success(function (response) {
+                    $scope.state = "running";
+                    $scope.crawlerText = "Stop VK crawler";
+                });
+            } else {
+                $http.get('/api/stop/vk').success(function (response) {
+                    $scope.state = "stopped";
+                    $scope.crawlerText = "Start VK crawler";
+                });
+            }
         };
         $rootScope.$on('groupsChanged', function () {
             setGroups();

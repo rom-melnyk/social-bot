@@ -19,7 +19,7 @@ var async = require('async'),
 var actionConsoleLog = require('../actions/action-console-log'),
     mailer = require('../actions/mailer');
 
-var crawler = function () {
+var crawler = function (network) {
 	async.parallel(
 		{
 			state: function (cb) {
@@ -123,8 +123,7 @@ var crawler = function () {
                                     responseArray.forEach(function (item) {
                                         if (item.instance.id === responseObj.instance.id) {
                                             hasElement = true;
-                                        } else {
-                                            item.count++;
+                                            item.found++;
                                         }
                                     });
                                     !hasElement && responseArray.push(responseObj);
@@ -140,13 +139,13 @@ var crawler = function () {
 	);
 };
 
-var startCrawler = function () {
-	var pollInterval = cfg[network] && cfg[network].pollInterval || 1000 * 60 * 10; // 10 min by default
+var startCrawler = function (ntw) {
+	var pollInterval = cfg[ntw] && cfg[ntw].pollInterval || 1000 * 60 * 10; // 10 min by default
 	// pollInterval = 5 * 1000; // [rmelnyk] for testing purposes
 
-	if (interval[network] === undefined) {
-		interval[network] = setInterval(function () {
-			crawler();
+	if (interval[ntw] === undefined) {
+		interval[ntw] = setInterval(function () {
+			crawler(ntw);
 		}, pollInterval);
 		$log('i', 'started');
 	} else {
@@ -180,7 +179,7 @@ module.exports = function (ntw) {
 	$log = Log(ntw);
 	network = ntw;
 	return {
-		start: startCrawler,
+		start: function () { startCrawler (ntw); },
 		stop: stopCrawler
 	}
 };

@@ -13,7 +13,7 @@ var getData = function (ntw, since, callback) {
 	if (since) {
 		condition.date = {$gt: new Date(since)}
 	}
-    Setup.findOne(condition, function (err, networkData) {
+    Setup.findOne({network: ntw}, function (err, networkData) {
         Data.find(condition, function (err, dataArr) {
         	callback(err ? false : dataArr, networkData.keywords, networkData);
         });
