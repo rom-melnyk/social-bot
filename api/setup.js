@@ -101,19 +101,27 @@ module.exports = {
 				if (!setup) {
 					throw new Error('The no entry for the "' + ntw + '" found in the "setups" collection.');
 				} else {
-					setup.groups.push({
-						id: body.id,
-						name: body.name,
-						description: body.description,
-						keywords: body.keywords
-					});
-					setup.save(function (err, setup) {
-						if (err) {
-							errHandler('Database error, failed to update the setup', 591, next);
-						} else {
-							res.status(200).send(setup);
-						}
-					});
+				    var group = setup.groups.find(function (grp) {
+                    	return grp.id + '' === body.id + '';
+                    });
+
+                    if (group) {
+                        errHandler('Group with id "' + body.id + '" already exists', 591, next);
+                    } else {
+                        setup.groups.push({
+                        	id: body.id,
+                        	name: body.name,
+                        	description: body.description,
+                        	keywords: body.keywords
+                        });
+                        setup.save(function (err, setup) {
+                        	if (err) {
+                        		errHandler('Database error, failed to update the setup', 591, next);
+                        	} else {
+                        		res.status(200).send(setup);
+                        	}
+                        });
+                    }
 				}
 			}
 		});
