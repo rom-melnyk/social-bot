@@ -9,10 +9,10 @@
                 <input name="groupName" type="text" placeholder="Group name" data-ng-model="activeGroup.name" required="true" class="form-control"/>
             </div>
             <div class="controls col-md-3 col-md-offset-1">
-                <input name="groupId" type="text" placeholder="Group id" data-ng-model="activeGroup.id" required="true" class="form-control"/>
+                <input name="groupId" type="number" placeholder="Group id" data-ng-model="activeGroup.id" required="true" class="form-control" ng-disabled="!newGroup"/>
             </div>
             <div class="controls col-md-3 col-md-offset-1">
-                <input name="keyWord" type="text" placeholder="Keyword" data-ng-model="activeGroup.keywords" required="true" class="form-control"/>
+                <input name="keyWord" type="text" placeholder="Keyword" data-ng-model="activeGroup.keywords" class="form-control"/>
             </div>
             <div class="clearfix"></div>
         </form>

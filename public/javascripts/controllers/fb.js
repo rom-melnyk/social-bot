@@ -4,6 +4,7 @@
 angular.module('SocialApp.controllers', []).
     controller('fbController', function($scope, $http, $modal, $sce, $rootScope, $filter) {
         $scope.groupsArray = [];
+        $scope.sinceDate = new Date(new Date().toLocaleDateString());
         $scope.setDate = function (since) {
             $scope.sinceDate = since;
         };
@@ -74,39 +75,9 @@ angular.module('SocialApp.controllers', []).
             $scope.facebookFeeds = [];
             $scope.groupsArray = [];
             $scope.activeGroupIndex = null;
-            $scope.groups.forEach(function (group) {
-                var feedsArray = [],
-                    page = 0,
-                    since = Math.round($scope.sinceDate && $scope.sinceDate.getTime()/1000 || new Date().getTime()/1000);
-                var getFeeds = function (nextPage) {
-                    var url = 'https://graph.facebook.com/' + group.id + '/feed?access_token=' + accessToken + '&since=' + since;
-                    if (nextPage) {
-                        url = nextPage + '&since=' + since;
-                    }
-                    $http.get(url).success(function (resp) {
-                        if (resp.data) {
-                            $scope.networkKeywords.forEach(function (kw) {
-                                if (group.keywords.indexOf(kw) === -1) {
-                                    group.keywords.push(kw);
-                                }
-                            });
-                            if (resp.paging && resp.paging.next) {
-                                page++;
-                                getFeeds(resp.paging.next);
-                            } else {
-                                console.log("no next page found");
-                                $scope.groupsArray.push({
-                                    group: group,
-                                    feeds: feedsArray
-                                });
-                            }
-                            var filtered = $filter('keyWordFilter')(resp.data, group.keywords);
-                            feedsArray = feedsArray.concat(filtered);
-                        }
-                    });
-                    };
-                    getFeeds();
-                });
+            $http.get('api/data/fb/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
+                $scope.groupsArray = resp;
+            });
         };
         $scope.openFbPage = function (link) {
             window.open(link, '_newtab');
@@ -131,4 +102,4 @@ angular.module('SocialApp.controllers', []).
             getGroups();
         });
 
-    })
+    });

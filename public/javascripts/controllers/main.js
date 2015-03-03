@@ -32,7 +32,7 @@ angular.module('SocialApp.main', []).
             });
         };
         $scope.addNewGroup = function (ntw) {
-            openModal(ntw, true, {});
+            openModal(ntw, true, undefined);
         };
         $scope.setNetworkKeywords = function (ntw, keywords) {
             var modalInstance = $modal.open({

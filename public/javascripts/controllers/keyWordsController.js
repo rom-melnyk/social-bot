@@ -3,24 +3,26 @@
  */
 angular.module('SocialApp.keyWordController', []).
     controller('keyWordsController', function($scope, $http, $modalInstance, ntw, group, newGroup, $rootScope) {
-
+        $scope.newGroup = newGroup;
         $scope.submitChanges = function () {
-            if (group.keywords && group.keywords.length && !(group.keywords instanceof Array)) {
-                $scope.activeGroup.keywords = $scope.activeGroup.keywords.split(",");
-            }
-            if (newGroup) {
-                $http.post('api/setup/' + ntw, $scope.activeGroup).success(function (response) {
-                    $rootScope.$emit('groupsChanged');
-                    $modalInstance.close(response);
-                });
-            } else {
-                if (!$scope.activeGroup.keywords) {
-                    $scope.activeGroup.keywords = [];
+            if ($scope.groupKeywords.$valid) {
+                if (newGroup) {
+                    $http.post('api/setup/' + ntw, $scope.activeGroup).success(function (response) {
+                        $rootScope.$emit('groupsChanged');
+                        $modalInstance.close(response);
+                    });
+                } else {if (
+                    group.keywords && group.keywords.length && !(group.keywords instanceof Array)) {
+                        $scope.activeGroup.keywords = $scope.activeGroup.keywords.split(",");
+                    }
+                    if (!$scope.activeGroup.keywords) {
+                        $scope.activeGroup.keywords = [];
+                    }
+                    $http.put('api/setup/' + ntw + '/' + $scope.activeGroup.id, $scope.activeGroup).success(function (response) {
+                        $rootScope.$emit('groupsChanged');
+                        $modalInstance.close(response);
+                    });
                 }
-                $http.put('api/setup/' + ntw + '/' + $scope.activeGroup.id, $scope.activeGroup).success(function (response) {
-                    $rootScope.$emit('groupsChanged');
-                    $modalInstance.close(response);
-                });
             }
         };
 
@@ -35,5 +37,8 @@ angular.module('SocialApp.keyWordController', []).
             }
             return copy;
         };
-        $scope.activeGroup = clone(group);
+        if (!newGroup) {
+            $scope.activeGroup = clone(group);
+            $scope.activeGroup.id = parseInt($scope.activeGroup.id);
+        }
     });

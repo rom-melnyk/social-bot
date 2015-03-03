@@ -3,6 +3,7 @@
  */
 angular.module('SocialApp.vk', []).
     controller('vkController', function($scope, $http, $modal, $sce, $rootScope) {
+        $scope.sinceDate = new Date(new Date().toLocaleDateString());
         var accessToken, uid, processFB = function(response) {
             accessToken = response.session.sid;
             $http.put('/api/state/vk', {

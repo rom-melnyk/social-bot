@@ -149,3 +149,7 @@ span.glyphicon {
     display: inline;
     opacity: 0.7;
 }
+
+.ng-touched.ng-invalid {
+    border-color: #F47777;
+}

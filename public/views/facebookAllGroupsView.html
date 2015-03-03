@@ -1,10 +1,10 @@
 <div class="network-feed-section">
     <div ng-repeat="group in groupsArray">
-        <h3 ng-show="group.feeds.length">{{group.group.name}}</h3>
+        <h3 ng-show="group.feeds.length">{{group.group[0].name}}</h3>
         <div ng-repeat="feed in group.feeds">
             <div class="feed-container" ng-show="group.feeds[$index].showFullText">
                 {{feed.from.name}}:
-                <span ng-bind-html="highlight(feed.message, group.group.keywords)"></span>
+                <span ng-bind-html="highlight(feed.message, group.group[0].keywords.concat(networkKeywords))"></span>
                 <img ng-src="{{feed.type === 'photo' ? feed.picture : ''}}" ng-show="!!feed.picture">
                 <div>
                     <a ng-click="openFbPage(feed.link || feed.actions[0].link)">Read on Facebook</a>
@@ -18,7 +18,7 @@
                                 </div>
                                 <div class="commentText">
                                     <p class="">
-                                        <span ng-bind-html="highlight(comment.message, group.group.keywords)"></span>
+                                        <span ng-bind-html="highlight(comment.message, group.group[0].keywords.concat(networkKeywords))"></span>
                                     </p>
                                     <span class="date sub-text" ng-bind-html="formatDate(comment.created_time)"></span>
                                 </div>

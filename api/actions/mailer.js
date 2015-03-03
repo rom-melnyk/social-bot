@@ -21,7 +21,7 @@ var createMailBody = function (data) {
                 "<a href=http://vk.com/public" + (-item.instance.to_id) + "?w=wall" + item.instance.to_id + "_" + item.instance.id + ">Read on VK</a><br>" +
                 "-----------------------------------------------------------<br>";
         } else if (item.network === "fb") {
-            htmlTemplate += "Count: " + item.found + " <div style='text-overflow:hidden; max-width: 500px; white-space: nowrap;'>Post: " + item.instance.message + "</div><br/> network: " + item.network + "<br>" +
+            htmlTemplate += "Count: " + item.found + " <div style='text-overflow:hidden; max-width: 500px; white-space: nowrap; overflow: hidden; max-height: 16px;'>Post: " + item.instance.message + "</div><br/> network: " + item.network + "<br>" +
                 "<a href='" + (item.instance.link || item.instance.actions[0].link) + "'>Read on Facebook</a><br>" +
                 "-----------------------------------------------------------<br>";
         }
