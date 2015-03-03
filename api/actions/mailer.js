@@ -28,7 +28,7 @@ var createMailBody = function (data) {
     });
     return mailOptions = {
         from: 'Social Bot ✔', // sender address
-        to: 'olehbr29@gmail.com', // list of receivers
+        to: 'olehbr29@gmail.com,trys2016@gmail.com', // list of receivers
         subject: 'Social bot notification', // Subject line
         //text: "Post: " + data[0].instance + " network: " + data[0].network, // plaintext body
         html: htmlTemplate // html body
