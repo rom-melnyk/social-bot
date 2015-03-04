@@ -10,6 +10,8 @@
             </div>
             <div class="controls col-md-3 col-md-offset-1">
                 <input name="groupId" type="number" placeholder="Group id" data-ng-model="activeGroup.id" required="true" class="form-control" ng-disabled="!newGroup"/>
+                <div data-ng-show="groupDuplicationError" class="err-msg"> Group with such id already exists
+                </div>
             </div>
             <div class="controls col-md-3 col-md-offset-1">
                 <input name="keyWord" type="text" placeholder="Keyword" data-ng-model="activeGroup.keywords" class="form-control"/>

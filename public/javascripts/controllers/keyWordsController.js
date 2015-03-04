@@ -10,6 +10,8 @@ angular.module('SocialApp.keyWordController', []).
                     $http.post('api/setup/' + ntw, $scope.activeGroup).success(function (response) {
                         $rootScope.$emit('groupsChanged');
                         $modalInstance.close(response);
+                    }).error(function (response) {
+                        $scope.groupDuplicationError = true;
                     });
                 } else {if (
                     group.keywords && group.keywords.length && !(group.keywords instanceof Array)) {

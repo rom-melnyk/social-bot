@@ -1,5 +1,7 @@
 body {
-    padding: 10px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #eee;
 }
 
 h1, .h1, h2, .h2, h3, .h3 {
@@ -152,4 +154,16 @@ span.glyphicon {
 
 .ng-touched.ng-invalid {
     border-color: #F47777;
+}
+
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.err-msg {
+  padding: 5px 5px 0px;
+  color: #A94442;
+  font-size: 12px;
 }
