@@ -1,7 +1,8 @@
 var async = require('async'),
 	Setup = require('./api/db/setup-model').setup,
 	Data = require('./api/db/data-model'),
-	State = require('./api/db/state-model');
+	State = require('./api/db/state-model'),
+	User = require('./api/db/user-model');
 
 require('./api/db/connect');
 
@@ -82,6 +83,19 @@ async.parallel(
 				} else {
 					console.log('[ i ] The "datas" collection prepared');
 					cb(null, 'datas');
+				}
+			});
+		},
+
+		function (cb) {
+			// ------------------ preparing the "users" table ------------------
+			User.remove({}, function (err) {
+				if (err) {
+					console.log('[ ERR ] Unable to clean the "users" collection');
+					cb(true, 'users');
+				} else {
+					console.log('[ i ] The "users" collection prepared');
+					cb(null, 'users');
 				}
 			});
 		}

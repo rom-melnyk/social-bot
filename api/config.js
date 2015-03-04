@@ -39,5 +39,9 @@ module.exports = {
         apiFeed: '/method/wall.get',
         apiComments: '/method/wall.getComments',
         pollInterval: 15 * 10000
+	},
+	user: {
+		sessionCookieName: 'session',
+		sessionDuration: 1000 * 60 * 60 * 24
 	}
 };

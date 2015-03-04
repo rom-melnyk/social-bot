@@ -2,13 +2,25 @@ var express = require('express'),
 	app = express(),
 	favicon = require('express-favicon'),
 	handlers = {},
-	bodyParser = require('body-parser');
+	bodyParser = require('body-parser'),
+	cookieParser = require('cookie-parser'),
+	login = require('./api/login');
+
 require('./api/db/connect');
 
 // ------------ statics ------------
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
-app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
+app.use(cookieParser());
+// ------------ login check ------------
+app.use(/^\/api/, function (req, res, next) {
+	// TODO remove the '/api/create-user' condition after implementing all the user functionality (profiles and so on)
+	if ((req.path === '/api/login' || req.path === '/api/create-user') && req.method === 'POST') {
+		next();
+	} else {
+		login.checkSessionCookie(req, res, next);
+	}
+});
 
 // ------------ routes ------------
 handlers.state = require('./api/state');
@@ -22,6 +34,13 @@ handlers.test = function (req, res) {
 		requestQuery: req.query
 	});
 };
+
+// ------------ statics ------------
+app.use(express.static(__dirname + '/public'));
+
+app.post('/api/login', login.loginUser);
+app.get('/api/check-session', login.checkSession);
+app.post('/api/create-user', login.createUser);
 
 app.get('/api/state/:network', handlers.state.check);
 app.put('/api/state/:network', handlers.state.save);

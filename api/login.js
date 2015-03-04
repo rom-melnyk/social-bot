@@ -1,0 +1,222 @@
+var crypto = require('crypto'),
+	CFG = require('./config'),
+	User = require('./db/user-model');
+
+var errHandler = function (msg, status, callback) {
+	var err = new Error(msg);
+	err.status = status || 500;
+	callback(err);
+};
+
+var md5 = function (txt) {
+    var hash = crypto.createHash('md5');
+    hash.update(txt);
+    return hash.digest('hex');
+};
+
+var str2hex = function (str) {
+	var ret = '';
+
+	for (var i = 0; i < str.length; i++) {
+		ret += str.charCodeAt(i).toString(16);
+	}
+	return ret;
+};
+
+var hex2str = function (hex) {
+	var ret = '';
+
+	for (var i = 0; i < hex.length; i+=2) {
+		ret += String.fromCharCode(
+			parseInt(hex.substr(i, 2), 16)
+		);
+	}
+	return ret;
+};
+
+/**
+ * @return {String}					a random chars sequence
+ */
+var createSalt = function () {
+	var ret = '';
+	for (var i = 0; i < 5; i++) {
+		// ASCII codes in range [33..126]
+		ret += String.fromCharCode(Math.floor(Math.random() * 93) + 33);
+	}
+	return ret;
+};
+
+/**
+ * Encodes the password for storing in the database.
+ * @return {String}
+ */
+var createPasswordHash = function (password, salt) {
+	return md5(password + '-/-' + salt);
+};
+
+/**
+ * @param {String} login
+ * @param {String} password
+ * @param {Number} [timestamp=undefined]
+ * @return {String}
+ */
+var createSessionCookie = function (login, password, timestamp) {
+    var date = timestamp ? (new Date(timestamp)).getTime() : +Date.now();
+
+    return md5(password + '-/-' + date) + date.toString(16) + str2hex(login);
+};
+
+/**
+ * @method *
+ * @url *
+ * @request-cookies {String} [CFG.user.sessionCookieName]
+ * Verifies the session cookie; if wrong/missed --> responses with the error object;
+ * otherwise updates the cookie and passes the router further.
+ */
+var checkSessionCookie = function (req, res, next) {
+    var cookie = req.cookies[CFG.user.sessionCookieName],
+		timestamp, login;
+
+	var sendErrorResponse = function () {
+		res.cookie(CFG.user.sessionCookieName, '', {maxAge: -100000});
+		errHandler('Not logged in', 599, next);
+	};
+
+	if (typeof cookie !== 'string' || cookie.length < 45) {
+		sendErrorResponse();
+		return;
+	}
+
+    timestamp = parseInt(cookie.substring(32, 43), 16);
+    if (!timestamp || Date.now() - timestamp > CFG.user.sessionDuration) {
+		sendErrorResponse();
+        return;
+    }
+
+	login = hex2str(cookie.substring(43, cookie.length));
+	User.findOne({login: login}, function (err, user) {
+		if (err) {
+			console.log('[ ERR ] Failed to retrieve the user info');
+			sendErrorResponse();
+			return;
+		}
+
+		if (!user) {
+			sendErrorResponse();
+			return;
+		}
+
+		if (createSessionCookie(user.login, user.password, timestamp) !== cookie) {
+			sendErrorResponse();
+		} else {
+			res.cookie(
+				CFG.user.sessionCookieName,
+				createSessionCookie(user.login, user.password),
+				{path: '/', maxAge: CFG.user.sessionDuration}
+			);
+			next();
+		}
+	});
+};
+
+/**
+ * @method POST
+ * @url /api/create-user
+ * @request-body {Object} must contain String fields "login", "password", "name"
+ * @response {JSON}
+ */
+var createUser = function (req, res, next) {
+	if (!req.body.login || !req.body.password || !req.body.name) {
+		errHandler('Request error, at least one of "login", "password" or "name" parameters was not found', 590, next);
+		return;
+	}
+
+	User.findOne({login: req.body.login}, function (err, _usr) {
+		if (err) {
+			errHandler('Database error, failed to retrieve the user info', 591, next);
+		} else if (_usr) {
+			errHandler('Request error, user already exists', 590, next);
+		} else {
+			var salt = createSalt(),
+				user = new User({
+					login: req.body.login,
+					salt: salt,
+					password: createPasswordHash(req.body.password, salt),
+					name: req.body.name
+				});
+
+			user.save(function (err) {
+				if (err) {
+					errHandler('Database error, failed to create the new user', 591, next);
+				} else {
+					res.send({
+						success: true,
+						user: {
+							login: req.body.login,
+							name: req.body.name
+						}
+					});
+				}
+			});
+		}
+	});
+};
+
+/**
+ * @method POST
+ * @url /api/login
+ * @request-body {Object} must contain String fields "login", "password"
+ * @response {JSON}
+ * @response-cookie [CFG.user.sessionCookieName]			is set if success
+ */
+var loginUser = function (req, res, next) {
+	if (!req.body.login || !req.body.password) {
+		errHandler('Request error, both "login" and "password" parameters must be present', 590, next);
+		return;
+	}
+
+	User.findOne({login: req.body.login}, function (err, user) {
+		if (err) {
+			res.cookie(CFG.user.sessionCookieName, '', {maxAge: -100000});
+			errHandler('Database error, failed to retrieve the user info', 591, next);
+		} else if (!user) {
+			res.cookie(CFG.user.sessionCookieName, '', {maxAge: -100000});
+			errHandler('Request error, user not found', 590, next);
+		} else {
+			if (user.password !== createPasswordHash(req.body.password, user.salt)) {
+				res.cookie(CFG.user.sessionCookieName, '', {maxAge: -100000});
+				errHandler('Request error, user/password don\'t match', 590, next);
+			} else {
+				res.cookie(
+					CFG.user.sessionCookieName,
+					createSessionCookie(user.login, user.password),
+					{path: '/', maxAge: CFG.user.sessionDuration}
+				);
+				res.send({
+					success: true,
+					name: user.name
+				});
+			}
+		}
+	});
+};
+
+/**
+ * @method GET
+ * @url /api/check-session
+ * @response {JSON}
+ * This is dummy method; it always returns correct data.
+ * The trick is, it won't be called at all if the session is out/incorrect due to routing setup.
+ */
+var checkSession = function (req, res, next) {
+	res.send({
+		success: true
+	});
+};
+
+module.exports = {
+	createUser: createUser,
+	checkSessionCookie: checkSessionCookie,
+	loginUser: loginUser,
+	checkSession: checkSession
+};
