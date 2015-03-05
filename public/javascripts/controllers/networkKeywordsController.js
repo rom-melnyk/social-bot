@@ -7,15 +7,15 @@ angular.module('SocialApp.networkKeywordController', []).
             fb: "Facebook",
             vk: "Vkontakte"
         };
-        $scope.networkKeywords = keywords;
         $scope.networkName = networkNamesMap[ntw];
         $scope.submitChanges = function () {
+            var keywords = [];
             $scope.networkKeywords = $scope.networkKeywords ? $scope.networkKeywords : "";
-            if (!($scope.networkKeywords instanceof Array)) {
-               $scope.networkKeywords = $scope.networkKeywords.split(',');
-            }
+            $scope.networkKeywords.forEach(function (kw) {
+                keywords.push(kw.text);
+            });
             $http.put('/api/setup/' + ntw + '/keywords', {
-            keywords: $scope.networkKeywords
+            keywords: keywords
             }).success(function (response) {
                 $modalInstance.close(response);
                 $rootScope.$emit('groupsChanged');
@@ -25,4 +25,13 @@ angular.module('SocialApp.networkKeywordController', []).
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
+        var clone = function (obj) {
+            if (null == obj || "object" != typeof obj) return obj;
+            var copy = obj.constructor();
+            for (var attr in obj) {
+                if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+            }
+            return copy;
+        };
+        $scope.networkKeywords = clone(keywords);
     });

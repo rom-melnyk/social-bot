@@ -15,8 +15,8 @@ angular.module('SocialApp.vk', []).
             var finalFeeds = [], indexWithComment = 1, lastIndexWithComment = 0;
             feeds.forEach(function (value, index) {
                 //searching for keyword in post message
-                for (var j = 0; j < $scope.keywords.length; j++) {
-                	RE = new RegExp($scope.keywords[j], 'gi');
+                for (var j = 0; j < $scope.allKeywords.length; j++) {
+                	RE = new RegExp($scope.allKeywords[j], 'gi');
                 	feeds[index].includeKeyword = feeds[index].includeKeyword || RE.test(value.text);
                 }
                 if (value.comments && value.comments.count) {
@@ -55,8 +55,8 @@ angular.module('SocialApp.vk', []).
         }, filterComments = function (value, index, finalFeeds, lastIndexWithComment) {
             //searching for keyword in comments
             value.comments.forEach(function (comment, commentIndex) {
-                for (var j = 0; j < $scope.keywords.length; j++) {
-                	RE = new RegExp($scope.keywords[j], 'gi');
+                for (var j = 0; j < $scope.allKeywords.length; j++) {
+                	RE = new RegExp($scope.allKeywords[j], 'gi');
                 	value.includeKeyword = value.includeKeyword || RE.test(comment.text);
                 }
                 if (value.includeKeyword && finalFeeds.indexOf(value) === -1) {
@@ -96,6 +96,8 @@ angular.module('SocialApp.vk', []).
         };
         $scope.showGroupPosts = function (groupIndex) {
             $scope.loading = true;
+            $scope.allKeywords = [];
+            $scope.groupsArray = [];
             $http.jsonp("https://api.vk.com/method/wall.get?access_token=" + accessToken + "&callback=JSON_CALLBACK&owner_id=" + (-$scope.groups[groupIndex].id) + "&count=50&extended=1&scope=offline")
                 .success(function (data) {
                     if (data.error) {
@@ -105,9 +107,12 @@ angular.module('SocialApp.vk', []).
                         if (data.response.wall instanceof Array) {
                             data.response.wall.shift();
                             $scope.keywords = $scope.groups[groupIndex].keywords;
+                            $scope.keywords.forEach(function (kw) {
+                                $scope.allKeywords.push(kw);
+                            });
                             $scope.vkKeywords.forEach(function (kw) {
-                                if ($scope.keywords.indexOf(kw) === -1) {
-                                    $scope.keywords.push(kw);
+                                if ($scope.allKeywords.indexOf(kw) === -1) {
+                                    $scope.allKeywords.push(kw);
                                 }
                             });
                             filterFeedData(data.response.wall, groupIndex);

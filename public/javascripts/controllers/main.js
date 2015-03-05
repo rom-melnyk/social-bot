@@ -54,7 +54,11 @@ angular.module('SocialApp.main', []).
                     return $sce.trustAsHtml(text);
                 }
                 searchArray.forEach(function (search) {
-                    text = text.replace(new RegExp(search, 'gi'), '<span class="highlightedText">$&</span>');
+                    if (typeof(search) === "string") {
+                        text = text.replace(new RegExp(search, 'gi'), '<span class="highlightedText">$&</span>');
+                    } else {
+                        text = text.replace(new RegExp(search.text, 'gi'), '<span class="highlightedText">$&</span>');
+                    }
                 });
                 return $sce.trustAsHtml(text);
             }
