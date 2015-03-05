@@ -16,8 +16,20 @@ hr {
     border-top: 1px dotted #BAB7B7;
 }
 
+input[type="date"] {
+    margin: 10px 0;
+}
+
+.header-section {
+    display: inline-block;
+}
+
 .header-section * {
     margin: 10px 0;
+}
+
+.social-body {
+    margin-top: 10px;
 }
 
 .feed {
@@ -200,6 +212,10 @@ span.glyphicon {
   border-top-right-radius: 0;
 }
 
+.network-dropdown {
+    margin-bottom: 20px;
+}
+
 .err-msg {
   padding: 5px 5px 0px;
   color: #A94442;
@@ -209,3 +225,16 @@ span.glyphicon {
 tags-input .tags .tag-item {
     color: #FFF;
 }
+.fader.ng-hide-add,
+.fader.ng-hide-remove {
+  -webkit-transition: 0.2s linear all;
+  transition: 0.2s linear all;
+
+  /* remember to add this */
+  display: block!important;
+  opacity: 1;
+}
+.fader.ng-hide {
+  opacity: 0;
+}}
+

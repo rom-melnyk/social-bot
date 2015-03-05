@@ -1,13 +1,29 @@
 <div id="fb-root"></div>
 <div class="container">
-    <div class="col-md-6 section" ng-controller="fbController">
-        <div ng-include src="'views/fbSectionView.html'"></div>
-        <!--all fb network feeds-->
-        <div ng-include src="'views/facebookAllGroupsView.html'"></div>
+    <div class="network-dropdown">
+        <label>Соіцальна мережа</label>
+        <select ng-model="network" class="form-control">
+            <option value="all">Всі</option>
+            <option value="vk">VK</option>
+            <option value="fb">Facebook</option>
+        </select>
     </div>
-
-
-    <!--VK section-->
-    <div ng-include src="'views/vkSectionView.html'"></div>
+    <div class="accordion">
+        <div class="list-group">
+            <div ng-show="network === 'vk' || network === 'all'" class="fader list-group-item">
+                <!--VK section-->
+                <div class="section" ng-controller="vkController">
+                    <div ng-include src="'views/vkSectionView.html'"></div>
+                </div>
+            </div>
+            <div ng-show="network === 'fb' || network === 'all'" class="fader list-group-item">
+                <div class="section" ng-controller="fbController">
+                    <div ng-include src="'views/fbSectionView.html'"></div>
+                    <!--all fb network feeds-->
+                    <div ng-include src="'views/facebookAllGroupsView.html'"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 

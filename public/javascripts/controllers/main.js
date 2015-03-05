@@ -6,6 +6,7 @@
  */
 angular.module('SocialApp.main', []).
     controller('mainController', function($scope, $http, $modal, $rootScope, $sce) {
+        $scope.network = "all";
         var openModal = function (ntw, newGroup, group) {
             var modalInstance = $modal.open({
                 templateUrl: "../../views/editKeywordsModal.html",

@@ -10,7 +10,8 @@ var app = angular.module('SocialApp', [
     'SocialApp.networkKeywordController',
     'ui.bootstrap',
     'ngRoute',
-    'ngTagsInput'
+    'ngTagsInput',
+    'ngAnimate'
 , function ($routeProvider, $locationProvider, $httpProvider, $provide) {
 
     $provide.factory('myHttpInterceptor', function($q) {

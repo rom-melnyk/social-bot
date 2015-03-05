@@ -1,12 +1,12 @@
-    <img class="center-block social-logo" src="/images/fbLogo.png" height="50px">
-    <br/>
-    <div class="header-section">
-        <button class="btn btn-primary" ng-click="addNewGroup('fb')">Add FB group</button>
-        <button class="btn btn-primary" ng-click="setNetworkKeywords('fb', networkKeywords)">Set FB keywords</button>
-        <button class="btn btn-success" ng-click="showAllGroupsPosts()">Search in FB groups</button>
-        <button class="btn btn-success" ng-class="{'btn-danger': state === 'running'}"  ng-click="startCrawler($event)">{{crawlerText}}</button>
-        <input type="date" class="form-control" name="sinceFilter" ng-model="sinceDate" ng-change="setDate(sinceDate)"/>
-    </div>
+<img class="social-logo" src="/images/fbLogo.png" height="50px" ng-click="isVisible = !isVisible">
+<div class="header-section">
+    <button class="btn btn-primary" ng-click="addNewGroup('fb')">Add FB group</button>
+    <button class="btn btn-primary" ng-click="setNetworkKeywords('fb', networkKeywords)">Set FB keywords</button>
+    <button class="btn btn-success" ng-click="showAllGroupsPosts()">Search in FB groups</button>
+    <button class="btn btn-success" ng-class="{'btn-danger': state === 'running'}"  ng-click="startCrawler($event)">{{crawlerText}}</button>
+</div>
+<div ng-show="isVisible" class="fader social-body">
+    <input type="date" class="form-control" name="sinceFilter" ng-model="sinceDate" ng-change="setDate(sinceDate)"/>
     <div class="groups-section">
         <div class="list-group">
             <a class="list-group-item" ng-repeat="group in groups" ng-show="group.name" ng-class="{ active: isActive($index) }" ng-click="showGroupPosts($index)">
@@ -65,3 +65,4 @@
             </div>
         </div>
     </div>
+</div>
