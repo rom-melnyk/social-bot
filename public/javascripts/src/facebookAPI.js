@@ -2,7 +2,7 @@
  * Created by obryl on 2/5/2015.
  */
 FB.init({
-    appId      : '1545533905707947',
+    appId      : '808363195905708',
     cookie     : true,  // enable cookies to allow the server to access
     // the session
     version    : 'v2.1', // use version 2.1,
