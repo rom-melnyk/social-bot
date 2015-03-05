@@ -75,7 +75,13 @@ module.exports = {
                         feeds: []
                     };
     		        item.payload.forEach(function (post) {
-    		            analyze(post, keywords, function (instance) {
+    		            var finalKeywords = [];
+    		            if (item.group[0].keywords && item.group[0].keywords.length) {
+    		                finalKeywords = keywords.concat(item.group[0].keywords);
+    		            } else {
+    		                finalKeywords = keywords;
+    		            }
+    		            analyze(post, finalKeywords, function (instance) {
     		                if (groupInstance.feeds.indexOf(post) === -1) {
     			                groupInstance.feeds.push(post);
     		                }

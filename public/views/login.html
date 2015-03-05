@@ -5,7 +5,8 @@
         <input type="text" ng-model="user.login" id="inputLogin" class="form-control" placeholder="Login" pattern="^[a-zA-Z0-9]+" required="" autofocus="">
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" ng-model="user.password" id="inputPassword" class="form-control" placeholder="Password" required="">
-        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="login()">Sign in</button>
+        <div data-ng-show="err" class="err-msg">{{err}}</div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="login()">Sign in</button>
     </form>
 
 </div>

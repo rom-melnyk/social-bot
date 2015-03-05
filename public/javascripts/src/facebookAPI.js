@@ -5,7 +5,6 @@ FB.init({
     appId      : '1545533905707947',
     cookie     : true,  // enable cookies to allow the server to access
     // the session
-    xfbml      : true,  // parse social plugins on this page
     version    : 'v2.1', // use version 2.1,
     channelUrl : "http://social-monitoring.herokuapp.com/"
 });

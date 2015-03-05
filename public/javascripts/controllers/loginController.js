@@ -10,9 +10,12 @@ angular.module('SocialApp.login', []).
             if ($scope.loginForm.$valid) {
                 $rootScope.loggedInUser = $scope.user;
                 $http.post('api/login', $scope.user).success(function (resp) {
+                    $scope.err = false;
                     $scope.loggedInUser = resp.user;
+                    $location.path("/");
+                }).error(function (resp) {
+                    $scope.err = resp.message;
                 });
-                $location.path("/");
             }
 
         }

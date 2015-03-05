@@ -9,25 +9,50 @@ var app = angular.module('SocialApp', [
     'SocialApp.keyWordController',
     'SocialApp.networkKeywordController',
     'ui.bootstrap',
-    'ngRoute'
-]).config(function($routeProvider, $locationProvider) {
+    'ngRoute',
+    'ngTagsInput'
+, function ($routeProvider, $locationProvider, $httpProvider, $provide) {
+
+    $provide.factory('myHttpInterceptor', function($q) {
+      return {
+        'response': function(response) {
+          // do something on success
+          return response || $q.when(response);
+        },
+
+       'responseError': function(rejection) {
+          // do something on error
+          if (rejection.status === 599) {
+             window.location.hash = '/login';
+          }
+          return $q.reject(rejection);
+        }
+      };
+    });
+    $httpProvider.interceptors.push('myHttpInterceptor');
+  }]).config(function($routeProvider, $locationProvider) {
   $routeProvider.
     when("/",
       { templateUrl: "views/mainView.html" }).
     when("/login",
       { templateUrl: "views/login.html", controller: "LoginCtrl" }).
     // event more routes here ...
-    otherwise( { redirectTo: "/persons" });
+    otherwise( { redirectTo: "/" });
 }).
-run(function($rootScope, $location) {
-  $rootScope.$on( "$routeChangeStart", function(event, next, current) {
-    //$rootScope.loggedInUser = true;
-    if ($rootScope.loggedInUser == null) {
-          console.log("not logged in");
-      if ( next.templateUrl === "public/login.html") {
-      } else {
-        $location.path("/login");
-      }
-    }
-  });
+run(function($rootScope, $location, $http) {
+
+    $rootScope.$on( "$routeChangeStart", function(event, next, current) {
+        $http.get('api/check-session').success(function (resp) {
+            $rootScope.loggedInUser = resp.success;
+            if ($rootScope.loggedInUser == null) {
+                  console.log("not logged in");
+              if ( next.templateUrl === "public/login.html") {
+              } else {
+                $location.path("/login");
+              }
+            }
+        }).error(function () {
+            $location.path("/login");
+        });
+    });
 });

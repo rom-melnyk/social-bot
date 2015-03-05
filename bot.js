@@ -15,7 +15,7 @@ app.use(cookieParser());
 // ------------ login check ------------
 app.use(/^\/api/, function (req, res, next) {
 	// TODO remove the '/api/create-user' condition after implementing all the user functionality (profiles and so on)
-	if ((req.path === '/api/login' || req.path === '/api/create-user') && req.method === 'POST') {
+	if ((req.path === '/login' || req.path === '/create-user') && req.method === 'POST') {
 		next();
 	} else {
 		login.checkSessionCookie(req, res, next);

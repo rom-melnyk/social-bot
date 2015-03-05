@@ -27,10 +27,10 @@
             </h2>
         </div>
         <h3 ng-show="filtered.length">Query results:</h3>
-        <div class="feed list-group-item" ng-repeat="feed in filtered = (facebookFeeds | keyWordFilter:keywords)">
+        <div class="feed list-group-item" ng-repeat="feed in filtered = (facebookFeeds | keyWordFilter:allKeywords)">
             <div class="feed-container" ng-show="facebookFeeds[$index].showFullText">
                 {{feed.from.name}}:
-                <span ng-bind-html="highlight(feed.message, keywords)"></span>
+                <span ng-bind-html="highlight(feed.message, allKeywords)"></span>
                 <img ng-src="{{feed.type === 'photo' ? feed.picture : ''}}" ng-show="!!feed.picture">
                 <div>
                     <a ng-click="openFbPage(feed.link || feed.actions[0].link)">Read on Facebook</a>
@@ -44,7 +44,7 @@
                                 </div>
                                 <div class="commentText">
                                     <p class="">
-                                        <span ng-bind-html="highlight(comment.message, keywords)"></span>
+                                        <span ng-bind-html="highlight(comment.message, allKeywords)"></span>
                                     </p>
                                     <span class="date sub-text" ng-bind-html="formatDate(comment.created_time)"></span>
                                 </div>

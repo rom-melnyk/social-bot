@@ -53,14 +53,18 @@ angular.module('SocialApp.controllers', []).
         $scope.showGroupPosts = function (groupIndex) {
             var since = Math.round($scope.sinceDate && $scope.sinceDate.getTime()/1000 || new Date().getTime()/1000);
             $scope.groupsArray = [];
+            $scope.allKeywords = [];
             $scope.loading = true;
             $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken + "&since=" + since + "&limit=50").success(function (resp) {
                 if (resp.data) {
                     $scope.facebookFeeds = resp.data;
                     $scope.keywords = $scope.groups[groupIndex].keywords;
+                    $scope.keywords.forEach(function (kw) {
+                        $scope.allKeywords.push(kw);
+                    });
                     $scope.networkKeywords.forEach(function (kw) {
-                        if ($scope.keywords.indexOf(kw) === -1) {
-                            $scope.keywords.push(kw);
+                        if ($scope.allKeywords.indexOf(kw) === -1) {
+                            $scope.allKeywords.push(kw);
                         }
                     });
                     $scope.emptyMessage =  !$scope.facebookFeeds.length;
@@ -72,11 +76,13 @@ angular.module('SocialApp.controllers', []).
             });
         };
         $scope.showAllGroupsPosts = function () {
+            $scope.loading = true;
             $scope.facebookFeeds = [];
             $scope.groupsArray = [];
             $scope.activeGroupIndex = null;
             $http.get('api/data/fb/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
                 $scope.groupsArray = resp;
+                $scope.loading = false;
             });
         };
         $scope.openFbPage = function (link) {
