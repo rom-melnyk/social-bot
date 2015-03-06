@@ -23,7 +23,7 @@ var app = angular.module('SocialApp', [
        'responseError': function(rejection) {
           // do something on error
           if (rejection.status === 599) {
-             window.location.path = '/login';
+             window.location.hash = '/login';
           }
           return $q.reject(rejection);
         }
@@ -31,9 +31,7 @@ var app = angular.module('SocialApp', [
     });
     $httpProvider.interceptors.push('myHttpInterceptor');
   }]).config(function($routeProvider, $locationProvider) {
-  $locationProvider.html5Mode({
-    enabled: true
-  });
+
   $routeProvider.
     when("/",
       { templateUrl: "views/mainView.html" }).

@@ -64,7 +64,9 @@ app.get('/api/data/:network/analyzed', handlers.rawData.getAnalyzedData);
 
 // for test purposes
 app.all('/api/test', handlers.test);
-
+app.all("/login", function(req, res, next) {
+    res.sendfile("index.html", { root: __dirname  + '/public'});
+});
 // ------------ routes - errors ------------
 app.use(function(req, res, next) {
 	var err = new Error('Not Found');
@@ -80,7 +82,7 @@ app.use(function(err, req, res, next) {
 });
 
 // ------------ the server itself ------------
-var server = app.listen(process.env.PORT || 3000, function () {
+var server = app.listen(process.env.PORT || 3001, function () {
 	var host = server.address().address,
 		port = server.address().port;
 
