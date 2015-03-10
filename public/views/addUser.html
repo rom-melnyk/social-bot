@@ -1,0 +1,27 @@
+<div>
+    <h4 class="modal-title">Add user</h4>
+    <form role="form" name="userForm" data-ng-submit="submit(userForm)" novalidate="novalidate" class="form-horizontal">
+        <div class="error-box"></div>
+        <div class="input-field">
+            <label for="name">Ім'я</label>
+            <input id="name" name="userName" type="text" data-ng-model="user.name" required="true"/>
+        </div>
+        <div class="input-field">
+            <label for="login">Логін</label>
+            <input id="login" name="login" type="text" data-ng-model="user.login" required="true"/>
+        </div>
+        <div class="input-field">
+            <label for="userEmail">Email</label>
+            <input id="userEmail" name="email" type="email" data-ng-model="user.email" required="true"/>
+        </div>
+        <div class="input-field">
+            <label for="password">Пароль</label>
+            <input id="password" name="password" type="password" data-ng-model="user.password" required="true"/>
+        </div>
+        <div class="clearfix"></div>
+    </form>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="submitChanges()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</div>

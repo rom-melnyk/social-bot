@@ -3,16 +3,42 @@
         <div class="card-content">
             <form role="form" name="user-info" data-ng-submit="submit(user-info)" novalidate="novalidate" class="form-horizontal">
                 <div class="controls col-md-6">
-                    <label for="username">Ім'я</label>
-                    <input id="username" type="text">
-                    <label for="email">Email</label>
-                    <input id="email" type="email">
+                    <div class="input-field">
+                        <label ng-class="{'active': user.name}" for="username">Ім'я</label>
+                        <input id="username" ng-model="user.name" type="text">
+                    </div>
+                    <div class="input-field">
+                        <label ng-class="{'active': user.email}" for="email">Email</label>
+                        <input id="email" ng-model="user.email" type="email">
+                    </div>
+                    <button class="btn" ng-click="submitChanges()">Save</button>
+                </div>
+                <div class="col-md-6">
+                    <h5>Список користувачів:</h5>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th data-field="id">Name</th>
+                            <th data-field="name">Email</th>
+                            <th data-field="price">Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr ng-repeat="user in users">
+                                <td>{{user.name}}</td>
+                                <td>{{user.email}}</td>
+                                <td><i class="glyphicon glyphicon-remove pull-right" ng-click="removeUser(user)"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="clearfix"></div>
             </form>
         </div>
         <div class="card-action">
             <a href="#">Змінити пароль</a>
+            <a class="pull-right" ng-click="addUser()">Додати користувача</a>
         </div>
     </div>
 </div>

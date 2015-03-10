@@ -4,6 +4,8 @@
 var app = angular.module('SocialApp', [
     'SocialApp.login',
     'SocialApp.main',
+    'SocialApp.users',
+    'SocialApp.adduser',
     'SocialApp.controllers',
     'SocialApp.vk',
     'SocialApp.keyWordController',
@@ -36,7 +38,7 @@ var app = angular.module('SocialApp', [
     when("/",
       { templateUrl: "views/mainView.html" }).
     when("/user-info",
-          { templateUrl: "views/user-info.html" }).
+          { templateUrl: "views/user-info.html", controller: "usersController" }).
     when("/login",
       { templateUrl: "views/login.html", controller: "LoginCtrl" }).
     // event more routes here ...
@@ -46,7 +48,7 @@ run(function($rootScope, $location, $http) {
 
     $rootScope.$on( "$routeChangeStart", function(event, next, current) {
         $http.get('api/check-session').success(function (resp) {
-            $rootScope.loggedInUser = resp.success;
+            $rootScope.loggedInUser = resp;
             if ($rootScope.loggedInUser == null) {
                   console.log("not logged in");
               if ( next.templateUrl === "public/login.html") {

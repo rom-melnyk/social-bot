@@ -41,6 +41,8 @@ app.use(express.static(__dirname + '/public'));
 app.post('/api/login', login.loginUser);
 app.get('/api/check-session', login.checkSession);
 app.post('/api/create-user', login.createUser);
+app.put('/api/create-user', login.updateUserInfo);
+app.get('/api/users', login.getUsers);
 
 app.get('/api/state/:network', handlers.state.check);
 app.put('/api/state/:network', handlers.state.save);

@@ -1,7 +1,4 @@
 /**
- * Created by obryl on 2/11/2015.
- */
-/**
  * Created by obryl on 2/5/2015.
  */
 angular.module('SocialApp.login', []).

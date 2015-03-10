@@ -1,7 +1,7 @@
 <div id="fb-root"></div>
 <div class="container-fluid">
     <div class="accordion col-md-6">
-        <div class="network-dropdown">
+        <div class="network-dropdown col-md-6">
             <label>Соіцальна мережа</label>
             <select ng-model="network" class="form-control">
                 <option value="all">Всі</option>
@@ -12,6 +12,7 @@
             <button class="btn waves-effect waves-light" ng-click="showAllGroupsPosts()">Пошук</button>
             <button class="btn waves-effect waves-light" ng-click="clearResults()">Очистити результати</button>
         </div>
+        <div class="clearfix"></div>
         <div class="list-group">
             <div ng-show="network === 'vk' || network === 'all'" class="fader list-group-item">
                 <!--VK section-->
@@ -24,8 +25,6 @@
             <div ng-show="network === 'fb' || network === 'all'" class="fader list-group-item">
                 <div class="section" ng-controller="fbController">
                     <div ng-include src="'views/fbSectionView.html'"></div>
-                    <!--&lt;!&ndash;all fb network feeds&ndash;&gt;
-                    <div ng-include src="'views/facebookAllGroupsView.html'"></div>-->
                 </div>
             </div>
         </div>

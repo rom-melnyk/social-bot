@@ -142,7 +142,8 @@ var createUser = function (req, res, next) {
 					login: req.body.login,
 					salt: salt,
 					password: createPasswordHash(req.body.password, salt),
-					name: req.body.name
+					name: req.body.name,
+					email: req.body.email
 				});
 
 			user.save(function (err) {
@@ -152,12 +153,90 @@ var createUser = function (req, res, next) {
 					res.send({
 						success: true,
 						user: {
-							login: req.body.login,
-							name: req.body.name
+							id: req.body.id,
+							name: req.body.name,
+							email: req.body.email
 						}
 					});
 				}
 			});
+		}
+	});
+};
+
+/**
+ * @method POST
+ * @url /api/user/:userId
+ * @response {JSON}
+ */
+var removeUser = function (req, res, next) {
+	if (!req.params.id) {
+		errHandler('Request error, there is no user id provided', 590, next);
+		return;
+	}
+
+	User.find({_id: req.params.id}, function (err, _usr) {
+		if (err) {
+			errHandler('Database error, failed to retrieve the user info', 591, next);
+		} else if (_usr) {
+			errHandler('Request error, user already exists', 590, next);
+		} else {
+			var salt = createSalt(),
+				user = new User({
+					login: req.body.login,
+					salt: salt,
+					password: createPasswordHash(req.body.password, salt),
+					name: req.body.name,
+					email: req.body.email
+				});
+
+			user.save(function (err) {
+				if (err) {
+					errHandler('Database error, failed to create the new user', 591, next);
+				} else {
+					res.send({
+						success: true,
+						user: {
+							id: req.body.id,
+							name: req.body.name,
+							email: req.body.email
+						}
+					});
+				}
+			});
+		}
+	});
+};
+
+/**
+ * @method PUT
+ * @url /api/login
+ * @request-body {Object} must contain String field "id"
+ * @response {JSON}
+ * @response-cookie [CFG.user.sessionCookieName]			is set if success
+ */
+var updateUserInfo = function (req, res, next) {
+	if (!req.body.id) {
+		errHandler('Request error, both "login" and "password" parameters must be present', 590, next);
+		return;
+	}
+
+	User.findOneAndUpdate({_id: req.body.id}, req.body, function (err, user) {
+		if (err) {
+			errHandler('Database error, failed to retrieve the user info', 591, next);
+		} else if (!user) {
+			errHandler('Request error, user not found', 590, next);
+		} else {
+		res.cookie(
+			CFG.user.sessionCookieName,
+			createSessionCookie(user.login, user.password),
+			{path: '/', maxAge: CFG.user.sessionDuration}
+		);
+		res.send({
+			name: user.name,
+			email: user.email,
+			id: user.id
+		});
 		}
 	});
 };
@@ -193,10 +272,37 @@ var loginUser = function (req, res, next) {
 					{path: '/', maxAge: CFG.user.sessionDuration}
 				);
 				res.send({
-					success: true,
-					name: user.name
+					name: user.name,
+					email: user.email,
+					id: user.id
 				});
 			}
+		}
+	});
+};
+/**
+ * @method GET
+ * @url /api/users
+ * @response {JSON}
+ */
+var getUsers = function (req, res, next) {
+    var _users = [];
+	User.find({}, function (err, users) {
+		if (err) {
+			errHandler('Database error, failed to retrieve the users info', 591, next);
+		} else if (!users) {
+			errHandler('Request error, users not found', 590, next);
+		} else {
+		    users.forEach(function (usr) {
+            	_users.push({
+            		id: usr.id,
+            		name: usr.name,
+            		email: usr.email
+            	});
+            });
+		    res.send({
+		    	users: _users
+		    });
 		}
 	});
 };
@@ -209,14 +315,28 @@ var loginUser = function (req, res, next) {
  * The trick is, it won't be called at all if the session is out/incorrect due to routing setup.
  */
 var checkSession = function (req, res, next) {
-	res.send({
-		success: true
-	});
+    var cookie = req.cookies[CFG.user.sessionCookieName], login;
+    login = hex2str(cookie.substring(43, cookie.length));
+    User.findOne({login: login}, function (err, user) {
+    	if (err) {
+    		console.log('[ ERR ] Failed to retrieve the user info');
+    		return;
+    	} else {
+    	    res.send({
+    	        name: user.name,
+    	        email: user.email,
+    	        id: user.id
+    	    });
+    	}
+
+    });
 };
 
 module.exports = {
 	createUser: createUser,
+	updateUserInfo: updateUserInfo,
 	checkSessionCookie: checkSessionCookie,
 	loginUser: loginUser,
-	checkSession: checkSession
+	checkSession: checkSession,
+	getUsers: getUsers
 };

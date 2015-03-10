@@ -4,5 +4,7 @@ module.exports = mongoose.model('User', {
 	login: String,
 	name: String,								// the human-friendly user name
 	salt: String,
-	password: String							// see the /api/login.js#createPasswordHash
+	password: String,							// see the /api/login.js#createPasswordHash
+	email: String,
+	keywords: Array
 });
