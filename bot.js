@@ -3,8 +3,7 @@ var express = require('express'),
 	favicon = require('express-favicon'),
 	handlers = {},
 	bodyParser = require('body-parser'),
-	cookieParser = require('cookie-parser'),
-	login = require('./api/login');
+	cookieParser = require('cookie-parser');
 
 require('./api/db/connect');
 
@@ -12,21 +11,13 @@ require('./api/db/connect');
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(bodyParser.json());
 app.use(cookieParser());
-// ------------ login check ------------
-app.use(/^\/api/, function (req, res, next) {
-	// TODO remove the '/api/create-user' condition after implementing all the user functionality (profiles and so on)
-	if ((req.path === '/login' || req.path === '/create-user') && req.method === 'POST') {
-		next();
-	} else {
-		login.checkSessionCookie(req, res, next);
-	}
-});
 
 // ------------ routes ------------
 handlers.state = require('./api/state');
 handlers.startStop = require('./api/start-stop');
 handlers.setup = require('./api/setup');
 handlers.rawData = require('./api/raw-data');
+handlers.login = require('./api/login');
 handlers.test = function (req, res) {
 	res.status(200).send({
 		requestBody: req.body,
@@ -35,12 +26,24 @@ handlers.test = function (req, res) {
 	});
 };
 
+
+// ------------ login check ------------
+app.use(/^\/api/, function (req, res, next) {
+	// TODO remove the '/api/create-user' condition after implementing all the user functionality (profiles and so on)
+	if ((req.path === '/login' || req.path === '/create-user') && req.method === 'POST') {
+		next();
+	} else {
+		handlers.login.checkSessionCookie(req, res, next);
+	}
+});
+
 // ------------ statics ------------
 app.use(express.static(__dirname + '/public'));
 
-app.post('/api/login', login.loginUser);
-app.get('/api/check-session', login.checkSession);
-app.post('/api/create-user', login.createUser);
+// ------------ API ------------
+app.post('/api/login', handlers.login.loginUser);
+app.get('/api/check-session', handlers.login.checkSession);
+app.post('/api/create-user', handlers.login.createUser);
 
 app.get('/api/state/:network', handlers.state.check);
 app.put('/api/state/:network', handlers.state.save);
@@ -64,9 +67,7 @@ app.get('/api/data/:network/analyzed', handlers.rawData.getAnalyzedData);
 
 // for test purposes
 app.all('/api/test', handlers.test);
-app.all("/login", function(req, res, next) {
-    res.sendfile("index.html", { root: __dirname  + '/public'});
-});
+
 // ------------ routes - errors ------------
 app.use(function(req, res, next) {
 	var err = new Error('Not Found');
