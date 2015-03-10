@@ -3,14 +3,36 @@
 <head lang="en">
 	<meta charset="UTF-8">
 	<title>Social Monitoring</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/javascripts/src/ng-tags-input/ng-tags-input.min.css">
 	<link rel="stylesheet" href="/stylesheets/bootstrap.css">
+	<link rel="stylesheet" href="/stylesheets/materialize.css">
 	<link rel="stylesheet" href="/stylesheets/main.css">
-
+    <script src="/javascripts/src/angular/angular.js"></script>
+    <script src="/javascripts/src/angular-route/angular-route.js"></script>
+    <script src="/javascripts/src/angular-animate/angular-animate.min.js"></script>
+    <script src="/javascripts/src/ui-bootstrap.js"></script>
+    <script src="/javascripts/src/ui-bootstrap-tpls.js"></script>
+    <script src="/javascripts/src/ng-tags-input/ng-tags-input.js"></script>
+    <script src="/javascripts/app.js"></script>
+    <script src="/javascripts/controllers/main.js"></script>
+    <script src="/javascripts/controllers/loginController.js"></script>
+    <script src="/javascripts/controllers/fb.js"></script>
+    <script src="/javascripts/controllers/vk.js"></script>
+    <script src="/javascripts/controllers/keyWordsController.js"></script>
+    <script src="/javascripts/controllers/networkKeywordsController.js"></script>
 </head>
-<body ng-app="SocialApp" ng-controller="mainController" ng-view>
-<div id="fb-root"></div>
+<body ng-app="SocialApp" ng-controller="mainController">
+    <div id="fb-root"></div>
+    <nav>
+        <div class="nav-wrapper teal lighten-2">
+            <ul class="left hide-on-med-and-down">
+                <li><a class="waves-effect waves-light" href="#/">Головна сторінка</a></li>
+                <li><a class="waves-effect waves-light" href="#/user-info">Налаштування користувача</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div ng-view></div>
 </body>
 <script src="//connect.facebook.net/en_US/sdk.js"></script>
 <script src="/javascripts/src/facebookAPI.js"></script>
@@ -21,17 +43,5 @@
 	});
 </script>
 <script src="/javascripts/src/jquery-1.11.2.min.js"></script>
-<script src="/javascripts/src/angular/angular.js"></script>
-<script src="/javascripts/src/angular-route/angular-route.js"></script>
-<script src="/javascripts/src/angular-animate/angular-animate.min.js"></script>
-<script src="/javascripts/src/ui-bootstrap.js"></script>
-<script src="/javascripts/src/ui-bootstrap-tpls.js"></script>
-<script src="/javascripts/src/ng-tags-input/ng-tags-input.js"></script>
-<script src="/javascripts/app.js"></script>
-<script src="/javascripts/controllers/main.js"></script>
-<script src="/javascripts/controllers/loginController.js"></script>
-<script src="/javascripts/controllers/fb.js"></script>
-<script src="/javascripts/controllers/vk.js"></script>
-<script src="/javascripts/controllers/keyWordsController.js"></script>
-<script src="/javascripts/controllers/networkKeywordsController.js"></script>
+<script src="/javascripts/src/materialize.min.js"></script>
 </html>

@@ -1,25 +1,17 @@
 <div>
-    <div class="modal-header">
-        <h3 class="modal-title">Add Group</h3>
-    </div>
-    <div class="modal-body">
-        <form role="form" name="groupKeywords" data-ng-submit="submit(groupKeywords)" novalidate="novalidate" class="form-horizontal">
-            <div class="error-box"></div>
-            <div class="controls col-md-4">
-                <input name="groupName" type="text" placeholder="Group name" data-ng-model="activeGroup.name" required="true" class="form-control"/>
+    <h4 class="modal-title">Add Group</h4>
+    <form role="form" name="groupKeywords" data-ng-submit="submit(groupKeywords)" novalidate="novalidate" class="form-horizontal">
+        <div class="error-box"></div>
+        <div class="controls col-md-6">
+            <input name="groupName" type="text" placeholder="Group name" data-ng-model="activeGroup.name" required="true" class="form-control"/>
+        </div>
+        <div class="controls col-md-6">
+            <input name="groupId" type="number" placeholder="Group id" data-ng-model="activeGroup.id" required="true" class="form-control" ng-disabled="!newGroup" ng-click="groupDuplicationError = false;"/>
+            <div data-ng-show="groupDuplicationError" class="err-msg"> Group with such id already exists
             </div>
-            <div class="controls col-md-4">
-                <input name="groupId" type="number" placeholder="Group id" data-ng-model="activeGroup.id" required="true" class="form-control" ng-disabled="!newGroup" ng-click="groupDuplicationError = false;"/>
-                <div data-ng-show="groupDuplicationError" class="err-msg"> Group with such id already exists
-                </div>
-            </div>
-            <div class="controls col-md-4">
-                <tags-input placeholder="Keywords" data-ng-model="activeGroup.keywords" class="tags-input-home">
-                </tags-input>
-            </div>
-            <div class="clearfix"></div>
-        </form>
-    </div>
+        </div>
+        <div class="clearfix"></div>
+    </form>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="submitChanges()">OK</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>

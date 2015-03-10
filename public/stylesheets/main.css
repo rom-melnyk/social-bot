@@ -20,8 +20,13 @@ input[type="date"] {
     margin: 10px 0;
 }
 
+input[type="number"] {
+    padding: 0 5px;
+}
+
 .header-section {
     display: inline-block;
+    width: 80%;
 }
 
 .header-section * {
@@ -47,6 +52,8 @@ input[type="date"] {
 
 .modal.fade {
     background: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    max-height: 100%;
 }
 
 .highlightedText {
@@ -133,7 +140,10 @@ input[type="date"] {
     padding: 10px;
 }
 .social-logo {
+    display: block;
+    cursor: pointer;
     border-radius: 8px;
+    margin-right: 10px;
 }
 
 .modal-body .group {
@@ -151,10 +161,6 @@ input[type="date"] {
     border-radius: 8px;
 }
 
-.modal-dialog {
-    width: 800px;
-}
-
 span.glyphicon {
     margin: 0 5px;
 }
@@ -163,7 +169,7 @@ span.glyphicon {
     display: none;
 }
 
-.list-group-item:hover .actions-bar {
+.collection-item.group:hover .actions-bar {
     display: inline;
     opacity: 0.7;
 }
@@ -236,5 +242,43 @@ tags-input .tags .tag-item {
 }
 .fader.ng-hide {
   opacity: 0;
-}}
+}
 
+.card-content .collection-item, .feed-section .collection-item {
+    background: #F5F5F5;
+}
+.card-content .social-logo {
+    display: block;
+    margin-right: auto;
+    cursor: default;
+}
+
+.keywords {
+    display: inline-block;
+    margin: 10px;
+    padding: 5px;
+    background: #5cb85c;
+    border-radius: 3px;
+    color: #FFF;
+}
+.card a {
+    color: #26a69a;
+}
+.card a:hover {
+    color: #228178;
+}
+
+@media (min-width: 768px) and (max-width: 1456px) {
+    .header-section button {
+        display: block;
+        width: 100%;
+    }
+    .social-logo {
+        display: inline-block;
+        top: -50px;
+        position: relative;
+    }
+    .card .social-logo {
+        top: 0;
+    }
+}

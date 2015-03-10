@@ -35,6 +35,8 @@ var app = angular.module('SocialApp', [
   $routeProvider.
     when("/",
       { templateUrl: "views/mainView.html" }).
+    when("/user-info",
+          { templateUrl: "views/user-info.html" }).
     when("/login",
       { templateUrl: "views/login.html", controller: "LoginCtrl" }).
     // event more routes here ...

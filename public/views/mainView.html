@@ -1,28 +1,41 @@
 <div id="fb-root"></div>
-<div class="container">
-    <div class="network-dropdown">
-        <label>Соіцальна мережа</label>
-        <select ng-model="network" class="form-control">
-            <option value="all">Всі</option>
-            <option value="vk">VK</option>
-            <option value="fb">Facebook</option>
-        </select>
-    </div>
-    <div class="accordion">
+<div class="container-fluid">
+    <div class="accordion col-md-6">
+        <div class="network-dropdown">
+            <label>Соіцальна мережа</label>
+            <select ng-model="network" class="form-control">
+                <option value="all">Всі</option>
+                <option value="vk">VK</option>
+                <option value="fb">Facebook</option>
+            </select>
+            <input type="date" class="form-control" name="sinceFilter" ng-model="sinceDate" ng-change="setDate(sinceDate)"/>
+            <button class="btn waves-effect waves-light" ng-click="showAllGroupsPosts()">Пошук</button>
+            <button class="btn waves-effect waves-light" ng-click="clearResults()">Очистити результати</button>
+        </div>
         <div class="list-group">
             <div ng-show="network === 'vk' || network === 'all'" class="fader list-group-item">
                 <!--VK section-->
                 <div class="section" ng-controller="vkController">
                     <div ng-include src="'views/vkSectionView.html'"></div>
+                    <!--&lt;!&ndash;all vk network feeds&ndash;&gt;
+                    <div ng-include src="'views/vkAllGroupsView.html'"></div>-->
                 </div>
             </div>
             <div ng-show="network === 'fb' || network === 'all'" class="fader list-group-item">
                 <div class="section" ng-controller="fbController">
                     <div ng-include src="'views/fbSectionView.html'"></div>
-                    <!--all fb network feeds-->
-                    <div ng-include src="'views/facebookAllGroupsView.html'"></div>
+                    <!--&lt;!&ndash;all fb network feeds&ndash;&gt;
+                    <div ng-include src="'views/facebookAllGroupsView.html'"></div>-->
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="card col-md-6">
+        <div class="card-content">
+            <!--all vk network feeds-->
+            <div ng-show="network === 'vk' || network === 'all'" ng-include src="'views/vkAllGroupsView.html'" class="fader"></div>
+            <!--all fb network feeds-->
+            <div ng-show="network === 'fb' || network === 'all'" ng-include src="'views/facebookAllGroupsView.html'" class="fader"></div>
         </div>
     </div>
 </div>

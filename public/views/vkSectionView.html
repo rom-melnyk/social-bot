@@ -1,33 +1,31 @@
-<img class="social-logo" src="/images/vkLogo.jpg" height="50px" ng-click="isVisible = !isVisible">
+<img class="social-logo" tooltip="Show groups list" src="/images/vkLogo.jpg" height="50px" ng-click="isVisible = !isVisible">
 <div class="header-section inline-block">
-    <button class="btn btn-primary" ng-click="addNewGroup('vk')">Add VK group</button>
-    <button class="btn btn-primary" ng-click="setNetworkKeywords('vk', vkKeywords)">Set VK keywords</button>
-    <button class="btn btn-success" ng-click="showAllGroupsPosts()">Search in VK groups</button>
-    <button class="btn btn-success" ng-class="{'btn-danger': state === 'running'}"  ng-click="startCrawler($event)">{{crawlerText}}</button>
+    <button class="btn waves-effect waves-light" ng-click="addNewGroup('vk')">Додати групу</button>
+    <button class="btn waves-effect waves-light" ng-click="setNetworkKeywords('vk', vkKeywords)">Змінити ключові слова</button>
+    <button class="btn waves-effect waves-light" ng-class="{'red': state === 'running'}"  ng-click="startCrawler($event)">{{crawlerText}}</button>
 </div>
 <div ng-show="isVisible" class="fader social-body">
-    <input type="date" class="form-control" name="sinceFilter" ng-model="sinceDate" ng-change="setDate(sinceDate)"/>
     <div class="groups-section">
-        <div class="list-group">
-            <a class="list-group-item" ng-repeat="group in groups" ng-class="{ active: isActive($index) }" ng-click="showGroupPosts($index)">
-                <span class="badge" ng-show="isActive($index)">{{vkFeeds.length}}</span>
+        <div class="collection">
+            <div class="collection-item group" ng-repeat="group in groups">
+                <span class="badge new" ng-show="isActive($index)">{{vkFeeds.length}}</span>
                 {{group.name}}
                 <div class="actions-bar">
                     <span class="glyphicon glyphicon-remove pull-right" ng-click="removeGroup(group, 'vk'); $event.stopPropagation(); $event.preventDefault()"></span>
                     <span class="glyphicon glyphicon-edit pull-right" ng-click="editGroup(group, 'vk'); $event.stopPropagation(); $event.preventDefault()"></span>
                 </div>
-            </a>
-            <h3 ng-show="!groups.length">There is no groups to display</h3>
+            </div>
+            <h3 ng-show="!groups.length">Немає активних груп</h3>
         </div>
     </div>
-    <div class="feed-section list-group">
+    <div class="feed-section collection">
         <div class="spinner" ng-show="loading">
             <h2>
-                Loading...
+                Збір даних...
             </h2>
         </div>
-        <h3 ng-show="vkFeeds.length">Query results:</h3>
-        <div class="feed list-group-item" ng-repeat="feed in vkFeeds">
+        <h5 ng-show="vkFeeds.length">Результати запиту:</h5>
+        <div class="feed collection-item" ng-repeat="feed in vkFeeds">
             <div class="feed-container" ng-show="vkFeeds[$index].showFullText">
                 <span ng-bind-html="highlight(feed.text, allKeywords)"></span>
                 <div class="comments-section" ng-show="!!feed.comments">
@@ -51,11 +49,10 @@
             <div class="post-crop">
                 <div ng-show="!vkFeeds[$index].showFullText">
                     <span ng-bind-html="cropText(feed.text, 50)" ng-show="!vkFeeds[$index].showFullText"></span><br/>
-                    <a ng-click="openVKPage(feed.to_id, feed.id)">Read on VK</a>
+                    <a ng-click="openVKPage(feed.to_id, feed.id)">Прочитати на VK</a>
                 </div>
-                <a ng-click="showMore(vkFeeds[$index], $event)">Show more</a>
+                <a ng-click="showMore(vkFeeds[$index], $event)">Показати більше...</a>
             </div>
         </div>
     </div>
-    <div ng-include src="'views/vkAllGroupsView.html'"></div>
 </div>

@@ -3,7 +3,6 @@
  */
 angular.module('SocialApp.vk', []).
     controller('vkController', function($scope, $http, $modal, $sce, $rootScope) {
-        $scope.sinceDate = new Date(new Date().toLocaleDateString());
         var accessToken, uid, processFB = function(response) {
             accessToken = response.session.sid;
             $http.put('/api/state/vk', {
@@ -67,9 +66,6 @@ angular.module('SocialApp.vk', []).
                 }
             });
         };
-        $scope.setDate = function (since) {
-            $scope.sinceDate = since;
-        };
         $http.get('/api/state/vk').success(function (response) {
             if (response.state && response.state !== "auth-fail") {
                 $scope.state = response.state;
@@ -122,9 +118,6 @@ angular.module('SocialApp.vk', []).
                         $scope.activeGroupIndex = groupIndex;
                     }
                 });
-        };
-        $scope.openVKPage = function (ownerId, postId) {
-            window.open("http://vk.com/public" + (-ownerId) + "?w=wall" + ownerId + "_" + postId);
         };
         $scope.isActive = function (groupIndex) {
             return groupIndex === $scope.activeGroupIndex;

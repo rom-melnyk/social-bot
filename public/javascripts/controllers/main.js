@@ -7,6 +7,20 @@
 angular.module('SocialApp.main', []).
     controller('mainController', function($scope, $http, $modal, $rootScope, $sce) {
         $scope.network = "all";
+        $scope.sinceDate = new Date(new Date().toLocaleDateString());
+        $scope.setDate = function (since) {
+            $scope.sinceDate = since;
+        };
+        $http.get('api/setup/vk').success(function (response) {
+            if (response.keywords) {
+                $scope.vkKeywords = response.keywords;
+            }
+        });
+        $http.get('api/setup/fb').success(function (response) {
+            if (response.keywords) {
+                $scope.networkKeywords = response.keywords;
+            }
+        });
         var openModal = function (ntw, newGroup, group) {
             var modalInstance = $modal.open({
                 templateUrl: "../../views/editKeywordsModal.html",
@@ -23,6 +37,20 @@ angular.module('SocialApp.main', []).
                     }
                 }
             });
+        };
+        $scope.showAllGroupsPosts = function () {
+            $http.get('api/data/fb/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
+                $scope.fbGroupsArray = resp;
+                $scope.loading = false;
+            });
+            $http.get('api/data/vk/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
+                $scope.vkGroupsArray = resp;
+                $scope.loading = false;
+            });
+        };
+        $scope.clearResults = function () {
+            $scope.vkGroupsArray = [];
+            $scope.fbGroupsArray = [];
         };
         $scope.editGroup = function (group, ntw) {
             openModal(ntw, false, group);
@@ -50,7 +78,7 @@ angular.module('SocialApp.main', []).
             });
         };
         $scope.highlight = function(text, searchArray) {
-            if (text) {
+            if (text && searchArray) {
                 if (!(searchArray instanceof Array)) {
                     return $sce.trustAsHtml(text);
                 }
@@ -90,6 +118,12 @@ angular.module('SocialApp.main', []).
         $scope.formatDate = function (dateString) {
             return $sce.trustAsHtml(new Date(dateString).toUTCString());
         };
+        $scope.openFbPage = function (link) {
+            window.open(link, '_newtab');
+        };
+        $scope.openVKPage = function (ownerId, postId) {
+            window.open("http://vk.com/public" + (-ownerId) + "?w=wall" + ownerId + "_" + postId);
+        };
     }).filter('keyWordFilter', function () {
         return function (items, keywords) {
             var filtered = [];
@@ -97,17 +131,17 @@ angular.module('SocialApp.main', []).
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i],
                         containsWord = false;
-                    if (item.message) {
+                    if (item.message || item.name) {
                         for (var j = 0; j < keywords.length; j++) {
                         	RE = new RegExp(keywords[j], 'gi');
-                        	containsWord = containsWord || RE.test(item.message);
+                        	containsWord = containsWord || RE.test(item.message) || RE.test(item.name);
                         }
                         containsWord && filtered.push(item);
                     } else if (item.comments) {
                         item.comments.data.forEach(function (value) {
                             for (var j = 0; j < keywords.length; j++) {
                             	RE = new RegExp(keywords[j], 'gi');
-                            	containsWord = containsWord || RE.test(value.message);
+                            	containsWord = containsWord || RE.test(value.message) || RE.test(value.name);
                             }
                         });
                         containsWord && filtered.push(item);

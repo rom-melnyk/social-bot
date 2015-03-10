@@ -6,9 +6,6 @@ angular.module('SocialApp.keyWordController', []).
         $scope.newGroup = newGroup;
         $scope.submitChanges = function () {
             if ($scope.groupKeywords.$valid) {
-                $scope.activeGroup.keywords.forEach(function (kw, index) {
-                    $scope.activeGroup.keywords[index] = kw.text;
-                });
                 if (newGroup) {
                     $http.post('api/setup/' + ntw, $scope.activeGroup).success(function (response) {
                         $rootScope.$emit('groupsChanged');
@@ -17,12 +14,6 @@ angular.module('SocialApp.keyWordController', []).
                         $scope.groupDuplicationError = true;
                     });
                 } else {
-                    if ( $scope.activeGroup.keywords && $scope.activeGroup.keywords.length && !($scope.activeGroup.keywords instanceof Array)) {
-                        $scope.activeGroup.keywords = $scope.activeGroup.keywords.split(",");
-                    }
-                    if (!$scope.activeGroup.keywords) {
-                        $scope.activeGroup.keywords = [];
-                    }
                     $http.put('api/setup/' + ntw + '/' + $scope.activeGroup.id, $scope.activeGroup).success(function (response) {
                         $rootScope.$emit('groupsChanged');
                         $modalInstance.close(response);
@@ -32,7 +23,6 @@ angular.module('SocialApp.keyWordController', []).
         };
 
         $scope.cancel = function () {
-            group.keywords = defaultKeywords;
             $modalInstance.dismiss('cancel');
         };
         var clone = function (obj) {
@@ -44,7 +34,6 @@ angular.module('SocialApp.keyWordController', []).
             return copy;
         };
         if (!newGroup) {
-            var defaultKeywords = clone(group.keywords);
             $scope.activeGroup = clone(group);
             $scope.activeGroup.id = parseInt($scope.activeGroup.id);
         }

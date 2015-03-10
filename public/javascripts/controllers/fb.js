@@ -4,10 +4,6 @@
 angular.module('SocialApp.controllers', []).
     controller('fbController', function($scope, $http, $modal, $sce, $rootScope, $filter) {
         $scope.groupsArray = [];
-        $scope.sinceDate = new Date(new Date().toLocaleDateString());
-        $scope.setDate = function (since) {
-            $scope.sinceDate = since;
-        };
         var accessToken, uid,
             getGroups = function () {
                 $http.get('api/setup/fb').success(function (response) {
@@ -55,25 +51,39 @@ angular.module('SocialApp.controllers', []).
             $scope.groupsArray = [];
             $scope.allKeywords = [];
             $scope.loading = true;
-            $http.get('https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken + "&since=" + since + "&limit=50").success(function (resp) {
-                if (resp.data) {
-                    $scope.facebookFeeds = resp.data;
-                    $scope.keywords = $scope.groups[groupIndex].keywords;
-                    $scope.keywords.forEach(function (kw) {
-                        $scope.allKeywords.push(kw);
-                    });
-                    $scope.networkKeywords.forEach(function (kw) {
-                        if ($scope.allKeywords.indexOf(kw) === -1) {
-                            $scope.allKeywords.push(kw);
-                        }
-                    });
-                    $scope.emptyMessage =  !$scope.facebookFeeds.length;
-                    $scope.activeGroupIndex = groupIndex;
-                    $scope.loading = false;
+            var feedsArray = [],
+                page = 0,
+            getFeeds = function (nextPage) {
+                var url = 'https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken + '&limit=25&since=' + since;
+                if (nextPage) {
+                    url = nextPage + '&since=' + since;
                 }
-            }).error(function (resp) {
-                 FB.login(processFB);
-            });
+                $http.get(url).success(function (resp) {
+                    if (resp.data) {
+                        $scope.keywords = $scope.groups[groupIndex].keywords;
+                        $scope.keywords.forEach(function (kw) {
+                            $scope.allKeywords.push(kw);
+                        });
+                        $scope.networkKeywords.forEach(function (kw) {
+                            if ($scope.allKeywords.indexOf(kw) === -1) {
+                                $scope.allKeywords.push(kw);
+                            }
+                        });
+                        $scope.activeGroupIndex = groupIndex;
+                        if (resp.paging && resp.paging.next) {
+                            page++;
+                            getFeeds(resp.paging.next);
+                        } else {
+                            console.log("no next page found");
+                            $scope.loading = false;
+                            $scope.facebookFeeds = feedsArray;
+                        }
+                        var filtered = $filter('keyWordFilter')(resp.data, $scope.allKeywords);
+                        feedsArray = feedsArray.concat(filtered);
+                    }
+                });
+            };
+            getFeeds();
         };
         $scope.showAllGroupsPosts = function () {
             $scope.loading = true;
@@ -84,9 +94,6 @@ angular.module('SocialApp.controllers', []).
                 $scope.groupsArray = resp;
                 $scope.loading = false;
             });
-        };
-        $scope.openFbPage = function (link) {
-            window.open(link, '_newtab');
         };
         $scope.isActive = function (groupIndex) {
             return groupIndex === $scope.activeGroupIndex;

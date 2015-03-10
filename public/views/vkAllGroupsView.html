@@ -1,43 +1,50 @@
-<div class="network-feed-section">
-    <div ng-repeat="group in groupsArray">
-        <h3 ng-show="group.feeds.length">{{group.group[0].name}}</h3>
-        <div ng-repeat="feed in group.feeds">
-            <div class="feed-container" ng-show="group.feeds[$index].showFullText">
-                {{feed.from.name}}:
-                <span ng-bind-html="highlight(feed.text, vkKeywords)"></span>
-                <img ng-src="{{feed.type === 'photo' ? feed.picture : ''}}" ng-show="!!feed.picture">
-                <div>
-                    <a ng-click="openVKPage(feed.to_id, feed.id)">Read on Vkontakte</a>
-                </div>
-                <div class="comments-section" ng-show="!!feed.comments.data">
-                    <div class="actionBox" ng-repeat="comment in feed.comments.data">
-                        <ul class="commentList">
-                            <li>
-                                <div class="commenterImage">
-                                    <img src="/images/userImage.png">
-                                </div>
-                                <div class="commentText">
-                                    <p class="">
-                                        <span ng-bind-html="highlight(comment.text, vkKeywords)"></span>
-                                    </p>
-                                    <span class="date sub-text" ng-bind-html="formatDate(comment.date * 1000)"></span>
-                                </div>
-                            </li>
-                        </ul>
+<div class="network-feed-section text-center">
+    <h4>Vkontakte</h4>
+    <div class="keywords teal lighten-1" ng-repeat="kw in vkKeywords">
+        {{kw}}
+    </div>
+    <div class="clearfix"></div>
+    <div ng-repeat="group in vkGroupsArray">
+        <h5 ng-show="group.feeds.length">{{group.group[0].name}}</h5>
+        <div class="collection  text-left">
+            <div ng-repeat="feed in group.feeds" class="collection-item">
+                <div class="feed-container" ng-show="group.feeds[$index].showFullText">
+                    {{feed.from.name}}:
+                    <span ng-bind-html="highlight(feed.text, vkKeywords)"></span>
+                    <img ng-src="{{feed.type === 'photo' ? feed.picture : ''}}" ng-show="!!feed.picture">
+                    <div>
+                        <a ng-click="openVKPage(feed.to_id, feed.id)">Прочитати на Vkontakte</a>
+                    </div>
+                    <div class="comments-section" ng-show="!!feed.comments.data">
+                        <div class="actionBox" ng-repeat="comment in feed.comments.data">
+                            <ul class="commentList">
+                                <li>
+                                    <div class="commenterImage">
+                                        <img src="/images/userImage.png">
+                                    </div>
+                                    <div class="commentText">
+                                        <p class="">
+                                            <span ng-bind-html="highlight(comment.text, vkKeywords)"></span>
+                                        </p>
+                                        <span class="date sub-text" ng-bind-html="formatDate(comment.date * 1000)"></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="post-crop">
-                <div>
-                    <div ng-show="!group.feeds[$index].showFullText">
-                        <span>{{feed.from.name}}:</span>
-                        <span ng-bind-html="cropText(feed.text, 50)"></span><br/>
-                        <a ng-click="openVKPage(feed.to_id, feed.id)">Read on Vkontakte</a>
+                <div class="post-crop">
+                    <div>
+                        <div ng-show="!group.feeds[$index].showFullText">
+                            <span>{{feed.from.name}}:</span>
+                            <span ng-bind-html="cropText(feed.text, 50)"></span><br/>
+                            <a ng-click="openVKPage(feed.to_id, feed.id)">Прочитати на Vkontakte</a>
+                        </div>
                     </div>
+                    <a ng-click="showMore(group.feeds[$index], $event)">Показати більше...</a>
                 </div>
-                <a ng-click="showMore(group.feeds[$index], $event)">Show more</a>
             </div>
-            <hr/>
         </div>
     </div>
+    <hr/>
 </div>
