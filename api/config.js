@@ -1,12 +1,39 @@
 /**
  * The config file
  */
+var isEnvVariableSet = function (variable) {
+	var res = false,
+		envV;
+
+	variable = variable.toUpperCase();
+	for (var i = 2; i < process.argv.length; i++) {
+		envV = process.argv[i].toUpperCase();
+		if (envV === variable || envV === '-' + variable || envV === '--' + variable) {
+			res = process.argv[i];
+			break;
+		}
+	}
+
+	return res;
+};
+
 module.exports = {
+	env: isEnvVariableSet('dev') ? 'dev' : 'prod',
+	dropDbConfirmed: {
+		dev: isEnvVariableSet('IDropDevDatabase'),
+		prod: isEnvVariableSet('IDropProdDatabase')
+	},
 	db: {
-		host: 'ds039301.mongolab.com:39301',
-		name: 'social-bot',
-		user: 'admin',
-		password: 'admin'
+		prod: {
+			host: 'ds039301.mongolab.com:39301',
+			name: 'social-bot',
+			user: 'admin',
+			password: 'admin'
+		},
+		dev: {
+			host: 'localhost:27017',
+			name: 'social-bot'
+		}
 	},
 	fb: {
 		/**

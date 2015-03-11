@@ -35,6 +35,7 @@ var app = angular.module('SocialApp', [
     });
     $httpProvider.interceptors.push('myHttpInterceptor');
   }]).config(function($routeProvider, $locationProvider) {
+
   $routeProvider.
     when("/",
       { templateUrl: "views/mainView.html" }).

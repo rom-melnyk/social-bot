@@ -1,4 +1,5 @@
 var async = require('async'),
+	cfg = require('./api/config'),
 	Setup = require('./api/db/setup-model').setup,
 	Data = require('./api/db/data-model'),
 	State = require('./api/db/state-model'),
@@ -7,6 +8,13 @@ var async = require('async'),
 require('./api/db/connect');
 
 var networks = ['fb', 'vk'];
+
+var confirmed = cfg.dropDbConfirmed[cfg.env];
+if (!confirmed) {
+	console.log('[ ! ] This command drops all the %s data', cfg.env.toUpperCase());
+	console.log('[ ERR ] Use it with the parameter "%s" to proceed.', 'idrop' + cfg.env + 'database');
+	process.exit(1);
+}
 
 async.parallel(
 	[
