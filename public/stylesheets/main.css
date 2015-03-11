@@ -148,6 +148,9 @@ input[type="number"] {
 .accordion {
     padding-left: 0;
 }
+.container-fluid {
+    padding: 10px;
+}
 .modal-body .group {
     margin: 10px 0;
 }
@@ -161,6 +164,10 @@ input[type="number"] {
     padding: 40%;
     color: #FFF;
     border-radius: 8px;
+}
+
+.glyphicon {
+    cursor: pointer;
 }
 
 span.glyphicon {
@@ -254,7 +261,9 @@ tags-input .tags .tag-item {
     margin-right: auto;
     cursor: default;
 }
-
+.card a {
+    text-transform: initial;
+}
 .keywords {
     display: inline-block;
     margin: 10px;

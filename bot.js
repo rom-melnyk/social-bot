@@ -42,6 +42,7 @@ app.post('/api/login', login.loginUser);
 app.get('/api/check-session', login.checkSession);
 app.post('/api/create-user', login.createUser);
 app.put('/api/create-user', login.updateUserInfo);
+app.delete('/api/user/:id', login.removeUser);
 app.get('/api/users', login.getUsers);
 
 app.get('/api/state/:network', handlers.state.check);

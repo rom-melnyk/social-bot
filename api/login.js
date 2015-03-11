@@ -165,7 +165,7 @@ var createUser = function (req, res, next) {
 };
 
 /**
- * @method POST
+ * @method DELETE
  * @url /api/user/:userId
  * @response {JSON}
  */
@@ -175,34 +175,12 @@ var removeUser = function (req, res, next) {
 		return;
 	}
 
-	User.find({_id: req.params.id}, function (err, _usr) {
+	User.remove({_id: req.params.id}, function (err, _usr) {
 		if (err) {
 			errHandler('Database error, failed to retrieve the user info', 591, next);
-		} else if (_usr) {
-			errHandler('Request error, user already exists', 590, next);
 		} else {
-			var salt = createSalt(),
-				user = new User({
-					login: req.body.login,
-					salt: salt,
-					password: createPasswordHash(req.body.password, salt),
-					name: req.body.name,
-					email: req.body.email
-				});
-
-			user.save(function (err) {
-				if (err) {
-					errHandler('Database error, failed to create the new user', 591, next);
-				} else {
-					res.send({
-						success: true,
-						user: {
-							id: req.body.id,
-							name: req.body.name,
-							email: req.body.email
-						}
-					});
-				}
+			res.send({
+				removed: true
 			});
 		}
 	});
@@ -335,6 +313,7 @@ var checkSession = function (req, res, next) {
 module.exports = {
 	createUser: createUser,
 	updateUserInfo: updateUserInfo,
+	removeUser: removeUser,
 	checkSessionCookie: checkSessionCookie,
 	loginUser: loginUser,
 	checkSession: checkSession,

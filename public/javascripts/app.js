@@ -14,7 +14,7 @@ var app = angular.module('SocialApp', [
     'ngRoute',
     'ngTagsInput',
     'ngAnimate'
-, function ($routeProvider, $locationProvider, $httpProvider, $provide) {
+, function ($routeProvider, $locationProvider, $httpProvider, $provide, $rootScopeProvider) {
 
     $provide.factory('myHttpInterceptor', function($q) {
       return {
@@ -27,6 +27,7 @@ var app = angular.module('SocialApp', [
           // do something on error
           if (rejection.status === 599) {
              window.location.hash = '/login';
+             $rootScopeProvider.loggedInUser = null;
           }
           return $q.reject(rejection);
         }
