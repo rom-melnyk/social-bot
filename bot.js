@@ -3,8 +3,7 @@ var express = require('express'),
 	favicon = require('express-favicon'),
 	handlers = {},
 	bodyParser = require('body-parser'),
-	cookieParser = require('cookie-parser'),
-	login = require('./api/login');
+	cookieParser = require('cookie-parser');
 
 require('./api/db/connect');
 
@@ -12,21 +11,13 @@ require('./api/db/connect');
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(bodyParser.json());
 app.use(cookieParser());
-// ------------ login check ------------
-app.use(/^\/api/, function (req, res, next) {
-	// TODO remove the '/api/create-user' condition after implementing all the user functionality (profiles and so on)
-	if ((req.path === '/login' || req.path === '/create-user') && req.method === 'POST') {
-		next();
-	} else {
-		login.checkSessionCookie(req, res, next);
-	}
-});
 
 // ------------ routes ------------
 handlers.state = require('./api/state');
 handlers.startStop = require('./api/start-stop');
 handlers.setup = require('./api/setup');
 handlers.rawData = require('./api/raw-data');
+handlers.login = require('./api/login');
 handlers.test = function (req, res) {
 	res.status(200).send({
 		requestBody: req.body,
@@ -35,15 +26,27 @@ handlers.test = function (req, res) {
 	});
 };
 
+
+// ------------ login check ------------
+app.use(/^\/api/, function (req, res, next) {
+	// TODO remove the '/api/create-user' condition after implementing all the user functionality (profiles and so on)
+	if ((req.path === '/login' || req.path === '/create-user') && req.method === 'POST') {
+		next();
+	} else {
+		handlers.login.checkSessionCookie(req, res, next);
+	}
+});
+
 // ------------ statics ------------
 app.use(express.static(__dirname + '/public'));
 
-app.post('/api/login', login.loginUser);
-app.get('/api/check-session', login.checkSession);
-app.post('/api/create-user', login.createUser);
-app.put('/api/create-user', login.updateUserInfo);
-app.delete('/api/user/:id', login.removeUser);
-app.get('/api/users', login.getUsers);
+// ------------ API ------------
+app.post('/api/login', handlers.login.loginUser);
+app.get('/api/check-session', handlers.login.checkSession);
+app.post('/api/create-user', handlers.login.createUser);
+app.put('/api/create-user', handlers.login.updateUserInfo);
+app.delete('/api/user/:id', handlers.login.removeUser);
+app.get('/api/users', handlers.login.getUsers);
 
 app.get('/api/state/:network', handlers.state.check);
 app.put('/api/state/:network', handlers.state.save);
