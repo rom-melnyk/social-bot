@@ -18,6 +18,14 @@
             <label for="password">Пароль</label>
             <input id="password" name="password" type="password" data-ng-model="user.password" required="true"/>
         </div>
+        <div class="input-field">
+            <label for="keywords">Ключові слова для ВК</label>
+            <input id="keywords" name="keywords" type="text" data-ng-model="user.keywords.vk"/>
+        </div>
+        <div class="input-field">
+            <label for="fbKeywords">Ключові слова для ВК</label>
+            <input id="fbKeywords" name="fbKeywords" type="text" data-ng-model="user.keywords.fb"/>
+        </div>
         <div class="clearfix"></div>
     </form>
     <div class="modal-footer">

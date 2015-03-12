@@ -11,6 +11,14 @@
                         <label ng-class="{'active': user.email}" for="email">Email</label>
                         <input id="email" ng-model="user.email" type="email">
                     </div>
+                    <div class="input-field">
+                        <label ng-class="{'active': user.keywords.vk}" for="vkKeywords">Ключові слова для ВК</label>
+                        <input id="vkKeywords" ng-model="user.keywords.vk" type="text">
+                    </div>
+                    <div class="input-field">
+                        <label ng-class="{'active': user.keywords.fb}" for="fbKeywords">Ключові слова для FB</label>
+                        <input id="fbKeywords" ng-model="user.keywords.fb" type="text">
+                    </div>
                     <button class="btn" ng-click="submitChanges()">Save</button>
                 </div>
                 <div class="col-md-6">

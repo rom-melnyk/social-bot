@@ -3,11 +3,19 @@
  */
 angular.module('SocialApp.users', []).
     controller('usersController', function($scope, $http, $modal, $rootScope, $sce) {
-        $scope.user = $rootScope.loggedInUser;
+        $rootScope.$on('userSet', function () {
+            $scope.user = $rootScope.loggedInUser;
+        });
         $http.get('api/users').success(function (resp) {
             $scope.users = resp.users;
         });
         $scope.submitChanges = function () {
+            if ($scope.user.keywords.vk && !($scope.user.keywords.vk instanceof Array)) {
+               $scope.user.keywords.vk = $scope.user.keywords.vk.split(',');
+           }
+           if ($scope.user.keywords.fb && !($scope.user.keywords.fb instanceof Array)) {
+               $scope.user.keywords.fb = $scope.user.keywords.fb.split(',');
+           }
             $http.put('api/create-user', $scope.user).success(function (resp) {
                 $rootScope.loggedInUser = resp;
             });

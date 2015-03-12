@@ -9,7 +9,7 @@ angular.module('SocialApp.controllers', []).
                 $http.get('api/setup/fb').success(function (response) {
                     if (response.groups) {
                         $scope.groups = response.groups;
-                        $scope.networkKeywords = response.keywords;
+                        $scope.networkKeywords = $rootScope.loggedInUser.keywords.fb;
                     }
                 });
             }, getLoginAccess = function () {
@@ -46,45 +46,6 @@ angular.module('SocialApp.controllers', []).
         getLoginAccess();
 
         //static scope methods
-        $scope.showGroupPosts = function (groupIndex) {
-            var since = Math.round($scope.sinceDate && $scope.sinceDate.getTime()/1000 || new Date().getTime()/1000);
-            $scope.groupsArray = [];
-            $scope.allKeywords = [];
-            $scope.loading = true;
-            var feedsArray = [],
-                page = 0,
-            getFeeds = function (nextPage) {
-                var url = 'https://graph.facebook.com/' + $scope.groups[groupIndex].id + '/feed?access_token=' + accessToken + '&limit=25&since=' + since;
-                if (nextPage) {
-                    url = nextPage + '&since=' + since;
-                }
-                $http.get(url).success(function (resp) {
-                    if (resp.data) {
-                        $scope.keywords = $scope.groups[groupIndex].keywords;
-                        $scope.keywords.forEach(function (kw) {
-                            $scope.allKeywords.push(kw);
-                        });
-                        $scope.networkKeywords.forEach(function (kw) {
-                            if ($scope.allKeywords.indexOf(kw) === -1) {
-                                $scope.allKeywords.push(kw);
-                            }
-                        });
-                        $scope.activeGroupIndex = groupIndex;
-                        if (resp.paging && resp.paging.next) {
-                            page++;
-                            getFeeds(resp.paging.next);
-                        } else {
-                            console.log("no next page found");
-                            $scope.loading = false;
-                            $scope.facebookFeeds = feedsArray;
-                        }
-                        var filtered = $filter('keyWordFilter')(resp.data, $scope.allKeywords);
-                        feedsArray = feedsArray.concat(filtered);
-                    }
-                });
-            };
-            getFeeds();
-        };
         $scope.showAllGroupsPosts = function () {
             $scope.loading = true;
             $scope.facebookFeeds = [];

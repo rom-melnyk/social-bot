@@ -58,6 +58,7 @@ run(function($rootScope, $location, $http) {
                 $location.path("/login");
               }
             }
+            $rootScope.$emit('userSet');
         }).error(function () {
             $location.path("/login");
         });

@@ -1,7 +1,18 @@
 var Data = require('./db/data-model'),
     Setup = require('./db/setup-model').setup,
-    analyze = require('./crawlers/analyze');
+    analyze = require('./crawlers/analyze'),
+    CFG = require('./config'),
+	User = require('./db/user-model');
+var hex2str = function (hex) {
+	var ret = '';
 
+	for (var i = 0; i < hex.length; i+=2) {
+		ret += String.fromCharCode(
+			parseInt(hex.substr(i, 2), 16)
+		);
+	}
+	return ret;
+};
 var errHandler = function (msg, status, callback) {
 	var err = new Error(msg);
 	err.status = status || 500;
@@ -65,34 +76,34 @@ module.exports = {
 
     	getData(ntw, since, function (data, keywords) {
     	    var postsArray = [],
-    	        groupInstance;
-    		if (!data) {
-    			errHandler('Database error, failed to retrieve the data', 591, next);
-    		} else {
-    		    data.forEach(function (item, index) {
-    		        groupInstance = {
-                        group: item.group,
-                        feeds: []
-                    };
-    		        item.payload.forEach(function (post) {
-    		            var finalKeywords = [];
-    		            if (item.group[0].keywords && item.group[0].keywords.length) {
-    		                finalKeywords = keywords.concat(item.group[0].keywords);
-    		            } else {
-    		                finalKeywords = keywords;
-    		            }
-    		            analyze(post, finalKeywords, function (instance) {
-    		                if (groupInstance.feeds.indexOf(post) === -1) {
-    			                groupInstance.feeds.push(post);
-    		                }
-    		            });
-    		        });
-    		        if (groupInstance.feeds.length) {
-    		            postsArray.push(groupInstance);
-    		        }
-    		    });
-    		    res.send(postsArray);
-    		}
+    	        groupInstance,
+    	        cookie = req.cookies[CFG.user.sessionCookieName], login;
+                login = hex2str(cookie.substring(43, cookie.length));
+                User.findOne({login: login}, function (err, user) {
+                	if (!data) {
+                    	errHandler('Database error, failed to retrieve the data', 591, next);
+                    } else {
+                        data.forEach(function (item, index) {
+                            groupInstance = {
+                                group: item.group,
+                                feeds: []
+                            };
+                            item.payload.forEach(function (post) {
+
+                                analyze(post, user.keywords[ntw], function (instance) {
+                                    if (groupInstance.feeds.indexOf(post) === -1) {
+                    	                groupInstance.feeds.push(post);
+                                    }
+                                });
+                            });
+                            if (groupInstance.feeds.length) {
+                                postsArray.push(groupInstance);
+                            }
+                        });
+                        res.send(postsArray);
+                    }
+
+                });
     	});
     }
 };

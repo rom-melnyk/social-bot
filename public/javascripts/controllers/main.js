@@ -11,15 +11,9 @@ angular.module('SocialApp.main', []).
         $scope.setDate = function (since) {
             $scope.sinceDate = since;
         };
-        $http.get('api/setup/vk').success(function (response) {
-            if (response.keywords) {
-                $scope.vkKeywords = response.keywords;
-            }
-        });
-        $http.get('api/setup/fb').success(function (response) {
-            if (response.keywords) {
-                $scope.networkKeywords = response.keywords;
-            }
+        $rootScope.$on('userSet', function () {
+            $scope.vkKeywords = $rootScope.loggedInUser.keywords.vk;
+            $scope.networkKeywords = $rootScope.loggedInUser.keywords.fb;
         });
         var openModal = function (ntw, newGroup, group) {
             var modalInstance = $modal.open({

@@ -14,11 +14,10 @@ angular.module('SocialApp.networkKeywordController', []).
             $scope.networkKeywords.forEach(function (kw) {
                 keywords.push(kw.text);
             });
-            $http.put('/api/setup/' + ntw + '/keywords', {
-            keywords: keywords
-            }).success(function (response) {
-                $modalInstance.close(response);
-                $rootScope.$emit('groupsChanged');
+            $rootScope.loggedInUser.keywords[ntw] = keywords;
+            $http.put('api/create-user', $rootScope.loggedInUser).success(function (resp) {
+                $rootScope.loggedInUser = resp;
+                $modalInstance.close();
             });
         };
 

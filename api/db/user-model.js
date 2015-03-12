@@ -6,5 +6,8 @@ module.exports = mongoose.model('User', {
 	salt: String,
 	password: String,							// see the /api/login.js#createPasswordHash
 	email: String,
-	keywords: Array
+	keywords: {
+    	vk: Array,
+    	fb: Array
+    }
 });
