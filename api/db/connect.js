@@ -10,17 +10,8 @@ if (cfg.env === 'prod') {
 }
 
 console.log('[ i ] Connecting to the %s database', cfg.env.toUpperCase());
-/*
-var opts = {};
-if (cfg.db.user) {
-    opts.user = cfg.db.user;
-}
-if (cfg.db.password) {
-    opts.password = cfg.db.password;
-}
-*/
-mongoose.connect(dbUrl);
 
+mongoose.connect(dbUrl);
 mongoose.connection.on('error', function () {
 	throw new Error('Database connection failed');
 });
