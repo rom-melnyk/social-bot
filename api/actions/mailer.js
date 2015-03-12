@@ -14,7 +14,7 @@ var transporter = nodemailer.createTransport({
 // the same transporter object for all e-mails
 
 // setup e-mail data with unicode symbols
-var createMailBody = function (data) {
+var createMailBody = function (data, user) {
     var htmlTemplate = '', userEmails = [];
     data.forEach(function (item) {
         if (item.network === 'vk') {
@@ -27,29 +27,22 @@ var createMailBody = function (data) {
                 "-----------------------------------------------------------<br>";
         }
     });
-    User.find({}, function (err, users) {
-        if (!err && users) {
-            users.forEach(function (usr) {
-                userEmails.push(usr.email);
-            });
-            mailOptions = {
-                from: 'Social Bot ✔', // sender address
-                to: userEmails.join(','), // list of receivers
-                subject: 'Social bot notification', // Subject line
-                //text: "Post: " + data[0].instance + " network: " + data[0].network, // plaintext body
-                html: htmlTemplate // html body
-            };
-            transporter.sendMail(mailOptions, function (error, info) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log('Message sent: ' + JSON.stringify(info));
-                }
-            });
+    mailOptions = {
+        from: 'Social Bot ✔', // sender address
+        to: user.email, // list of receivers
+        subject: 'Social bot notification', // Subject line
+        //text: "Post: " + data[0].instance + " network: " + data[0].network, // plaintext body
+        html: htmlTemplate // html body
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Message sent: ' + JSON.stringify(info));
         }
     });
 }
 // send mail with defined transport object
-module.exports = function (dataArray) {
-    var mailOptions = createMailBody(dataArray);
+module.exports = function (dataArray, user) {
+    var mailOptions = createMailBody(dataArray, user);
 };

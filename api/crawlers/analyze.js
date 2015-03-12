@@ -14,7 +14,7 @@ var __grep = function (string, keywords) {
 	for (var i = 0; i < keywords.length; i++) {
 		try {
 			RE = new RegExp(keywords[i], 'gi');
-			ret = ret || RE.test(string);
+			ret = ret || string.match(RE);
 			if (ret) {
 				break;
 			}
@@ -26,8 +26,9 @@ var __grep = function (string, keywords) {
 
 var __analyzeObj = function (obj, keywords, callback, parent) {
 	if (typeof obj === 'string') {
-		if (__grep(obj, keywords)) {
-			callback(parent);
+	    var count = __grep(obj, keywords) && __grep(obj, keywords).length;
+		if (count) {
+			callback(parent, count);
 		}
 	} else if (__isObject(obj)) {
 		// traversing the object

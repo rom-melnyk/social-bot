@@ -264,6 +264,12 @@ tags-input .tags .tag-item {
 .card a {
     text-transform: initial;
 }
+nav .logout i {
+    font-size: 1.5rem;
+}
+nav .logout {
+    padding: 0 15px;
+}
 .keywords {
     display: inline-block;
     margin: 10px;

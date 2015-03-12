@@ -7,7 +7,6 @@ var errHandler = function (msg, status, callback) {
 	err.status = status || 500;
 	callback(err);
 };
-
 State.find({}, function (err, states) {
     if (err) {
         console.log('[ warn ] Failed to reset states');
@@ -26,7 +25,6 @@ module.exports = {
 	 * */
 	start: function (req, res, next) {
 		var ntw = req.params.network;
-
 		if (!(ntw === 'fb' || ntw === 'vk')) {
 			errHandler('Request error, wrong "network" parameter', 592, next);
 			return;
@@ -34,11 +32,12 @@ module.exports = {
         if (!ntwCrawlers[ntw]) {
             ntwCrawlers[ntw] = crawler(ntw);
         }
+
 		ntwCrawlers[ntw].start();
-		res.status(200).send({
-			network: ntw,
-			status: 'started'
-		});
+        res.status(200).send({
+        	network: ntw,
+        	status: 'started'
+        });
 	},
 
 	/**

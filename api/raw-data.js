@@ -90,10 +90,16 @@ module.exports = {
                             };
                             item.payload.forEach(function (post) {
 
-                                analyze(post, user.keywords[ntw], function (instance) {
-                                    if (groupInstance.feeds.indexOf(post) === -1) {
-                    	                groupInstance.feeds.push(post);
-                                    }
+                                analyze(post, user.keywords[ntw], function (instance, count) {
+                                    var hasElement = false;
+                                    post.found = count;
+                                    groupInstance.feeds.forEach(function (item, index) {
+                                        if (item.id === post.id) {
+                                            hasElement = true;
+                                            groupInstance.feeds[index].found += count;
+                                        }
+                                    });
+                                    !hasElement && groupInstance.feeds.push(post);
                                 });
                             });
                             if (groupInstance.feeds.length) {

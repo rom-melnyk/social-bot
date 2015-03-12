@@ -1,6 +1,7 @@
 var crypto = require('crypto'),
 	CFG = require('./config'),
-	User = require('./db/user-model');
+	User = require('./db/user-model'),
+	phantom = require('phantom');
 
 var errHandler = function (msg, status, callback) {
 	var err = new Error(msg);
@@ -215,7 +216,8 @@ var updateUserInfo = function (req, res, next) {
 		res.send({
 			name: user.name,
 			email: user.email,
-			id: user.id
+			id: user.id,
+			keywords: user.keywords
 		});
 		}
 	});
@@ -251,6 +253,21 @@ var loginUser = function (req, res, next) {
 					createSessionCookie(user.login, user.password),
 					{path: '/', maxAge: CFG.user.sessionDuration}
 				);
+				/*phantom.create(function (ph) {
+                  ph.createPage(function (page) {
+                    page.open("http://http://social-monitoring.herokuapp.com/", function (status) {
+                      console.log("opened google? ", status);
+                      page.evaluate(function () { return document.title; }, function (result) {
+                        console.log('Page title is ' + result);
+                        ph.exit();
+                      });
+                    });
+                  });
+                }, {
+                   dnodeOpts: {
+                     weak: false
+                   }
+                 });*/
 				res.send({
 					name: user.name,
 					email: user.email,

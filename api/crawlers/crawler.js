@@ -9,15 +9,26 @@ var async = require('async'),
 	vkQueue = require('./vk-queue'),
 	Log = require('./log'),
 	actionConsoleLog = require('../actions/action-console-log'),
-	mailer = require('../actions/mailer');
+	mailer = require('../actions/mailer'),
+    User = require('../db/user-model');
 
+var hex2str = function (hex) {
+	var ret = '';
+
+	for (var i = 0; i < hex.length; i+=2) {
+		ret += String.fromCharCode(
+			parseInt(hex.substr(i, 2), 16)
+		);
+	}
+	return ret;
+};
 module.exports = function (ntw) {
 	var $log = Log(ntw),
 		network = ntw,
 		interval = undefined,
 		runAtFirstTime = true;
 
-	var crawler = function () {
+	var crawler = function (users) {
 		async.parallel(
 			{
 				state: function (cb) {
@@ -85,65 +96,66 @@ module.exports = function (ntw) {
 
 						if (err) {
 							stopCrawler();
-							startCrawler();
 						} else {
-							var responseArray = [];
-							_res.forEach(function (obj) {
+						    User.find({receiveMails: true}, function (err, users) {
+                                if (!users) {
+                                	errHandler('Database error, failed to retrieve the data', 591, next);
+                                } else {
+                                    users.forEach(function (user) {
+                                        var responseArray = [];
+                                        _res.forEach(function (obj) {
 
-								if (!obj || !obj.group || !obj.data) {
-									return;
-								}
+                                            if (!obj || !obj.group || !obj.data) {
+                                                return;
+                                            }
 
-								// concatenating network and groups keywords into one array
-								var keywords = [].concat(obj.group.keywords);
-								results.setup.keywords.forEach(function (kw) {
-									if (keywords.indexOf(kw) === -1) {
-										keywords.push(kw);
-									}
-								});
-								obj.data.payload.forEach(function (post) {
-									analyze(post, keywords, function (instance) {
-										// Place here all the actions you want to perform with the data containing a keyword.
-										// Actions should reside in "../actions" and must be included via `require()` well.
-										// Make sure you pass the config that might be useful for the Action as the first param.
-										actionConsoleLog({
-											network: network,
-											group: obj.group,
-											keywords: keywords
-										}, instance);
-										var responseObj = {
-											network: network,
-											group: obj.group,
-											keywords: keywords,
-											instance: post,
-											found: 1
-										}, hasElement = false;
-										responseArray.forEach(function (item) {
-											if (item.instance.id === responseObj.instance.id) {
-												hasElement = true;
-												item.found++;
-											}
-										});
-										!hasElement && responseArray.push(responseObj);
-									});
-								});
-							});
-							if (responseArray.length) {
-								mailer(responseArray);
-							}
+                                            obj.data.payload.forEach(function (post) {
+                                                analyze(post, user.keywords[ntw], function (instance, count) {
+                                                    // Place here all the actions you want to perform with the data containing a keyword.
+                                                    // Actions should reside in "../actions" and must be included via `require()` well.
+                                                    // Make sure you pass the config that might be useful for the Action as the first param.
+                                                    actionConsoleLog({
+                                                        network: network,
+                                                        group: obj.group,
+                                                        keywords: user.keywords[ntw]
+                                                    }, instance);
+                                                    var responseObj = {
+                                                        network: network,
+                                                        group: obj.group,
+                                                        keywords: user.keywords[ntw],
+                                                        instance: post,
+                                                        found: count
+                                                    }, hasElement = false;
+                                                    responseArray.forEach(function (item) {
+                                                        if (item.instance.id === responseObj.instance.id) {
+                                                            hasElement = true;
+                                                            item.found += count;
+                                                        }
+                                                    });
+                                                    !hasElement && responseArray.push(responseObj);
+                                                });
+                                            });
+                                        });
+                                        if (responseArray.length) {
+                                            mailer(responseArray, user);
+                                        }
+                                    });
+                                }
+                            });
+
 						}
 					});
 			}
 		);
 	};
 
-	var startCrawler = function () {
+	var startCrawler = function (users) {
 		var pollInterval = cfg[network] && cfg[network].pollInterval || 1000 * 60 * 10; // 10 min by default
 		// pollInterval = 5 * 1000; // [rmelnyk] for testing purposes
 
 		if (interval === undefined) {
 			interval = setInterval(function () {
-				crawler();
+				crawler(users);
 			}, pollInterval);
 			$log('i', 'started');
 		} else {
