@@ -1,7 +1,7 @@
 var crypto = require('crypto'),
 	CFG = require('./config'),
-	User = require('./db/user-model'),
-	phantom = require('phantom');
+	User = require('./db/user-model')/*,
+	phantom = require('phantom')*/;
 
 var errHandler = function (msg, status, callback) {
 	var err = new Error(msg);
