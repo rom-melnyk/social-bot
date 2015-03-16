@@ -1,6 +1,6 @@
 var crypto = require('crypto'),
 	CFG = require('./config'),
-	User = require('./db/user-model'),
+	User = require('./db/user-model');
 	/*phantom = require('phantom');
 var key = '1545533905707947';
 var secret = 'fb006d64b0b84d17fd6f4b1964490138';
