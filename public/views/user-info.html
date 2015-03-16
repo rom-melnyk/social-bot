@@ -19,6 +19,10 @@
                         <label ng-class="{'active': user.keywords.fb}" for="fbKeywords">Ключові слова для FB</label>
                         <input id="fbKeywords" ng-model="user.keywords.fb" type="text">
                     </div>
+                    <p>
+                        <input id="receiveMails" ng-model="user.receiveMails" type="checkbox">
+                        <label for="receiveMails">Присилати мені email-сповіщення</label>
+                    <p>
                     <button class="btn" ng-click="submitChanges()">Save</button>
                 </div>
                 <div class="col-md-6">
@@ -45,8 +49,8 @@
             </form>
         </div>
         <div class="card-action">
-            <a href="#">Змінити пароль</a>
             <a class="pull-right" ng-click="addUser()">Додати користувача</a>
+            <div class="clearfix"></div>
         </div>
     </div>
 </div>

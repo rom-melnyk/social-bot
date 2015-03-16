@@ -170,7 +170,8 @@ var createUser = function (req, res, next) {
 					password: createPasswordHash(req.body.password, salt),
 					name: req.body.name,
 					email: req.body.email,
-					keywords: req.body.keywords
+					keywords: req.body.keywords,
+					receiveMails: req.body.receiveMails
 				});
 
 			user.save(function (err) {
@@ -183,7 +184,8 @@ var createUser = function (req, res, next) {
 							id: req.body.id,
 							name: req.body.name,
 							email: req.body.email,
-							keywords: req.body.keywords
+							keywords: req.body.keywords,
+							receiveMails: req.body.receiveMails
 						}
 					});
 				}
@@ -242,7 +244,8 @@ var updateUserInfo = function (req, res, next) {
 			name: user.name,
 			email: user.email,
 			id: user.id,
-			keywords: user.keywords
+			keywords: user.keywords,
+			receiveMails: user.receiveMails
 		});
 		}
 	});
@@ -281,7 +284,9 @@ var loginUser = function (req, res, next) {
 				res.send({
 					name: user.name,
 					email: user.email,
-					id: user.id
+					id: user.id,
+					keywords: user.keywords,
+					receiveMails: user.receiveMails
 				});
 			}
 		}
@@ -334,7 +339,8 @@ var checkSession = function (req, res, next) {
     	        name: user.name,
     	        email: user.email,
     	        id: user.id,
-    	        keywords: user.keywords
+    	        keywords: user.keywords,
+    	        receiveMails: user.receiveMails
     	    });
     	}
 

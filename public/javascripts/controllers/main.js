@@ -107,9 +107,9 @@ angular.module('SocialApp.main', []).
         $scope.showMore = function (feed, event) {
             //var groupIndex = $scope.groupsArray.indexOf(group);
             if (!feed.showFullText) {
-                event.currentTarget.innerText = "Show less";
+                event.currentTarget.innerText = "Приховати";
             } else {
-                event.currentTarget.innerText = "Show more";
+                event.currentTarget.innerText = "Показати більше...";
             }
             feed.showFullText = !feed.showFullText;
         };

@@ -9,5 +9,6 @@ module.exports = mongoose.model('User', {
 	keywords: {
     	vk: Array,
     	fb: Array
-    }
+    },
+    receiveMails: Boolean
 });

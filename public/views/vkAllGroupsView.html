@@ -6,9 +6,8 @@
     <div class="clearfix"></div>
     <div class="collection text-left">
         <div ng-repeat="instance in vkPostsArray" class="collection-item">
-            <h5>{{instance.group.name}}</h5>
+            <h6>{{instance.group.name}}</h6>
             <div class="feed-container" ng-show="instance.post.showFullText">
-                {{instance.post.from.name}}:
                 <span ng-bind-html="highlight(instance.post.text, vkKeywords)"></span>
                 <img ng-src="{{instance.post.type === 'photo' ? instance.post.picture : ''}}" ng-show="!!instance.post.picture">
                 <div>
@@ -32,16 +31,16 @@
                     </div>
                 </div>
             </div>
-            <div class="post-crop">
+            <div class="post-crop" tooltip="{{instance.post.text ? '' : 'Post without message, please see the post\'s original'}}">
                 <div>
                     <div ng-show="!instance.post.showFullText">
-                        <span>{{instance.post.from.name}}:</span>
                         <span ng-bind-html="cropText(instance.post.text, 50)"></span><br/>
                         <a ng-click="openVKPage(instance.post.to_id, instance.post.id)">Прочитати на Vkontakte</a>
                     </div>
                 </div>
                 <a ng-click="showMore(instance.post, $event)">Показати більше...</a>
             </div>
+            <h6 class="text-right">Знайдено ключових слів: {{instance.post.found}}</h6>
         </div>
     </div>
     <hr/>
