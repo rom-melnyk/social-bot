@@ -3,7 +3,7 @@
  */
 angular.module('SocialApp.controllers', []).
     controller('fbController', function($scope, $http, $modal, $sce, $rootScope, $filter) {
-        $scope.groupsArray = [];
+        $scope.postsArray = [];
         var accessToken, uid,
             getGroups = function () {
                 $http.get('api/setup/fb').success(function (response) {
@@ -48,11 +48,10 @@ angular.module('SocialApp.controllers', []).
         //static scope methods
         $scope.showAllGroupsPosts = function () {
             $scope.loading = true;
-            $scope.facebookFeeds = [];
-            $scope.groupsArray = [];
+            $scope.postsArray = [];
             $scope.activeGroupIndex = null;
             $http.get('api/data/fb/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
-                $scope.groupsArray = resp;
+                $scope.postsArray = resp;
                 $scope.loading = false;
             });
         };

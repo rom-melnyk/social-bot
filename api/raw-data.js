@@ -30,7 +30,9 @@ var getData = function (ntw, since, callback) {
         });
     });
 };
-
+var sortData = function (a, b) {
+    return b.post.found - a.post.found;
+}
 module.exports = {
 	/**
 	 * @method GET
@@ -88,24 +90,22 @@ module.exports = {
                                 group: item.group,
                                 feeds: []
                             };
-                            item.payload.forEach(function (post) {
-
-                                analyze(post, user.keywords[ntw], function (instance, count) {
-                                    var hasElement = false;
-                                    post.found = count;
-                                    groupInstance.feeds.forEach(function (item, index) {
-                                        if (item.id === post.id) {
-                                            hasElement = true;
-                                            groupInstance.feeds[index].found += count;
-                                        }
-                                    });
-                                    !hasElement && groupInstance.feeds.push(post);
+                            analyze(item.post, user.keywords[ntw], function (instance, count) {
+                                var hasElement = false;
+                                item.post.found = count;
+                                groupInstance.feeds.forEach(function (post, index) {
+                                    if (post.id === item.post.id) {
+                                        hasElement = true;
+                                        groupInstance.feeds[index].found += count;
+                                    }
                                 });
+                                !hasElement && groupInstance.feeds.push(item.post);
                             });
                             if (groupInstance.feeds.length) {
-                                postsArray.push(groupInstance);
+                                postsArray.push(item);
                             }
                         });
+                        postsArray.sort(sortData);
                         res.send(postsArray);
                     }
 

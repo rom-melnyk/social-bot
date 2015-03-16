@@ -1,13 +1,38 @@
 var crypto = require('crypto'),
 	CFG = require('./config'),
-	User = require('./db/user-model')/*,
-	phantom = require('phantom')*/;
-
+	User = require('./db/user-model'),
+	/*phantom = require('phantom');
+var key = '1545533905707947';
+var secret = 'fb006d64b0b84d17fd6f4b1964490138';
+var user = 'botsawyer@gmail.com';
+var password = 'Simplepass123';
+var oauth = require('oauth');*/
 var errHandler = function (msg, status, callback) {
 	var err = new Error(msg);
 	err.status = status || 500;
 	callback(err);
 };
+
+/*this.OAuth = new oauth.OAuth2(key, secret, 'https://graph.facebook.com/', null, 'oauth/access_token?redirect_uri=http://localhost:3000/auth', null);
+this.OAuth.getOAuthAccessToken(
+  '1545533905707947|HnX8ErqROPkCTQXP2awA7kJ0sSE',
+  {'grant_type':'client_credentials'},
+  function (e, access_token, refresh_token, results){
+  *//*if (callback) {
+    callback(err, {access_token: access_token, access_token_secret: refresh_token});
+  }
+  else {
+    if (err) {
+      winston.error("Auto OAuth authentication process failed");
+      winston.error(util.inspect(err, {showHidden: true, depth: 7}));
+    }
+    else {
+      winston.info('access_token=' + access_token + ',access_token_secret=' + access_token_secret);
+    }
+  }*//*
+});*/
+
+
 
 var md5 = function (txt) {
     var hash = crypto.createHash('md5');
@@ -253,21 +278,6 @@ var loginUser = function (req, res, next) {
 					createSessionCookie(user.login, user.password),
 					{path: '/', maxAge: CFG.user.sessionDuration}
 				);
-				/*phantom.create(function (ph) {
-                  ph.createPage(function (page) {
-                    page.open("http://http://social-monitoring.herokuapp.com/", function (status) {
-                      console.log("opened google? ", status);
-                      page.evaluate(function () { return document.title; }, function (result) {
-                        console.log('Page title is ' + result);
-                        ph.exit();
-                      });
-                    });
-                  });
-                }, {
-                   dnodeOpts: {
-                     weak: false
-                   }
-                 });*/
 				res.send({
 					name: user.name,
 					email: user.email,

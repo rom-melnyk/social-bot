@@ -4,7 +4,10 @@ var express = require('express'),
 	handlers = {},
 	bodyParser = require('body-parser'),
 	cookieParser = require('cookie-parser');
-
+var key = '1545533905707947';
+var secret = 'fb006d64b0b84d17fd6f4b1964490138';
+var user = 'botsawyer@gmail.com';
+var password = 'Simplepass123';
 require('./api/db/connect');
 
 // ------------ statics ------------
@@ -37,9 +40,44 @@ app.use(/^\/api/, function (req, res, next) {
 	}
 });
 
+
+
+/*var oauth2 = require('simple-oauth2')({
+  clientID: key,
+  clientSecret: secret,
+  site: 'https://graph.facebook.com',
+  tokenPath: '/oauth/access_token'
+});
+
+// Authorization uri definition
+var authorization_uri = oauth2.authCode.authorizeURL({
+  redirect_uri: 'http://localhost:3000/callback/',
+  scope: 'notifications',
+  state: '3(#0/!~'
+});
+
+// Callback service parsing the authorization token and asking for the access token
+app.get('/callback', function (req, res) {
+  var code = req.query.code;
+  console.log('/callback');
+  oauth2.authCode.getToken({
+    code: "1545533905707947|HnX8ErqROPkCTQXP2awA7kJ0sSE",
+    redirect_uri: 'http://localhost:3000/callback/'
+  }, saveToken);
+
+  function saveToken(error, result) {
+    if (error) { console.log('Access Token Error', error.message); }
+    token = oauth2.accessToken.create(result);
+  }
+});
+app.get('/auth', function (req, res) {
+    res.redirect(authorization_uri);
+});*/
+
+
+
 // ------------ statics ------------
 app.use(express.static(__dirname + '/public'));
-
 // ------------ API ------------
 app.post('/api/login', handlers.login.loginUser);
 app.get('/api/check-session', handlers.login.checkSession);

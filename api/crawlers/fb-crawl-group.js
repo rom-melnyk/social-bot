@@ -35,26 +35,35 @@ module.exports = function (state, group, callback) {
 				callback(true, 'auth-fail');
 			} else if (body && body.data) {
 				if (body.data.length > 0) {
-					var data = new Data({
-						url: url,
-						type: 'feed',
-						payload: body.data,
-						date: Date.now(),
-						network: 'fb',
-						group: group
-					});
-					data.save(function (err, data) {
-						if (err) {
-							$log('e', 'failed to save the data from the feed page');
-							callback(true, null);
-						} else {
-							$log('i', ''
-								+ 'group ' + group.name
-								+ '; found ' + body.data.length + ' new items');
-							group.dataRetrievedAt = new Date();
-							callback(false, {group: group, data: data});
-						}
-					});
+				    var dataArray = {
+				        payload: []
+				    };
+				    body.data.forEach(function (post, index) {
+				        var data = {
+                        	url: url,
+                        	type: 'post',
+                        	post: post,
+                        	date: Date.now(),
+                        	network: 'fb',
+                        	group: group
+                        };
+                        Data.findOneAndUpdate({'post.id': post.id, network: 'fb'}, data, { upsert: true }, function (err, item) {
+                            if (err) {
+                            	$log('e', 'failed to save the data from the feed page');
+                            	callback(true, null);
+                            } else {
+                                dataArray.payload.push(item);
+                                if (index === (body.data.length - 1)) {
+                                    $log('i', ''
+                                    	+ 'group ' + group.name
+                                    	+ '; found ' + body.data.length + ' new items');
+                                    group.dataRetrievedAt = new Date();
+                                    callback(false, {group: group, data: dataArray});
+                                }
+                            }
+
+                        });
+				    });
 				} else {
 					// do not save empty results
 					// $log('i', ''

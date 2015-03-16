@@ -34,17 +34,17 @@ angular.module('SocialApp.main', []).
         };
         $scope.showAllGroupsPosts = function () {
             $http.get('api/data/fb/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
-                $scope.fbGroupsArray = resp;
+                $scope.fbPostsArray = resp;
                 $scope.loading = false;
             });
             $http.get('api/data/vk/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
-                $scope.vkGroupsArray = resp;
+                $scope.vkPostsArray = resp;
                 $scope.loading = false;
             });
         };
         $scope.clearResults = function () {
-            $scope.vkGroupsArray = [];
-            $scope.fbGroupsArray = [];
+            $scope.vkPostsArray = [];
+            $scope.fbPostsArray = [];
         };
         $scope.editGroup = function (group, ntw) {
             openModal(ntw, false, group);
@@ -69,6 +69,10 @@ angular.module('SocialApp.main', []).
                         return keywords;
                     }
                 }
+            });
+            modalInstance.result.then(function (resp) {
+                $scope.vkKeywords = $rootScope.loggedInUser.keywords.vk;
+                $scope.networkKeywords = $rootScope.loggedInUser.keywords.fb;
             });
         };
         $scope.highlight = function(text, searchArray) {
@@ -117,34 +121,5 @@ angular.module('SocialApp.main', []).
         };
         $scope.openVKPage = function (ownerId, postId) {
             window.open("http://vk.com/public" + (-ownerId) + "?w=wall" + ownerId + "_" + postId);
-        };
-    }).filter('keyWordFilter', function () {
-        return function (items, keywords) {
-            var filtered = [];
-            if (items && items.length && keywords.length) {
-                for (var i = 0; i < items.length; i++) {
-                    var item = items[i],
-                        containsWord = false;
-                    if (item.message || item.name) {
-                        for (var j = 0; j < keywords.length; j++) {
-                        	RE = new RegExp(keywords[j], 'gi');
-                        	containsWord = containsWord || RE.test(item.message) || RE.test(item.name);
-                        }
-                        containsWord && filtered.push(item);
-                    } else if (item.comments) {
-                        item.comments.data.forEach(function (value) {
-                            for (var j = 0; j < keywords.length; j++) {
-                            	RE = new RegExp(keywords[j], 'gi');
-                            	containsWord = containsWord || RE.test(value.message) || RE.test(value.name);
-                            }
-                        });
-                        containsWord && filtered.push(item);
-                        containsWord = false;
-                    }
-                }
-            } else {
-                return items;
-            }
-            return filtered;
         };
     });

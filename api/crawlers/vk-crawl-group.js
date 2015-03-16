@@ -76,25 +76,34 @@ module.exports = function (state, group, callback, vkQcb) {
                                 }
                             },
                             function (err, _res) {
-                                var data = new Data({
-                                	url: url,
-                                	type: 'feed',
-                                	payload: body.response.wall,
-                                	date: Date.now(),
-                                	network: 'vk',
-                                	group: group
-                                });
-                                data.save(function (err, data) {
-                                	if (err) {
-                                		$log('e', 'failed to save the data from the feed page');
-                                		callback(true, null);
-                                	} else {
-                                		$log('i', ''
-                                			+ 'group ' + group.name
-                                			+ '; found ' + body.response.wall.length + ' new items');
-                                		group.dataRetrievedAt = new Date();
-                                		callback(false, {group: group, data: data});
-                                	}
+                                var dataArray = {
+                                    payload: []
+                                };
+                                body.response.wall.forEach(function (post, index) {
+                                    var data = {
+                                    	url: url,
+                                    	type: 'feed',
+                                    	post: post,
+                                    	date: Date.now(),
+                                    	network: 'vk',
+                                    	group: group
+                                    };
+                                    Data.findOneAndUpdate({'post.id': post.id, network: 'vk'}, data, { upsert: true }, function (err, item) {
+                                        if (err) {
+                                        	$log('e', 'failed to save the data from the feed page');
+                                        	callback(true, null);
+                                        } else {
+                                            dataArray.payload.push(item);
+                                            if (index === (body.response.wall.length - 1)) {
+                                                $log('i', ''
+                                                	+ 'group ' + group.name
+                                                	+ '; found ' + body.response.wall.length + ' new items');
+                                                group.dataRetrievedAt = new Date();
+                                                callback(false, {group: group, data: dataArray});
+                                            }
+                                        }
+
+                                    });
                                 });
                             }
                         );

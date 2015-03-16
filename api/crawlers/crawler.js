@@ -110,7 +110,7 @@ module.exports = function (ntw) {
                                             }
 
                                             obj.data.payload.forEach(function (post) {
-                                                analyze(post, user.keywords[ntw], function (instance, count) {
+                                                analyze(post.post, user.keywords[ntw], function (instance, count) {
                                                     // Place here all the actions you want to perform with the data containing a keyword.
                                                     // Actions should reside in "../actions" and must be included via `require()` well.
                                                     // Make sure you pass the config that might be useful for the Action as the first param.
@@ -123,7 +123,7 @@ module.exports = function (ntw) {
                                                         network: network,
                                                         group: obj.group,
                                                         keywords: user.keywords[ntw],
-                                                        instance: post,
+                                                        instance: post.post,
                                                         found: count
                                                     }, hasElement = false;
                                                     responseArray.forEach(function (item) {

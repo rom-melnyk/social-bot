@@ -1,14 +1,14 @@
 <img class="social-logo" tooltip="Show groups list" src="/images/fbLogo.png" height="50px" ng-click="isVisible = !isVisible">
 <div class="header-section">
     <button class="btn waves-effect waves-light" ng-click="addNewGroup('fb')">Додати групу</button>
-    <button class="btn waves-effect waves-light" ng-click="setNetworkKeywords('fb', networkKeywords)">Змінити ключові слова</button>
+    <button class="btn waves-effect waves-light" ng-click="setNetworkKeywords('fb')">Змінити ключові слова</button>
     <button class="btn waves-effect waves-light" ng-class="{'red': state === 'running'}"  ng-click="startCrawler($event)">{{crawlerText}}</button>
 </div>
 <div ng-show="isVisible" class="fader social-body">
     <div class="groups-section">
         <div class="collection">
             <div class="collection-item group" ng-repeat="group in groups" ng-show="group.name">
-                <span class="badge new" ng-show="isActive($index)">{{filtered.length}}</span>
+                <span class="badge new" ng-show="isActive($index)">{{facebookFeeds.length}}</span>
                 {{group.name}}
                 <div class="actions-bar">
                     <span class="glyphicon glyphicon-remove pull-right" ng-click="removeGroup(group, 'fb'); $event.stopPropagation(); $event.preventDefault()"></span>
@@ -24,8 +24,8 @@
                 Збір даних...
             </h2>
         </div>
-        <h5 ng-show="filtered.length">Результат запиту:</h5>
-        <div class="feed collection-item" ng-repeat="feed in filtered = (facebookFeeds | keyWordFilter:allKeywords)">
+        <h5 ng-show="facebookFeeds.length">Результат запиту:</h5>
+        <div class="feed collection-item" ng-repeat="feed in facebookFeeds">
             <div class="feed-container" ng-show="facebookFeeds[$index].showFullText">
                 {{feed.from.name}}:
                 <span ng-bind-html="highlight(feed.message, allKeywords)"></span>

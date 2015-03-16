@@ -8,19 +8,19 @@ var __isArray = function (obj) {
 };
 
 var __grep = function (string, keywords) {
-	var ret = false,
+	var ret = [],
 		RE;
 
 	for (var i = 0; i < keywords.length; i++) {
 		try {
+		    var matchArray = [];
 			RE = new RegExp(keywords[i], 'gi');
-			ret = ret || string.match(RE);
-			if (ret) {
-				break;
+			matchArray = string.match(RE);
+			if (matchArray && matchArray.length) {
+			    ret = ret.concat(matchArray);
 			}
 		} catch (e) {}
 	}
-
 	return ret;
 };
 
@@ -33,7 +33,7 @@ var __analyzeObj = function (obj, keywords, callback, parent) {
 	} else if (__isObject(obj)) {
 		// traversing the object
 		for (var key in obj) {
-		    if (key !== "group") {
+		    if (key !== "group" && key !== 'from') {
 			    __analyzeObj(obj[key], keywords, callback, obj);
 		    }
 		}

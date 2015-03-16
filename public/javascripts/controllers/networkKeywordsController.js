@@ -32,5 +32,5 @@ angular.module('SocialApp.networkKeywordController', []).
             }
             return copy;
         };
-        $scope.networkKeywords = clone(keywords);
+        $scope.networkKeywords = clone($rootScope.loggedInUser.keywords[ntw]);
     });
