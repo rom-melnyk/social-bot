@@ -7,6 +7,8 @@
 angular.module('SocialApp.main', []).
     controller('mainController', function($scope, $http, $modal, $rootScope, $sce) {
         $scope.network = "all";
+        $scope.fbPageNum = 1;
+        $scope.vkPageNum = 1;
         $scope.sinceDate = new Date(new Date().toLocaleDateString());
         $scope.setDate = function (since) {
             $scope.sinceDate = since;
@@ -34,13 +36,26 @@ angular.module('SocialApp.main', []).
         };
         $scope.showAllGroupsPosts = function () {
             $http.get('api/data/fb/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
-                $scope.fbPostsArray = resp;
+                $scope.fbRespArray = resp;
+                $scope.fbPostsArray = $scope.fbRespArray.slice(($scope.fbPageNum - 1) * 5, ($scope.fbPageNum - 1) * 5 + 5);
                 $scope.loading = false;
             });
             $http.get('api/data/vk/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
-                $scope.vkPostsArray = resp;
+                $scope.vkRespArray = resp;
+                $scope.vkPostsArray = $scope.vkRespArray.slice(($scope.vkPageNum - 1) * 5, ($scope.vkPageNum - 1) * 5 + 5);
                 $scope.loading = false;
             });
+        };
+        $scope.paginate = function (ntw, forward) {
+            if (ntw === 'fb') {
+                if (forward) $scope.fbPageNum++;
+                else $scope.fbPageNum--;
+                $scope.fbPostsArray = $scope.fbRespArray.slice(($scope.fbPageNum - 1) * 5, ($scope.fbPageNum - 1) * 5 + 5);
+            } else if (ntw === 'vk') {
+                if (forward) $scope.vkPageNum++;
+                else $scope.vkPageNum--;
+                $scope.vkPostsArray = $scope.vkRespArray.slice(($scope.vkPageNum - 1) * 5, ($scope.vkPageNum - 1) * 5 + 5);
+            }
         };
         $scope.clearResults = function () {
             $scope.vkPostsArray = [];

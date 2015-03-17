@@ -1,5 +1,5 @@
 <div>
-    <h4 class="modal-title">Add Group</h4>
+    <h4 class="modal-title">Додати групу</h4>
     <form role="form" name="groupKeywords" data-ng-submit="submit(groupKeywords)" novalidate="novalidate" class="form-horizontal">
         <div class="error-box"></div>
         <div class="controls col-md-6">
@@ -7,13 +7,13 @@
         </div>
         <div class="controls col-md-6">
             <input name="groupId" type="number" placeholder="Group id" data-ng-model="activeGroup.id" required="true" class="form-control" ng-disabled="!newGroup" ng-click="groupDuplicationError = false;"/>
-            <div data-ng-show="groupDuplicationError" class="err-msg"> Group with such id already exists
+            <div data-ng-show="groupDuplicationError" class="err-msg"> Група з вказаним ID вже існує
             </div>
         </div>
         <div class="clearfix"></div>
     </form>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="submitChanges()">OK</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="submitChanges()">Зберегти</button>
+        <button class="btn btn-warning" ng-click="cancel()">Відмінити</button>
     </div>
 </div>

@@ -1,16 +1,16 @@
 <div>
-    <h4 class="modal-title">Edit {{networkName}} keywords.</h4>
+    <h4 class="modal-title">Редагувати {{networkName}} ключові слова.</h4>
     <form role="form" name="groupKeywords" data-ng-submit="submit(groupKeywords)" novalidate="novalidate" class="form-horizontal">
         <div class="error-box"></div>
         <div class="controls col-md-12">
             <!--<input name="keywords" type="text" placeholder="Keywords" data-ng-model="networkKeywords" required="true" class="form-control"/>-->
-            <tags-input placeholder="Keywords" data-ng-model="networkKeywords" class="tags-input-home" min-length="1">
+            <tags-input placeholder="Ключове слово" data-ng-model="networkKeywords" class="tags-input-home" min-length="1">
             </tags-input>
         </div>
         <div class="clearfix"></div>
     </form>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="submitChanges()">OK</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="submitChanges()">Зберегти</button>
+        <button class="btn btn-warning" ng-click="cancel()">Відмінити</button>
     </div>
 </div>
