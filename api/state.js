@@ -35,7 +35,6 @@ module.exports = {
 						network: state.network
 					});
 				}
-
 			}
 		});
 	},

@@ -44,20 +44,6 @@ angular.module('SocialApp.controllers', []).
             });
         };
         getLoginAccess();
-
-        //static scope methods
-        $scope.showAllGroupsPosts = function () {
-            $scope.loading = true;
-            $scope.postsArray = [];
-            $scope.activeGroupIndex = null;
-            $http.get('api/data/fb/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
-                $scope.postsArray = resp;
-                $scope.loading = false;
-            });
-        };
-        $scope.isActive = function (groupIndex) {
-            return groupIndex === $scope.activeGroupIndex;
-        };
         $scope.startCrawler = function (event) {
             if ($scope.state !== "running") {
                 $http.get('/api/start/fb').success(function (response) {
@@ -74,5 +60,4 @@ angular.module('SocialApp.controllers', []).
         $rootScope.$on('groupsChanged', function () {
             getGroups();
         });
-
     });

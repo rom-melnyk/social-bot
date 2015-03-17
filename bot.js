@@ -3,7 +3,9 @@ var express = require('express'),
 	favicon = require('express-favicon'),
 	handlers = {},
 	bodyParser = require('body-parser'),
-	cookieParser = require('cookie-parser');
+	cookieParser = require('cookie-parser'),
+	State = require('./api/db/state-model'),
+	request = require('request');
 var key = '1545533905707947';
 var secret = 'fb006d64b0b84d17fd6f4b1964490138';
 var user = 'botsawyer@gmail.com';
@@ -123,6 +125,22 @@ app.use(function(err, req, res, next) {
 	});
 });
 
+var refreshToken = function () {
+    State.findOne({network: 'fb'}, function (err, state) {
+        if (err) {
+        	errHandler('Database error, failed to retrieve the state', 591, next);
+        } else {
+            request.get('https://graph.facebook.com/oauth/access_token?client_id=1545533905707947&client_secret=fb006d64b0b84d17fd6f4b1964490138&grant_type=fb_exchange_token&fb_exchange_token=' + state.token, function (data) {
+                state.state = 'token-updated';
+                state.stateUpdatedAt = Date.now();
+                state.token = tkn;
+                state.tokenUpdatedAt = Date.now();
+                state.save(function (err, state) {});
+            });
+        }
+    });
+};
+setInterval(refreshToken, 1000 * 60 * 60 * 2);
 // ------------ the server itself ------------
 var server = app.listen(process.env.PORT || 3000, function () {
 	var host = server.address().address,

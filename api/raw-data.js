@@ -90,9 +90,10 @@ module.exports = {
                                 group: item.group,
                                 feeds: []
                             };
+                            item.post.found = 0;
                             analyze(item.post, user.keywords[ntw], function (instance, count) {
                                 var hasElement = false;
-                                item.post.found = count;
+                                item.post.found += count;
                                 groupInstance.feeds.forEach(function (post, index) {
                                     if (post.id === item.post.id) {
                                         hasElement = true;

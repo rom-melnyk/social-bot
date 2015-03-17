@@ -25,19 +25,6 @@ angular.module('SocialApp.vk', []).
                 VK.Auth.login(processFB);
             }
         });
-        $scope.showAllGroupsPosts = function () {
-            $scope.loading = true;
-            $scope.vkFeeds = [];
-            $scope.activeGroupIndex = null;
-            var since = Math.round(($scope.sinceDate && $scope.sinceDate.getTime()) || (new Date().getTime()));
-            $http.get('/api/data/vk/analyzed?since=' + since).success(function (resp) {
-                $scope.groupsArray = resp;
-                $scope.loading = false;
-            });
-        };
-        $scope.isActive = function (groupIndex) {
-            return groupIndex === $scope.activeGroupIndex;
-        };
         var setGroups = function () {
             $http.get('api/setup/vk').success(function (response) {
                 if (response.groups) {
