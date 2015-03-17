@@ -29,9 +29,9 @@ angular.module('SocialApp.users', []).
                 $scope.users.push(resp.user);
             });
         };
-        $scope.removeUser = function (user) {
+        $scope.removeUser = function (user, index) {
             $http.delete('api/user/' + user.id).success(function (resp) {
-
+                $scope.users.splice(index, 1);
             });
         };
 

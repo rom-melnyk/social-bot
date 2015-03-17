@@ -40,7 +40,7 @@
                             <tr ng-repeat="user in users">
                                 <td>{{user.name}}</td>
                                 <td>{{user.email}}</td>
-                                <td><i class="glyphicon glyphicon-remove center-block text-center" ng-click="removeUser(user)"></i></td>
+                                <td><i class="glyphicon glyphicon-remove center-block text-center" ng-click="removeUser(user, $index)"></i></td>
                             </tr>
                         </tbody>
                     </table>

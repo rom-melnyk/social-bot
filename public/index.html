@@ -26,7 +26,7 @@
 </head>
 <body ng-app="SocialApp">
     <div id="fb-root"></div>
-    <nav>
+    <nav ng-show="$root.loggedInUser">
         <div class="nav-wrapper teal lighten-2">
             <a class="right logout" onclick="document.cookie='session=-1'; location.hash='login'">
                 <i class="glyphicon glyphicon-log-out"></i>

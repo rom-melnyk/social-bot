@@ -3,6 +3,9 @@
  */
 angular.module('SocialApp.login', []).
     controller('LoginCtrl', function($scope, $http, $modal, $rootScope, $location) {
+        if ( !document.cookie || document.cookie === 'session=-1' ) {
+            $rootScope.loggedInUser = undefined;
+        }
         $scope.login = function () {
             if ($scope.loginForm.$valid) {
                 $rootScope.loggedInUser = $scope.user;
