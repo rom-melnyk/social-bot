@@ -86,6 +86,7 @@ module.exports = function (state, group, callback, vkQcb) {
                                     	post: post,
                                     	date: Date.now(),
                                     	network: 'vk',
+                                    	gid: group.id,
                                     	group: group
                                     };
                                     Data.findOneAndUpdate({'post.id': post.id, network: 'vk'}, data, { upsert: true }, function (err, item) {

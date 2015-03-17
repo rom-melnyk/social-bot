@@ -45,6 +45,7 @@ module.exports = function (state, group, callback) {
                         	post: post,
                         	date: Date.now(),
                         	network: 'fb',
+                        	gid: group.id,
                         	group: group
                         };
                         Data.findOneAndUpdate({'post.id': post.id, network: 'fb'}, data, { upsert: true }, function (err, item) {

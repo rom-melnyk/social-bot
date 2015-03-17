@@ -6,5 +6,6 @@ module.exports = mongoose.model('Data', {
 	post: mongoose.Schema.Types.Mixed,		// the payload
 	date: Date,
 	network: String,								// one of "fb" or "vk"
+	gid: String,
 	group: mongoose.Schema.Types.Mixed
 });

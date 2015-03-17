@@ -1,5 +1,6 @@
 require('array.prototype.find');
 var Setup = require('./db/setup-model').setup,
+    Data = require('./db/data-model'),
 	Group = require('./db/setup-model').group;
 
 var errHandler = function (msg, status, callback) {
@@ -238,7 +239,7 @@ module.exports = {
 	 */
 	deleteGroup: function (req, res, next) {
 		var ntw = req.params.network,
-			gid = req.params.gid;
+			gid = req.params.gid + '';
 
 		if (!(ntw === 'fb' || ntw === 'vk')) {
 			errHandler('Request error, wrong "network" parameter - "' + ntw + '"', 590, next);
@@ -250,7 +251,7 @@ module.exports = {
 				errHandler('Database error, failed to retrieve the setup', 591, next);
 			} else {
 				var updatedGroups = setup.groups.filter(function (grp) {
-					return grp.id + '' !== gid + '';
+					return grp.id + '' !== gid;
 				});
 
 				setup.groups = updatedGroups;
@@ -258,7 +259,9 @@ module.exports = {
 					if (err) {
 						errHandler('Database error, failed to update the setup', 591, next);
 					} else {
-						res.status(200).send(setup);
+                        Data.remove({'gid': gid}, function (err, items) {
+						    res.status(200).send(setup);
+                        });
 					}
 				});
 			}
