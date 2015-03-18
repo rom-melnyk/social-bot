@@ -74,8 +74,6 @@ module.exports = function (ntw) {
 						if (err) {
 							if (_res.indexOf('auth-fail') !== -1) {
 								results.state.state = 'auth-fail';
-							} else {
-								results.state.state = 'stopped';
 							}
 						} else {
 							results.state.state = 'running';
@@ -84,19 +82,13 @@ module.exports = function (ntw) {
 						results.state.save(function (err, state) {
 							if (err) {
 								$log('e', 'failed to update the state');
-								stopCrawler();
 							}
 						});
 						results.setup.save(function (err, setup) {
 							if (err) {
 								$log('e', 'failed to update the setup');
-								stopCrawler();
 							}
 						});
-
-						if (err) {
-							stopCrawler();
-						} else {
 						    User.find({receiveMails: true}, function (err, users) {
                                 if (!users) {
                                 	errHandler('Database error, failed to retrieve the data', 591, next);
@@ -142,8 +134,6 @@ module.exports = function (ntw) {
                                     });
                                 }
                             });
-
-						}
 					});
 			}
 		);
