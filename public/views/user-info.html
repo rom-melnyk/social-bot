@@ -12,12 +12,16 @@
                         <input id="email" ng-model="user.email" type="email">
                     </div>
                     <div class="input-field">
-                        <label ng-class="{'active': user.keywords.vk}" for="vkKeywords">Ключові слова для ВК</label>
-                        <input id="vkKeywords" ng-model="user.keywords.vk" type="text">
+                        <tags-input placeholder="Ключове слово для ВК" data-ng-model="user.keywords.vk" class="tags-input-home" min-length="1">
+                        </tags-input>
+                        <!--<label ng-class="{'active': user.keywords.vk}" for="vkKeywords">Ключові слова для ВК</label>
+                        <input id="vkKeywords" ng-model="user.keywords.vk" type="text">-->
                     </div>
                     <div class="input-field">
-                        <label ng-class="{'active': user.keywords.fb}" for="fbKeywords">Ключові слова для FB</label>
-                        <input id="fbKeywords" ng-model="user.keywords.fb" type="text">
+                        <tags-input placeholder="Ключове слово для ФБ" data-ng-model="user.keywords.fb" class="tags-input-home" min-length="1">
+                        </tags-input>
+                        <!--<label ng-class="{'active': user.keywords.fb}" for="fbKeywords">Ключові слова для FB</label>-->
+                        <!--<input id="fbKeywords" ng-model="user.keywords.fb" type="text">-->
                     </div>
                     <p>
                         <input id="receiveMails" ng-model="user.receiveMails" type="checkbox">

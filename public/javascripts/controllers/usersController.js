@@ -10,11 +10,19 @@ angular.module('SocialApp.users', []).
             $scope.users = resp.users;
         });
         $scope.submitChanges = function () {
-            if ($scope.user.keywords.vk && !($scope.user.keywords.vk instanceof Array)) {
-               $scope.user.keywords.vk = $scope.user.keywords.vk.split(',');
+            if ($scope.user.keywords.vk) {
+                var keywords = [];
+                $scope.user.keywords.vk.forEach(function (kw) {
+                    keywords.push(kw.text);
+                });
+               $scope.user.keywords.vk = keywords;
            }
-           if ($scope.user.keywords.fb && !($scope.user.keywords.fb instanceof Array)) {
-               $scope.user.keywords.fb = $scope.user.keywords.fb.split(',');
+           if ($scope.user.keywords.fb) {
+               var keywords = [];
+                $scope.user.keywords.fb.forEach(function (kw) {
+                    keywords.push(kw.text);
+                });
+               $scope.user.keywords.fb = keywords;
            }
             $http.put('api/create-user', $scope.user).success(function (resp) {
                 $rootScope.loggedInUser = resp;

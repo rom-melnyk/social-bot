@@ -38,11 +38,21 @@ angular.module('SocialApp.main', []).
             $http.get('api/data/fb/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
                 $scope.fbRespArray = resp;
                 $scope.fbPostsArray = $scope.fbRespArray.slice(($scope.fbPageNum - 1) * 5, ($scope.fbPageNum - 1) * 5 + 5);
+                if (($scope.fbRespArray.length / 5) > Math.floor($scope.fbRespArray.length / 5)) {
+                    $scope.fbPagesCount = Math.floor($scope.fbRespArray.length / 5) + 1;
+                } else {
+                    $scope.fbPagesCount = Math.floor($scope.fbRespArray.length / 5);
+                }
                 $scope.loading = false;
             });
             $http.get('api/data/vk/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
                 $scope.vkRespArray = resp;
                 $scope.vkPostsArray = $scope.vkRespArray.slice(($scope.vkPageNum - 1) * 5, ($scope.vkPageNum - 1) * 5 + 5);
+                if (($scope.vkRespArray.length / 5) > Math.floor($scope.vkRespArray.length / 5)) {
+                    $scope.vkPagesCount = Math.floor($scope.vkRespArray.length / 5) + 1;
+                } else {
+                    $scope.vkPagesCount = Math.floor($scope.vkRespArray.length / 5);
+                }
                 $scope.loading = false;
             });
         };

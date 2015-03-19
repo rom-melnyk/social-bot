@@ -45,7 +45,9 @@
             <h6 class="text-right">Знайдено ключових слів: {{instance.post.found}}</h6>
         </div>
     </div>
+    <div class="text-left" ng-show="fbPostsArray.length">{{fbPageNum}} сторінка з {{fbPagesCount}}</div>
     <a ng-show="fbPageNum > 1" ng-click="paginate('fb', false)">Попередня сторінка</a>
     <a ng-show="fbPostsArray.length && fbPageNum * 5 < fbRespArray.length" ng-click="paginate('fb', true)">Наступна сторінка</a>
+
     <hr/>
 </div>
