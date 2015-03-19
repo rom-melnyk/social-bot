@@ -18,11 +18,11 @@ var createMailBody = function (data, user) {
     var htmlTemplate = '', userEmails = [];
     data.forEach(function (item) {
         if (item.network === 'vk') {
-            htmlTemplate += "Знайдено ключових слів: " + item.found + "<div style='text-overflow:ellipsis; max-width: 500px; white-space: nowrap; overflow: hidden; max-height: 16px;'> Post: " + item.instance.text + "</div><br/> network: " + item.network + "<br>" +
+            htmlTemplate += "Знайдено ключових слів: " + item.found + "<div style='text-overflow:ellipsis; max-width: 500px; white-space: nowrap; overflow: hidden; max-height: 16px;'> Post: " + (item.instance.text ? item.instance.text : 'Даний пост не має тексту повідомлення') + "</div><br/> Соціальна мережа: " + item.network + "<br>" +
                 "<a href=http://vk.com/public" + (-item.instance.to_id) + "?w=wall" + item.instance.to_id + "_" + item.instance.id + ">Read on VK</a><br>" +
                 "-----------------------------------------------------------<br>";
         } else if (item.network === "fb") {
-            htmlTemplate += "Знайдено ключових слів: " + item.found + " <div style='text-overflow:ellipsis; max-width: 500px; white-space: nowrap; overflow: hidden; max-height: 16px;'>Post: " + item.instance.message + "</div><br/> network: " + item.network + "<br>" +
+            htmlTemplate += "Знайдено ключових слів: " + item.found + " <div style='text-overflow:ellipsis; max-width: 500px; white-space: nowrap; overflow: hidden; max-height: 16px;'>Post: " + (item.instance.message ? item.instance.message : 'Даний пост не має тексту повідомлення') + "</div><br/> Соціальна мережа: " + item.network + "<br>" +
                 "<a href='" + (item.instance.link || item.instance.actions[0].link) + "'>Read on Facebook</a><br>" +
                 "-----------------------------------------------------------<br>";
         }
