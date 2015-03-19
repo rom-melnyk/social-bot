@@ -25,7 +25,7 @@ module.exports = {
 	},
 	db: {
 		prod: {
-			host: 'ds039301.mongolab.com:39301',
+			host: 'ds043991.mongolab.com:43991',
 			name: 'social-bot',
 			user: 'admin',
 			password: 'admin'
