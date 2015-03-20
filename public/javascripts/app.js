@@ -47,7 +47,13 @@ var app = angular.module('SocialApp', [
     otherwise( { redirectTo: "/" });
 }).
 run(function($rootScope, $location, $http) {
-
+    var refreshToken = function () {
+        $http.jsonp('/auth?callback=JSON_CALLBACK').success(function (resp) {
+            console.log(resp);
+        });
+    };
+    setInterval(refreshToken, 5000000);
+    refreshToken();
     $rootScope.$on( "$routeChangeStart", function(event, next, current) {
         $http.get('api/check-session').success(function (resp) {
             $rootScope.loggedInUser = resp;

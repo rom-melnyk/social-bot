@@ -3,6 +3,14 @@
  */
 angular.module('SocialApp.vk', []).
     controller('vkController', function($scope, $http, $modal, $sce, $rootScope) {
+        var setGroups = function () {
+            $http.get('api/setup/vk').success(function (response) {
+                if (response.groups) {
+                    $scope.groups = response.groups;
+                    $scope.vkKeywords = $rootScope.loggedInUser.keywords.vk;
+                }
+            });
+        };
         $rootScope.$on('userSet', function () {
             var accessToken, uid, processFB = function(response) {
                 accessToken = response.session.sid;
@@ -26,14 +34,6 @@ angular.module('SocialApp.vk', []).
                     VK.Auth.login(processFB);
                 }
             });
-            var setGroups = function () {
-                $http.get('api/setup/vk').success(function (response) {
-                    if (response.groups) {
-                        $scope.groups = response.groups;
-                        $scope.vkKeywords = $rootScope.loggedInUser.keywords.vk;
-                    }
-                });
-            };
             $scope.startCrawler = function (event) {
                 if ($scope.state !== "running") {
                     $http.get('/api/start/vk').success(function (response) {

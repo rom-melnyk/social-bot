@@ -4,16 +4,17 @@
 angular.module('SocialApp.controllers', []).
     controller('fbController', function($scope, $http, $modal, $sce, $rootScope, $filter) {
         $scope.postsArray = [];
+        var getGroups = function () {
+            $http.get('api/setup/fb').success(function (response) {
+                if (response.groups) {
+                    $scope.groups = response.groups;
+                    $scope.networkKeywords = $rootScope.loggedInUser.keywords.fb;
+                }
+            });
+        };
         $rootScope.$on('userSet', function () {
             var accessToken, uid,
-                getGroups = function () {
-                    $http.get('api/setup/fb').success(function (response) {
-                        if (response.groups) {
-                            $scope.groups = response.groups;
-                            $scope.networkKeywords = $rootScope.loggedInUser.keywords.fb;
-                        }
-                    });
-                }, getLoginAccess = function () {
+                getLoginAccess = function () {
                     $http.get('/api/state/fb').success(function (response) {
                         if (response.token && response.state !== "auth-fail") {
                             $scope.state = response.state;
