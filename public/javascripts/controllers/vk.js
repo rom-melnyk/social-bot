@@ -23,9 +23,9 @@ angular.module('SocialApp.vk', []).
             if (response.state && response.state !== "auth-fail") {
                 $scope.state = response.state;
                 if (response.state !== "running") {
-                    $scope.crawlerText = "Start VK crawler";
+                    $scope.crawlerText = "Запустити моніторинг";
                 } else {
-                    $scope.crawlerText = "Stop VK crawler";
+                    $scope.crawlerText = "Зупинити моніторинг";
                 }
                 accessToken = response.token;
                 setGroups();

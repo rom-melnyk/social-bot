@@ -18,9 +18,9 @@ angular.module('SocialApp.controllers', []).
                     if (response.token && response.state !== "auth-fail") {
                         $scope.state = response.state;
                         if (response.state !== "running") {
-                            $scope.crawlerText = "Start FB crawler";
+                            $scope.crawlerText = "Запустити моніторинг";
                         } else {
-                            $scope.crawlerText = "Stop FB crawler";
+                            $scope.crawlerText = "Зупинити моніторинг";
                         }
                         accessToken = response.token;
                         var refreshToken = function () {
