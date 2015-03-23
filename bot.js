@@ -53,7 +53,7 @@ var credentials = {
 var oauth2 = require('simple-oauth2')(credentials);
 
 var authorization_uri = oauth2.authCode.authorizeURL({
-  redirect_uri: 'http://localhost:3000/callback/',
+  redirect_uri: 'http://social-bot-monitoring.herokuapp.com/callback/',
   scope: 'public_profile, email',
   display: 'popup',
   state: '3(#0/!~'
@@ -72,7 +72,7 @@ app.get('/callback', function (req, res) {
   console.log('/callback');
   oauth2.authCode.getToken({
     code: code,
-    redirect_uri: 'http://localhost:3000/callback/'
+    redirect_uri: 'http://social-bot-monitoring.herokuapp.com/callback/'
   }, function (error, result) {
     if (error) { console.log('Access Token Error', error.message); } else {
         token = result.split('=')[1].split('&')[0];
