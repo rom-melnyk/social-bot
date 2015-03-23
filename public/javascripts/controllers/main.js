@@ -35,6 +35,8 @@ angular.module('SocialApp.main', []).
             });
         };
         $scope.showAllGroupsPosts = function () {
+            $scope.fbPageNum = 1;
+            $scope.vkPageNum = 1;
             $http.get('api/data/fb/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
                 $scope.fbRespArray = resp;
                 $scope.fbPostsArray = $scope.fbRespArray.slice(($scope.fbPageNum - 1) * 5, ($scope.fbPageNum - 1) * 5 + 5);

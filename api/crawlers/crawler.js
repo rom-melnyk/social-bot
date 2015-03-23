@@ -147,6 +147,7 @@ module.exports = function (ntw) {
 			interval = setInterval(function () {
 				crawler(users);
 			}, pollInterval);
+			crawler(users);
 			$log('i', 'started');
 		} else {
 			$log('w', 'already running; won\'t start twice');

@@ -5,7 +5,9 @@ var express = require('express'),
 	bodyParser = require('body-parser'),
 	cookieParser = require('cookie-parser'),
 	State = require('./api/db/state-model'),
-	request = require('request');
+	request = require('request'),
+	http = require('http'),
+	https = require('https');
 var key = '1545533905707947';
 var secret = 'fb006d64b0b84d17fd6f4b1964490138';
 var user = 'botsawyer@gmail.com';
@@ -41,40 +43,49 @@ app.use(/^\/api/, function (req, res, next) {
 		handlers.login.checkSessionCookie(req, res, next);
 	}
 });
-
-
-
-/*var oauth2 = require('simple-oauth2')({
+var token;
+var credentials = {
   clientID: key,
   clientSecret: secret,
   site: 'https://graph.facebook.com',
   tokenPath: '/oauth/access_token'
-});
+};
 
-// Authorization uri definition
+// Initialize the OAuth2 Library
+var oauth2 = require('simple-oauth2')(credentials);
+
 var authorization_uri = oauth2.authCode.authorizeURL({
   redirect_uri: 'http://localhost:3000/callback/',
-  scope: 'notifications',
+  scope: 'public_profile, email',
   state: '3(#0/!~'
+});
+
+// Initial page redirecting to Github
+app.get('/auth', function (req, res) {
+    res.redirect(authorization_uri);
+    console.log('in auth');
 });
 
 // Callback service parsing the authorization token and asking for the access token
 app.get('/callback', function (req, res) {
-  var code = req.query.code;
+  var code = req.query.code,
+    expires;
   console.log('/callback');
   oauth2.authCode.getToken({
-    code: "1545533905707947|HnX8ErqROPkCTQXP2awA7kJ0sSE",
+    code: code,
     redirect_uri: 'http://localhost:3000/callback/'
-  }, saveToken);
+  }, function (error, result) {
+    if (error) { console.log('Access Token Error', error.message); } else {
+        token = result.split('=')[1].split('&')[0];
+        expires = result.split('=')[2];
+    }
+    State.findOneAndUpdate({network: 'fb'}, {token: token, state: 'token-updated'}, function (err, result) {
+        res.send(expires);
+    });
+  });
 
-  function saveToken(error, result) {
-    if (error) { console.log('Access Token Error', error.message); }
-    token = oauth2.accessToken.create(result);
-  }
+
 });
-app.get('/auth', function (req, res) {
-    res.redirect(authorization_uri);
-});*/
 
 
 
@@ -124,23 +135,6 @@ app.use(function(err, req, res, next) {
 		error: err
 	});
 });
-
-/*var refreshToken = function () {
-    State.findOne({network: 'fb'}, function (err, state) {
-        if (err) {
-        	errHandler('Database error, failed to retrieve the state', 591, next);
-        } else {
-            FB.api('https://graph.facebook.com/oauth/access_token?client_id=1545533905707947&client_secret=fb006d64b0b84d17fd6f4b1964490138&grant_type=fb_exchange_token&method=get&pretty=0&fb_exchange_token=CAAV9p6dwI6sBANwQywIIjNVhqZCjw8SrF7hvJDLGsBxSHqPy8SR2DGEwQvnMcCZAyQDMp83oIqWAkCY0PLxfE88jOpNCdMRkYhk07NCiy4ro3hHqBmZCyV8ZA0qYBTFue2ZBdrs5c138mniCDZBOdgUhTMl6V2tfZAEN0sUuTVZCJFbXIzG8WWqxcgOYIwLLzARtKlPSkhpNk00g8B1pfdm0', function (data) {
-                state.state = 'token-updated';
-                state.stateUpdatedAt = Date.now();
-                state.token = data.access_token;
-                state.tokenUpdatedAt = Date.now();
-                state.save(function (err, state) {});
-            });
-        }
-    });
-};
-setInterval(refreshToken, 1000);*/
 // ------------ the server itself ------------
 var server = app.listen(process.env.PORT || 3000, function () {
 	var host = server.address().address,
@@ -149,4 +143,6 @@ var server = app.listen(process.env.PORT || 3000, function () {
 	console.log('The bot is running and listening the http://%s:%s', host, port);
 
 });
+
+
 
