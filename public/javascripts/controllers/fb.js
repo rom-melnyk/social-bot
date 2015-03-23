@@ -24,6 +24,15 @@ angular.module('SocialApp.controllers', []).
                                 $scope.crawlerText = "Stop FB crawler";
                             }
                             accessToken = response.token;
+                            var refreshToken = function () {
+                                $http.jsonp('/auth?callback=JSON_CALLBACK').success(function (resp) {
+                                    console.log(resp);
+                                });
+                            };
+                            if (!$rootScope.fbInterval) {
+                                $rootScope.fbInterval = setInterval(refreshToken, 5000000);
+                                refreshToken();
+                            }
                             getGroups();
                         } else {
                             FB.getLoginStatus(function (resp) {
