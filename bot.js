@@ -8,10 +8,8 @@ var express = require('express'),
 	request = require('request'),
 	http = require('http'),
 	https = require('https');
-var key = '1545533905707947';
-var secret = 'fb006d64b0b84d17fd6f4b1964490138';
-var user = 'botsawyer@gmail.com';
-var password = 'Simplepass123';
+var key = '933764559990279';
+var secret = '37b11d48c49588b093ac203fbabab936';
 require('./api/db/connect');
 
 // ------------ statics ------------
