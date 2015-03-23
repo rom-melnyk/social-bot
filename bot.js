@@ -55,6 +55,7 @@ var oauth2 = require('simple-oauth2')(credentials);
 var authorization_uri = oauth2.authCode.authorizeURL({
   redirect_uri: 'http://localhost:3000/callback/',
   scope: 'public_profile, email',
+  display: 'popup',
   state: '3(#0/!~'
 });
 
