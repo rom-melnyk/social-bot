@@ -7,11 +7,13 @@ var express = require('express'),
 	State = require('./api/db/state-model'),
 	request = require('request'),
 	http = require('http'),
-	https = require('https');
-var key = '1545533905707947';
-var secret = 'fb006d64b0b84d17fd6f4b1964490138';
-var user = 'botsawyer@gmail.com';
-var password = 'Simplepass123';
+	https = require('https'),
+	os = require("os"),
+	host,
+    port;
+
+var key = '1545533905707947',
+    secret = 'fb006d64b0b84d17fd6f4b1964490138';
 require('./api/db/connect');
 
 // ------------ statics ------------
@@ -55,7 +57,7 @@ var credentials = {
 var oauth2 = require('simple-oauth2')(credentials);
 
 var authorization_uri = oauth2.authCode.authorizeURL({
-  redirect_uri: 'http://localhost:3000/callback/',
+  redirect_uri: 'http://social-monitoring.herokuapp.com/callback/',
   scope: 'public_profile, email',
   state: '3(#0/!~'
 });
@@ -73,7 +75,7 @@ app.get('/callback', function (req, res) {
   console.log('/callback');
   oauth2.authCode.getToken({
     code: code,
-    redirect_uri: 'http://localhost:3000/callback/'
+    redirect_uri: 'http://social-monitoring.herokuapp.com/callback/'
   }, function (error, result) {
     if (error) { console.log('Access Token Error', error.message); } else {
         token = result.split('=')[1].split('&')[0];
@@ -83,8 +85,6 @@ app.get('/callback', function (req, res) {
         res.send(expires);
     });
   });
-
-
 });
 
 
@@ -137,8 +137,8 @@ app.use(function(err, req, res, next) {
 });
 // ------------ the server itself ------------
 var server = app.listen(process.env.PORT || 3000, function () {
-	var host = server.address().address,
-		port = server.address().port;
+	host = server.address().address;
+	port = server.address().port;
 
 	console.log('The bot is running and listening the http://%s:%s', host, port);
 
