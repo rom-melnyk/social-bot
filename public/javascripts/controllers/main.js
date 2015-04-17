@@ -9,6 +9,7 @@ angular.module('SocialApp.main', []).
         $scope.network = "all";
         $scope.fbPageNum = 1;
         $scope.vkPageNum = 1;
+        $scope.kwFound = 1;
         $scope.sinceDate = new Date(new Date().toLocaleDateString());
         $scope.setDate = function (since) {
             $scope.sinceDate = since;
@@ -38,7 +39,7 @@ angular.module('SocialApp.main', []).
             $scope.fbPageNum = 1;
             $scope.vkPageNum = 1;
             $http.get('api/data/fb/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
-                $scope.fbRespArray = resp;
+                $scope.fbRespArray = filterByKeywordsCount(resp, $scope.kwFound);
                 $scope.fbPostsArray = $scope.fbRespArray.slice(($scope.fbPageNum - 1) * 5, ($scope.fbPageNum - 1) * 5 + 5);
                 if (($scope.fbRespArray.length / 5) > Math.floor($scope.fbRespArray.length / 5)) {
                     $scope.fbPagesCount = Math.floor($scope.fbRespArray.length / 5) + 1;
@@ -48,7 +49,7 @@ angular.module('SocialApp.main', []).
                 $scope.loading = false;
             });
             $http.get('api/data/vk/analyzed?since=' + $scope.sinceDate.getTime()).success(function (resp) {
-                $scope.vkRespArray = resp;
+                $scope.vkRespArray = filterByKeywordsCount(resp, $scope.kwFound);
                 $scope.vkPostsArray = $scope.vkRespArray.slice(($scope.vkPageNum - 1) * 5, ($scope.vkPageNum - 1) * 5 + 5);
                 if (($scope.vkRespArray.length / 5) > Math.floor($scope.vkRespArray.length / 5)) {
                     $scope.vkPagesCount = Math.floor($scope.vkRespArray.length / 5) + 1;
@@ -149,4 +150,14 @@ angular.module('SocialApp.main', []).
         $scope.openVKPage = function (ownerId, postId) {
             window.open("http://vk.com/public" + (-ownerId) + "?w=wall" + ownerId + "_" + postId);
         };
+
+        function filterByKeywordsCount (data, count) {
+        var resultsArray = [];
+            data.forEach(function (item, index) {
+                if (count <= item.post.found) {
+                    resultsArray.push(item);
+                }
+            });
+            return resultsArray;
+        }
     });

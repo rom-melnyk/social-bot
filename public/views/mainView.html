@@ -9,6 +9,8 @@
                 <option value="fb">Facebook</option>
             </select>
             <input type="date" class="form-control" name="sinceFilter" ng-model="sinceDate" ng-change="setDate(sinceDate)"/>
+            <label for="kwCount">Кількість ключових слів</label>
+            <input type="number" id="kwCount" class="form-control" name="foundNumber" ng-model="kwFound"/>
             <button class="btn waves-effect waves-light" ng-click="showAllGroupsPosts()">Пошук</button>
             <button class="btn waves-effect waves-light" ng-click="clearResults()">Очистити результати</button>
         </div>
@@ -18,8 +20,6 @@
                 <!--VK section-->
                 <div class="section" ng-controller="vkController">
                     <div ng-include src="'views/vkSectionView.html'"></div>
-                    <!--&lt;!&ndash;all vk network feeds&ndash;&gt;
-                    <div ng-include src="'views/vkAllGroupsView.html'"></div>-->
                 </div>
             </div>
             <div ng-show="network === 'fb' || network === 'all'" class="fader list-group-item">
