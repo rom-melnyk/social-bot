@@ -1,8 +1,44 @@
+
+<p>
+    <input class="filled-in" type="checkbox" id="nameRT" ng-model="searchRT">
+    <label for="nameRT"><u>Пошук в реальному часі</u></label>
+</p>
 <img class="social-logo" tooltip="Показати список груп" src="/images/vkLogo.jpg" height="50px" ng-click="isVisible = !isVisible">
 <div class="header-section inline-block">
     <button class="btn waves-effect waves-light" ng-click="addNewGroup('vk')">Додати групу</button>
-    <button class="btn waves-effect waves-light" ng-click="setNetworkKeywords('vk', vkKeywords)">Змінити ключові слова</button>
-    <button class="btn waves-effect waves-light" ng-class="{'red': state === 'running'}"  ng-click="startCrawler($event)">{{crawlerText}}</button>
+    <button class="btn waves-effect waves-light" ng-click="setNetworkKeywords('vk', networkKeywords)">Змінити ключові слова</button>
+    <button class="btn waves-effect waves-light" ng-class="{'red': state === 'running'}"  ng-click="startCrawler($event)" ng-hide="searchRT">{{crawlerText}}</button>
+
+    <button class="btn waves-effect waves-light" ng-click="showInReal()"  ng-show="searchRT">Пошук RealTime</button>
+    <button class="btn waves-effect waves-light" ng-click="showIn(realTimeFeeds)" ng-show="searchRT">Показати результат</button>
+    <div class="clearfix"></div>
+    <div ng-show="searchRT">
+    <div class="collection text-left">
+        <div ng-repeat="item in myFeeds" class="collection-item">
+        <h6>{{item.name}}</h6>
+            <div class="feed-container" ng-show="item.showFullText">
+                <span ng-bind-html="highlight(item.text, vkKeywords)"></span><br>
+                <a ng-click="openVKPage(item.to_id, item.id)">Прочитати на Vkontakte</a>
+            </div>
+            <div class="post-crop" tooltip="{{item.text ? '' : 'Даний пост не включає текст повідомлення. Перейдіть до перегляду оригіналу для детальної інформації.'}}">
+                <div>
+                    <div ng-show="!item.showFullText">
+                        <span ng-bind-html="cropText(item.text, 100)"></span><br/>
+                        <a ng-click="openVKPage(item.to_id, item.id)">Прочитати на Vkontakte</a>
+                    </div>
+                </div>
+                <a ng-click="showMore(item, $event)">Показати більше...</a>
+            </div>
+            <h6 class="text-right">Знайдено ключових слів: {{item.found}}</h6>
+        </div>
+    </div>
+    <div class="text-left" ng-show="myFeeds.length">{{vkPageNum}} сторінка з {{vkPagesCount}}</div>
+    <a ng-show="vkPageNum > 1" ng-click="paginateReal('vk', false)">Попередня сторінка</a>
+    <a ng-show="myFeeds.length && vkPageNum * 5 < myFeedsArray.length" ng-click="paginateReal('vk', true)">Наступна сторінка</a>
+    <div ng-bind-html="myWrappedValue"></div>
+    <p>{{words}}</p>
+    </div>
+
 </div>
 <div ng-show="isVisible" class="fader social-body">
     <div class="groups-section">

@@ -58,6 +58,18 @@ angular.module('SocialApp.main', []).
                 $scope.loading = false;
             });
         };
+
+         $scope.showIn = function (resp) { 
+            $scope.vkPageNum = 1;
+            $scope.myFeedsArray = resp;
+            $scope.myFeeds = $scope.myFeedsArray.slice(($scope.vkPageNum - 1) * 5, ($scope.vkPageNum - 1) * 5 + 5);
+                if (($scope.myFeedsArray.length / 5) > Math.floor($scope.myFeedsArray.length / 5)) {
+                    $scope.vkPagesCount = Math.floor($scope.myFeedsArray.length / 5) + 1;
+                } else {
+                    $scope.vkPagesCount = Math.floor($scope.myFeedsArray.length / 5);
+                }
+        };
+
         $scope.paginate = function (ntw, forward) {
             if (ntw === 'fb') {
                 if (forward) $scope.fbPageNum++;
@@ -69,6 +81,19 @@ angular.module('SocialApp.main', []).
                 $scope.vkPostsArray = $scope.vkRespArray.slice(($scope.vkPageNum - 1) * 5, ($scope.vkPageNum - 1) * 5 + 5);
             }
         };
+
+        $scope.paginateReal = function (ntw, forward) {
+            if (ntw === 'fb') {
+                if (forward) $scope.fbPageNum++;
+                else $scope.fbPageNum--;
+                $scope.fbPostsArray = $scope.fbRespArray.slice(($scope.fbPageNum - 1) * 5, ($scope.fbPageNum - 1) * 5 + 5);
+            } else if (ntw === 'vk') {
+                if (forward) $scope.vkPageNum++;
+                else $scope.vkPageNum--;
+                $scope.myFeeds = $scope.myFeedsArray.slice(($scope.vkPageNum - 1) * 5, ($scope.vkPageNum - 1) * 5 + 5);
+            }
+        };
+
         $scope.clearResults = function () {
             $scope.vkPostsArray = [];
             $scope.fbPostsArray = [];
@@ -134,9 +159,9 @@ angular.module('SocialApp.main', []).
         $scope.showMore = function (feed, event) {
             //var groupIndex = $scope.groupsArray.indexOf(group);
             if (!feed.showFullText) {
-                event.currentTarget.innerText = "Приховати";
+                event.currentTarget.innerHTML = "Приховати";
             } else {
-                event.currentTarget.innerText = "Показати більше...";
+                event.currentTarget.innerHTML = "Показати більше..";
             }
             feed.showFullText = !feed.showFullText;
         };

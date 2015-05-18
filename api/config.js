@@ -1,4 +1,4 @@
-/**
+ /**
  * The config file
  */
 var isEnvVariableSet = function (variable) {
